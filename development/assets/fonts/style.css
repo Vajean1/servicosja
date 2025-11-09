@@ -1,9 +1,0 @@
-@font-face {
-    font-family: 'Okta Neue';
-    src: local('Okta Neue Italic'), local('Okta-Neue-Italic'),
-        url('OktaNeue-RegularItalic.woff2') format('woff2'),
-        url('OktaNeue-RegularItalic.woff') format('woff'),
-        url('OktaNeue-RegularItalic.ttf') format('truetype');
-    font-weight: normal;
-    font-style: italic;
-  }
