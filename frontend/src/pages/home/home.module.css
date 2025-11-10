@@ -110,7 +110,7 @@
 }
 
 .sponsoredContainer{
-    width: 90%;
+    width: 80%;
     display: flex;
     gap: 30px;
     align-items: center;
@@ -187,6 +187,8 @@
     width: 100%;
     display: flex;
     flex-wrap: wrap;
+    z-index: 2;
+    
 }
 
 .commentsBox{
@@ -197,6 +199,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    z-index: 2;
 }
 
 .commentsBox h3{
@@ -217,12 +220,13 @@
     height: 700px;
     background-color: white;
     position: relative;
+    z-index: 2;
 }
 
 .commentsNull img{
     position: absolute;
     z-index: 999;
-    width:90% ;
+    width:70% ;
     top: 30px;
 }
 
@@ -302,4 +306,11 @@
     gap: 8px;
     color: #ffcd29;
     font-size: 20px;
+}
+
+@media screen and(max-width:1280px) {
+    .commentsNull img{
+    width:90% ;
+  
+    }
 }
