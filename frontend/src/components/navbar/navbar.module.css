@@ -24,15 +24,17 @@
     color: var(--blue);
 }
 
-.navLinkContainer button{
+.loginButton{
     border: 2px solid var(--blue);
     border-radius: 16px;
     padding: 5px  10px ;
     color: var(--blue);
     cursor: pointer;
     align-items: center;
+    justify-content: center;
     display: flex;
     gap: 6px;
+    text-decoration: none;
 }
 
 .icon{

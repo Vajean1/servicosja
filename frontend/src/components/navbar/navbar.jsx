@@ -54,10 +54,10 @@ export default function Navbar () {
                     to={'/plans'}
                 >
                     Planos
-                </Link>
-                <button> 
+                </Link >
+                <Link to={'/login'} className={styles.loginButton}> 
                     <FaRegUser className={styles.icon} /> Entrar
-                </button>
+                </Link>
             </div> 
         </nav>
     )

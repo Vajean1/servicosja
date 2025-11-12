@@ -2,6 +2,7 @@ import styles from './footer.module.css'
 import { FaRegUser , FaInstagram , FaLinkedin } from "react-icons/fa";
 import { BsTelephone } from "react-icons/bs";
 import { CiMail } from "react-icons/ci";
+import {Link} from 'react-router-dom'
 
 export default function Footer () {
     return (
@@ -20,7 +21,7 @@ export default function Footer () {
 
                 <div className={styles.social}>
                     <h3>Redes Sociais</h3>
-                    <div><FaInstagram /> <FaLinkedin/></div>
+                    <div><a  href='https://www.instagram.com/' target='_blank'  className={styles.icon}><FaInstagram /></a > <a href='https://www.linkedin.com/' target='_blank'  className={styles.icon}><FaLinkedin/></a></div>
                     <h3>Parceiros</h3>
                     <img src='/img/partners/partners.png'/>
                 </div>
