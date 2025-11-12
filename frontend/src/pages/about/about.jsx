@@ -55,6 +55,70 @@ export default function About () {
 
             <section  className={styles.teamContainer} >
                 <h2>Conheça o Time que Faz a Magia Acontecer, JÁ!</h2>
+
+                <div className={styles.teamContent}>
+
+                    <div className={styles.teambox}>
+                        <img src="/img/exemples/Group 8.png" alt="" />
+                        <h4>Lorem</h4>
+                        <p>Lorem ips dolor sit amet, consecte</p>
+                    </div>
+
+                    <div className={styles.teambox}>
+                        <img src="/img/exemples/Group 8.png" alt="" />
+                        <h4>Lorem</h4>
+                        <p>Lorem ips dolor sit amet, consecte</p>
+                    </div>
+
+                    <div className={styles.teambox}>
+                        <img src="/img/exemples/Group 8.png" alt="" />
+                        <h4>Lorem</h4>
+                        <p>Lorem ips dolor sit amet, consecte</p>
+                    </div>
+
+                    <div className={styles.teambox}>
+                        <img src="/img/exemples/Group 8.png" alt="" />
+                        <h4>Lorem</h4>
+                        <p>Lorem ips dolor sit amet, consecte</p>
+                    </div>
+
+                    <div className={styles.teambox}>
+                        <img src="/img/exemples/Group 8.png" alt="" />
+                        <h4>Lorem</h4>
+                        <p>Lorem ips dolor sit amet, consecte</p>
+                    </div>
+
+                    <div className={styles.teambox}>
+                        <img src="/img/exemples/Group 8.png" alt="" />
+                        <h4>Lorem</h4>
+                        <p>Lorem ips dolor sit amet, consecte</p>
+                    </div>
+
+                    <div className={styles.teambox}>
+                        <img src="/img/exemples/Group 8.png" alt="" />
+                        <h4>Lorem</h4>
+                        <p>Lorem ips dolor sit amet, consecte</p>
+                    </div>
+
+                    <div className={styles.teambox}>
+                        <img src="/img/exemples/Group 8.png" alt="" />
+                        <h4>Lorem</h4>
+                        <p>Lorem ips dolor sit amet, consecte</p>
+                    </div>
+
+                    <div className={styles.teambox}>
+                        <img src="/img/exemples/Group 8.png" alt="" />
+                        <h4>Lorem</h4>
+                        <p>Lorem ips dolor sit amet, consecte</p>
+                    </div>
+
+                    <div className={styles.teambox}>
+                        <img src="/img/exemples/Group 8.png" alt="" />
+                        <h4>Lorem</h4>
+                        <p>Lorem ips dolor sit amet, consecte</p>
+                    </div>
+
+                </div>
             </section>
         </div>
     )

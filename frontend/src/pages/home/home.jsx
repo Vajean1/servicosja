@@ -19,6 +19,10 @@ export default function Home () {
         <main className={styles.homeContainer}>
            <BannerHome/>
 
+           <div className={styles.bannerRota}>
+                <img src="/img/banner/bannerRota.jpeg" alt="banner rotas" />
+           </div>
+
            <section className={styles.searched}>
                 <div className={styles.lineSearched}></div>
                 <h3>Nossos Serviços<br/>Mais Buscados</h3>
