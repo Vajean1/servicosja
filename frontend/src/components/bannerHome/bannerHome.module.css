@@ -1,7 +1,10 @@
 .bannerContainer{
     width: 100%;
     height: 600px;
-    background-color: #ededed;
+    background-image: url('/img/banner/bgHome.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
     display: flex;
     flex-wrap: wrap;
 }
@@ -35,10 +38,10 @@
 .txtContainer button{
     padding: 6px 10px;
     border-radius: 8px;
-    border: 2px solid var(--orange);
+    border: none;
     width: 190px;
-    background-color: var(--white);
-    color: var(--blue);
+    background-color: var(--orange);
+    color: var(--white);
     font-family: var(--font-bold);
     font-size: 20px;
     cursor: pointer;
@@ -48,9 +51,15 @@
 
 .imgContainer {
     width: 50%;
-    background-image: url("/img/banner/bannerHome.png");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.imgUser {
+    width: 80%;
+    height: auto;
+    
 }
 

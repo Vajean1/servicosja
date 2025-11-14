@@ -10,7 +10,7 @@ export default function BannerHome () {
                     <button>Solicitar Serviço</button>
                 </div>
                 <div className={styles.imgContainer}>
-                    
+                    <img className={styles.imgUser} src="/img/banner/bannerHome.png" alt="serviços em todo brasil" />
                 </div>
             </section>
         

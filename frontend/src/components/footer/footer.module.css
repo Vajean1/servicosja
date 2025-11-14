@@ -39,7 +39,7 @@
 .contacts button{
     border-radius: 16px;
     padding: 8px 10px;
-    border: 1px solid var(--white);
+    border: 1px solid var(--orange);
     background-color: var(--blue-bg);
     color: var(--white);
     display: flex;
@@ -65,6 +65,16 @@
 
 .icon{
     font-size: 18px;
+    color: var(--orange);
+}
+
+
+.iconbg{
+    font-size: 18px;
+    background-color: white;
+    padding: 0px 5px;
+    border-radius: 8px;
+    color: var(--orange);
 }
 
 .social{
@@ -93,4 +103,20 @@
     color: var(--white);
     font-family: var(--font);
     font-size: 12px;
+}
+
+.footerMap{
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font);
+}
+
+.footerMap h4{
+    margin-bottom: 15px;
+}
+
+.infosContainerLink{
+    text-decoration: none;
+    color: var(--white);
+    font-size: 14px;
 }

@@ -1,5 +1,5 @@
 import styles from './footer.module.css'
-import { FaRegUser , FaInstagram , FaLinkedin } from "react-icons/fa";
+import { FaRegUser , FaInstagram , FaLinkedin ,FaFacebook,FaTwitter } from "react-icons/fa";
 import { BsTelephone } from "react-icons/bs";
 import { CiMail } from "react-icons/ci";
 import {Link} from 'react-router-dom'
@@ -11,7 +11,20 @@ export default function Footer () {
                 <img src="/img/logo/logoFooter.png" alt="" />
             </div>
 
+            
+
             <div className={styles.infosContainer}>
+
+                <div className={styles.footerMap}>
+                <h4>Mapa do site</h4>
+                <Link className={styles.infosContainerLink} to="/">Home</Link>
+                <Link className={styles.infosContainerLink} to="/services">Serviços</Link>
+                <Link className={styles.infosContainerLink} to="/about">Sobre nós</Link>
+                <Link className={styles.infosContainerLink} to="/">Planos</Link>
+                <Link className={styles.infosContainerLink} to="/">Sou um profissional</Link>
+            </div>
+
+
                 <div className={styles.contacts}>
                     <button><FaRegUser className={styles.icon} />Atendimento Online</button>
                     <h3>Contato</h3>
@@ -21,7 +34,7 @@ export default function Footer () {
 
                 <div className={styles.social}>
                     <h3>Redes Sociais</h3>
-                    <div><a  href='https://www.instagram.com/' target='_blank'  className={styles.icon}><FaInstagram /></a > <a href='https://www.linkedin.com/' target='_blank'  className={styles.icon}><FaLinkedin/></a></div>
+                    <div> <a href='https://www.linkedin.com/' target='_blank'  className={styles.iconbg}><FaLinkedin/></a> <a  href='https://www.instagram.com/' target='_blank'  className={styles.iconbg}><FaInstagram /></a > <a  href='https://www.instagram.com/' target='_blank'  className={styles.iconbg}><FaFacebook /></a > <a  href='https://www.instagram.com/' target='_blank'  className={styles.iconbg}><FaTwitter /></a ></div>
                     <h3>Parceiros</h3>
                     <img src='/img/partners/partners.png'/>
                 </div>
