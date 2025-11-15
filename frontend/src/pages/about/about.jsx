@@ -43,15 +43,7 @@ export default function About () {
             </div>
 
 
-            <div className={styles.operationContainer}>
-                <h2>Como funciona em  aprenas 3 passos:</h2>
-
-                <div className={styles.operationContent}>
-                    <img src="/img/buttons/Subtract.png" alt="Subtract" />
-                    <img src="/img/buttons/Subtract2.png" alt="Subtract" />
-                    <img src="/img/buttons/Subtract3.png" alt="Subtract" />
-                </div>
-            </div>
+           
 
             <section  className={styles.teamContainer} >
                 <h2>Conheça o Time que Faz a Magia Acontecer, JÁ!</h2>

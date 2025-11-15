@@ -1,11 +1,23 @@
 import { Link, useLocation } from 'react-router-dom';
 import styles from './navbar.module.css';
 import { FaRegUser } from "react-icons/fa";
+import { Drawer } from '@mui/material';
+import { TiThMenu } from "react-icons/ti";
+
+
+import { useState } from 'react';
 
 export default function Navbar () {
     
     const location = useLocation();
     const currentPath = location.pathname;
+
+    
+    const [openMenu , setOpenMenu] = useState(false)
+
+    const handleOpenMenu = () => {
+        setOpenMenu(!openMenu)
+    }
 
     
     const isNavLinkActive = (path) => {
@@ -58,7 +70,50 @@ export default function Navbar () {
                 <Link to={'/login'} className={styles.loginButton}> 
                     <FaRegUser className={styles.icon} /> Entrar
                 </Link>
+
+                  
             </div> 
+
+            <div className={styles.MobileNavbarLinksContainer}>
+                <TiThMenu className={styles.navbarIcons} onClick={handleOpenMenu} />                    
+            </div>
+
+             <Drawer
+                anchor='right'
+                open={openMenu}
+                onClose={handleOpenMenu}>
+                    
+                    <div className={styles.drawer}>
+                           <Link 
+                    className={getLinkClassName('/')} 
+                    to={'/'}
+                >
+                    Inicio
+                </Link>
+                <Link 
+                    className={getLinkClassName('/services')} 
+                    to={'/services'}
+                >
+                    Serviços
+                </Link>
+                <Link 
+                    className={getLinkClassName('/about')} 
+                    to={'/about'}
+                >
+                    Sobre nós
+                </Link>
+                <Link 
+                    className={getLinkClassName('/plans')} 
+                    to={'/plans'}
+                >
+                    Planos
+                </Link >
+                <Link to={'/login'} className={styles.loginButton}> 
+                    <FaRegUser className={styles.icon} /> Entrar
+                </Link>
+                    </div>
+                    
+                </Drawer>
         </nav>
     )
 }

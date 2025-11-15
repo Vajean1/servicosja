@@ -55,6 +55,7 @@ export default function Home () {
                     </div>
                 </div>
            </section>
+           
 
            <section className={styles.Sponsored}>
             <img className={styles.SponsoredBg} src="img/banner/bannerSponsored.png" alt='banner'/>
@@ -189,6 +190,7 @@ export default function Home () {
                     slidesPerView={1}
                     breakpoints={{
                         
+                        
                         640: {
                             slidesPerView: 1, 
                             spaceBetween: 20,
@@ -199,7 +201,7 @@ export default function Home () {
                             spaceBetween: 40,
                         },
                         
-                        1440: {
+                        1640: {
                             slidesPerView: 3, 
                             spaceBetween: 100,
                         }}

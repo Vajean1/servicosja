@@ -1,5 +1,9 @@
+import styles from './plans.module.css'
+
 export default function Plans () {
     return(
-        <h1>Planos</h1>
+        <div className={styles.plansContainer}>
+
+        </div>
     )
 }

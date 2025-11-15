@@ -18,8 +18,8 @@ export default function Chatbot () {
 
     return (
         <>
-            <img onClick={handleClose} className={styles.chatIcon} src="/img/chatbot/Icon chat.svg" alt="" />
-            <Dialog  className={styles.popupContainer} open={open}>
+            <img onClick={handleClose}  className={styles.chatIcon} src="/img/chatbot/Icon chat.svg" alt="" />
+            <Dialog  className={styles.popupContainer} onClose={handleClose} open={open}>
                <div className={styles.popup}>
                     <div className={styles.popupMenu}>
                         <img src="/img/logo/Simbolo.svg" alt="Logo serviços já" />

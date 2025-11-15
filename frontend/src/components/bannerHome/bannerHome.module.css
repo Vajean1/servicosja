@@ -63,9 +63,29 @@
     
 }
 
-@media screen and (max-width:1280px) {
+@media screen and (max-width:1100px) {
     .imgUser {
-    width: 80%;
+    width: 100%;
 }
+
+.txtContainer h2{
+    font-size: 32px;
+}
+
+.txtContainer p{
+    font-size: 14px;
+}
+}
+
+@media screen and (max-width:780px) {
+    .txtContainer{
+        width: 100%;
+        align-items: center;
+        text-align: center;
+        padding-left:0px;
+    }
+    .imgContainer{
+        display: none;
+    }
 }
 

@@ -13,6 +13,32 @@
     transition: 0.8s;
     cursor: pointer;
     position: relative;
+    background-color: var(--blue);
+    overflow: hidden
+}
+
+.loginBoxUser::before {
+    content: ""; /* ESSENCIAL */
+    position: absolute; /* ESSENCIAL */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(23, 0, 173, 0.5);
+    z-index: 1; 
+    
+}
+
+.loginBoxProvider::before {
+    content: ""; /* ESSENCIAL */
+    position: absolute; /* ESSENCIAL */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 67, 46, 0.5);
+    z-index: 1; 
+    
 }
 
 .loginBoxProvider{
@@ -28,36 +54,34 @@
 
 .loginBoxProvider h3{
     font-family: var(--font-bold);
-    font-size: 40px;
-    color: var(--white);
+    font-size: 60px;
+    color: #d4d7d9;
+    text-shadow: 4px 4px 8px #434242;
     margin: 6px 55px;
-    position: absolute;
-    top: 30px;
-    left: 10px;
-    background-color: var(--orange);
-    padding: 35px;
-    border-radius: 120px;
-    box-shadow: 4px 4px 8px #5e5c5c;
+    position: relative;
+    top: 50%;
+    transform: translate-x(-50% );
+    z-index: 5;
     display: flex;
     align-items: center;
     gap: 20px;
+    right: -15%;
 }
 
 .loginBoxUser h3{
     font-family: var(--font-bold);
-    font-size: 40px;
-    color: var(--white);
+    font-size: 60px;
+    color: #d4d7d9;
+    text-shadow: 4px 4px 8px #434242;
     margin: 6px 55px;
-    position: absolute;
-    bottom: 30px;
-    right: 10px;
-    background-color: var(--blue);
-    padding: 35px 65px;
-    border-radius: 120px;
-    box-shadow: 4px 4px 8px #313030;
+    position: relative;
+    top: 50%;
+    transform: translate-x(-50% );
+    z-index: 5;
     display: flex;
     align-items: center;
     gap: 20px;
+     left:25%;
 }
 
 
@@ -66,7 +90,46 @@
     transition: 0.8s;
 }
 
+
 .loginBoxProvider:hover{
     width: 80%;
     transition: 0.8s;
 }
+
+@media screen and (max-width:1200px) {
+    .loginBoxUser{
+        background-position: center;
+       width: 100%;
+    }
+     .loginBoxProvider{
+        background-position: center;
+         width: 100%;
+    }
+
+     .loginBoxUser h3{
+        font-size: 35px;
+        left: 15%;
+    }
+
+      .loginBoxProvider h3{
+        font-size: 35px;
+        left: 10%;
+    }
+
+    .loginContainer{
+    flex-direction: column;
+    align-items: center;
+    }
+
+   .loginBoxUser:hover{
+    width: 100%;
+}
+
+
+.loginBoxProvider:hover{
+    width: 100%;
+    
+}
+
+}
+

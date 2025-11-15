@@ -1,0 +1,59 @@
+.userRegistrationContainer{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    border-top: 3px solid var(--orange);
+}
+
+.registrationForm{
+    width: 50%;
+    flex-direction: column;
+    text-align: left;
+    justify-content: left;
+    align-items: left;
+    padding: 40px 80px;
+    font-family: var(--font);
+}
+
+.registrationForm h2{
+    font-size: 32px;
+    color: var(--blue);
+}
+
+.registrationForm h5{
+    font-size: 18px;
+    color: var(--orange);
+    font-size: 24px;
+    
+}
+
+.registrationForm form{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 20px;
+    border: none;
+}
+.input50{
+    display: flex;
+    width: 100%;
+    gap: 20px;
+    justify-content: space-between;
+}
+
+.input50 input{
+    width: 50%;
+}
+
+.registrationImage{
+    width: 50%; 
+    height: 800px;
+    border-radius: 25px;
+    padding: 25px;
+}
+.registrationImage img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+     border-radius: 25px;
+}

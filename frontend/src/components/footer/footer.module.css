@@ -120,3 +120,31 @@
     color: var(--white);
     font-size: 14px;
 }
+
+@media screen and (max-width:1000px) {
+    .footerMap{
+        display: none;
+    }
+}
+
+@media screen and (max-width:800px) {
+    .contacts{
+        display: none;
+    }
+
+    .infosContainer{
+        justify-content: end;
+    }
+
+    .terms{
+        display: none;
+    }
+
+    .logoContainer {
+    width: 250px;
+}
+
+    .logoContainer img{
+        width: 230px;
+    }
+}

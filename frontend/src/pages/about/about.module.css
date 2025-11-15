@@ -86,6 +86,7 @@
 
 .modalContainer{
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     width: 70%;
     justify-content: space-between;
@@ -95,6 +96,7 @@
 .modalContent{
     display: flex;
     flex-direction: column;
+    width: 25%;
     gap:10px;
     text-align: center;
     align-items: center;
@@ -194,4 +196,45 @@
     text-align: center;
     font-size: 24px;
     color: var(--blue);
+}
+
+/* responsive*/
+
+@media (max-width: 1300px) {
+   .modalContent{
+    width: 40%;
+    
+   }
+ .teambox{
+    width: 33.3%;
+   }
+
+   .aboutBanner img{
+    width: 100%;
+    margin: 0;
+   }
+}
+  
+
+
+@media (max-width: 780px) {
+
+  
+   .modalContent{
+    width: 100%;
+    margin: 0;
+   }
+
+   .modalContent img{
+    width: 50%;
+   }
+
+    .teambox{
+    width: 50%;
+   }
+
+   .journeyContainer p{
+    font-size: 16px;
+   }
+
 }

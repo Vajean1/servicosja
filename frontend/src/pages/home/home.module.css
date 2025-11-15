@@ -49,6 +49,7 @@
 }
 
 .BoxSearched{
+    width: 20%;
     padding:30px 20px 20px 20px;
     border: 2px solid var(--orange);
     border-radius: 12px;
@@ -200,9 +201,9 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    height: 500px;
     align-items: center;
     z-index: 1000;
+    padding: 30px;
 }
 
 .commentsContainer h4{
@@ -267,9 +268,11 @@
     background-color: var(--orange);
     width: 100%;
     display: flex;
+    flex-wrap: wrap ;
     flex-direction: column;
     align-items: center;
     padding-bottom: 90px;
+    justify-content: center;
 }
 
 .contactContainer h4{
@@ -337,7 +340,7 @@ form button{
     background-color: #fff;
     padding: 15px;
     padding-top: 40px;
-
+    margin-top: 20px;
 }
 
 .contactSocialBox{
@@ -404,6 +407,7 @@ form button{
 .tipsContainer{
     width: 100%;
     display: flex;
+
     flex-direction: column;
     align-items: center;
     padding: 50px 0 100px 0;
@@ -419,6 +423,7 @@ form button{
 
 .tipsContent{
     display: flex;
+    flex-wrap: wrap;
     width: 90%;
     gap: 60px;
     justify-content: center;
@@ -430,7 +435,7 @@ form button{
     display: flex;
     flex-direction: column;
     gap: 15px;
-    width:33.3% ;
+    width:30% ;
     cursor: pointer;
     border-radius: 12px;
     box-shadow: 0px 2px 2px #4a4a4a ;
@@ -448,3 +453,96 @@ form button{
     font-size: 14px;
 }
 
+/* Responsive */
+
+@media screen and (max-width:1400px ) {
+    .ContainerBoxSearched{
+    width: 100%;  
+    flex-wrap: wrap;
+}
+
+.contactContent{
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+    margin: auto;
+}
+
+.contactSocial{
+    width: 40%;
+}
+
+.bannerRota{
+    padding: 20px;
+    width: 100%;
+}
+}
+
+@media screen and (max-width:1150px ) {
+    .BoxSearched{
+    width: 45%;
+    }
+
+    .sponsoredContainer{
+        width: 90%;
+    }
+
+    .commentsContent{
+        width: 90%;
+    }
+}
+
+@media screen and (max-width:786px ) {
+    .BoxSearched{
+    width: 45%;
+    }
+
+    .ContainerBoxSearched{
+        width: 80%;
+    }
+
+    .BoxSearched{
+        width: 100%;
+    }
+
+    .commentsContainer{
+        width: 100%;
+        text-align: center;
+    }
+
+    .sponsoredContainer{
+        width: 65%;
+    }
+
+    .commentsContent{
+        width: 100%;
+    }
+
+    .comentsBox{
+       width: 400px;
+
+    }
+
+    .contactContainer{
+        padding: 20px;
+    }
+
+    .contactContent form{
+        width: 100%;
+        margin: 0;
+    }
+
+    .contactContent{
+    width: 90%;
+    }
+
+    .contactSocial{
+        width: 100%;
+       
+    }
+
+    .tipsBox{
+        width: 100%;
+    }
+
+}

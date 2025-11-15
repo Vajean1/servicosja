@@ -8,6 +8,8 @@ import Services from './pages/services/services.jsx'
 import Login from './pages/login/login.jsx'
 import Plans from './pages/plans/plans.jsx'
 import About from './pages/about/about.jsx'
+import UserRegistration from './pages/userRegistration/userRegistration.jsx'
+import ProviderRegistration from './pages/providerRegistration/providerRegistration.jsx'
 
 const pages = createBrowserRouter([
   {
@@ -19,6 +21,8 @@ const pages = createBrowserRouter([
       { path: '/login' , element: <Login/> },
       { path: '/plans' , element: <Plans/> },
       { path: '/about' , element: <About/> },
+      { path: '/userRegistration' , element: <UserRegistration/> },
+      { path: '/providerRegistration' , element: <ProviderRegistration/> },
     ]
   }
 ])
