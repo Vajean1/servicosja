@@ -17,13 +17,25 @@
     width: 100%;
     padding: 30px;
     background-color: #fcfcfc;
+    color: #767474;
     position: absolute;
-    top:140px;
+    top:160px;
     border-top: 2px solid var(--orange);
     z-index: 5;
     font-family: var(--font);
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 25px;
     justify-content: space-around;
+}
+
+.menuFilter a{
+    width: 33%;
+    margin-bottom: 15px;
+    text-decoration: none;
+    text-align: left;
+    color: var(--blue);
 }
 
 .servicesMenu a{
@@ -137,3 +149,4 @@
     align-items: center;
     justify-content: center;
 }
+
