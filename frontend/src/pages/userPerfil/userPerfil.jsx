@@ -1,11 +1,11 @@
 import {useState} from 'react';
 
-import styles from './providerDatails.module.css';
+import styles from './userPerfil.module.css';
 import {FaUserCircle} from 'react-icons/fa';
 import ProviderBox from '../../components/ProviderBox/ProviderBox';
 import ProviderContactPopup from '../../components/providerContactPopup/providerContactPopup';
 
-export default function ProviderDatails () {
+export default function UserPerfil () {
 
        const [openProvider, setOpenProvider] = useState(false);
     

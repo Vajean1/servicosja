@@ -7,7 +7,7 @@ export default function BannerHome () {
                 <div className={styles.txtContainer}>
                     <h2>Encontre  o <br/>Profissional Certo, <i>JÁ!</i></h2>
                     <p>Conectamos você aos melhores especialistas da sua<br/> região ,  com agilidade e confiança.</p>
-                    <a href="/services" className={styles.btnBanner}>Ver Serviços</a>
+                    <a href="/services" data-aos="zoom-in" className={styles.btnBanner}>Ver Serviços</a>
                 </div>
                 <div className={styles.imgContainer}>
                     <img className={styles.imgUser} src="/img/banner/bannerHome.png" alt="serviços em todo brasil" />

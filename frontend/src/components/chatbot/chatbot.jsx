@@ -12,7 +12,7 @@ export default function Chatbot () {
     const [open, setOpen] = useState(false);
 
     const handleClose = () => {
-        // Lógica para fechar o popup
+        
         setOpen(!open);
     }   
 
@@ -33,6 +33,8 @@ export default function Chatbot () {
                         <div className={styles.messageBot}>
                             <p>Olá! Eu sou o assistente virtual do Serviços Já. Como posso ajudar você hoje?</p>
                         </div>
+
+                     
                     </div>
 
                     <div className={styles.popupFooter}>

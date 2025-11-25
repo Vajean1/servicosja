@@ -172,15 +172,8 @@ export default function Services () {
               
                 <div className={styles.servicesMenu}>
                     {menuData.map((item) => (
-                        <div 
-                            key={item.id} 
-                            className={styles.menuItem}
-                            onMouseEnter={() => setActiveMenuId(item.id)}
-                        
-                        >
-                            <a id={item.id} href="#">
-                                {item.label}
-                            </a>
+                        <div   key={item.id}  className={styles.menuItem} onMouseEnter={() => setActiveMenuId(item.id)} >
+                            <a id={item.id} href="#">{item.label} </a>
                         </div>
                     ))}
                 </div>
@@ -188,11 +181,8 @@ export default function Services () {
                
                 {activeMenuItem && (
                     <div className={styles.menuFilter}>
-                        {activeMenuItem.subItems.map((subItem) => (
-                            <a 
-                                key={`${activeMenuItem.id}-${subItem}`} 
-                                href="#"
-                            >
+                         {activeMenuItem.subItems.map((subItem) => (
+                            <a  key={`${activeMenuItem.id}-${subItem}`} href="#" >
                                 {subItem}
                             </a>
                         ))}

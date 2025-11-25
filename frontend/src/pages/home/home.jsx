@@ -30,25 +30,25 @@ export default function Home () {
                 <div className={styles.lineSearched}></div>
                 <h3>Nossos Serviços<br/>Mais Buscados</h3>
                 <div className={styles.ContainerBoxSearched}>
-                    <div className={styles.BoxSearched}>
+                    <div data-aos="zoom-in" className={styles.BoxSearched}>
                         <VscTools className={styles.iconSearched} />
                         <h4 className={styles.BoxSearchedh4}>Manutenção</h4>
                         <p className={styles.BoxSearchedp}>Soluções rápidas e confiáveis para sua casa</p>
                     </div>
 
-                    <div className={styles.BoxSearched}>
+                    <div data-aos="zoom-in" className={styles.BoxSearched}>
                         <FaLaptop className={styles.iconSearched}/>
                         <h4 className={styles.BoxSearchedh4}>Tecnologia</h4>
                         <p className={styles.BoxSearchedp}>Soluções digitais para o seu negócio crescer</p>
                     </div>
 
-                    <div className={styles.BoxSearched}>
+                    <div data-aos="zoom-in" className={styles.BoxSearched}>
                         <IoHammerOutline className={styles.iconSearched}/>
                         <h4 className={styles.BoxSearchedh4}>Construção</h4>
                         <p className={styles.BoxSearchedp}>Reformas com qualidade e prazo garantido</p>
                     </div>
 
-                    <div className={styles.BoxSearched}>
+                    <div data-aos="zoom-in" className={styles.BoxSearched}>
                         <HiOutlineTruck className={styles.iconSearched}/>
                         <h4 className={styles.BoxSearchedh4}>Mudança</h4>
                         <p className={styles.BoxSearchedp}>Transporte seguro e ágil em todo o Brasil</p>

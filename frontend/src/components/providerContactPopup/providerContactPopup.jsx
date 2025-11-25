@@ -1,12 +1,12 @@
-import { useNavigate } from 'react-router';
-import styles from './loginUserPopup.module.css'
+
+import styles from './providerContactPopup.module.css'
 import {Dialog} from '@mui/material'
 import { IoExitOutline } from "react-icons/io5";
 
 
-export default function LoginUserPopup ({open, close}) {
+export default function ProviderContactPopup ({open, close}) {
 
-   const navigate = useNavigate();
+   
     return (
         <>
             <Dialog  className={styles.popupContainer} onClose={close} open={open}>
@@ -26,7 +26,7 @@ export default function LoginUserPopup ({open, close}) {
                         <form>
                             <input type="email" placeholder='Email' />
                             <input type="password" placeholder='Senha' />
-                            <button onClick={() => navigate('/userPerfil')} type='submit'>Entrar</button>
+                            <button type='submit'>Entrar</button>
                             <a href="#">Esqueceu a senha?</a>
                         </form>
                             
