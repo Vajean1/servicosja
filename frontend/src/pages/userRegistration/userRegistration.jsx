@@ -3,23 +3,30 @@ import { IMaskInput } from 'react-imask';
 import styles from './Registration.module.css';
 
 export default function UserRegistration() {
-    // 1. Estados para Inputs Mascarados
-    const [cpf, setCpf] = useState('');
-    const [dataNascimento, setDataNascimento] = useState('');
-    const [cep, setCep] = useState('');
-    const [telefone, setTelefone] = useState('');
-    
-    // 2. Estado para Select
-    const [sexo, setSexo] = useState('');
-    
-    // 3. Estados para campos não-mascarados (Exemplo)
-    const [nome, setNome] = useState('');
-    const [endereco, setEndereco] = useState('');
-    
-    // Função de handler genérica para selects
-    const handleSelectChange = (e) => {
-        setSexo(e.target.value);
+    // 1. Estado único para todos os dados do formulário
+    const [formDataUser, setFormDataUser] = useState({});
+
+    // Função de handler para Inputs regulares e Selects
+    const handleChangeSetDataUser = (e) => {
+        const { name, value } = e.target;
+        setFormDataUser(prevData => ({
+            ...prevData,
+            [name]: value
+        }));
     };
+
+    // Função de handler para IMaskInput (usa onAccept)
+    const handleMaskedInputChange = (value, mask, e) => {
+        
+        const name = e.target.name; 
+        
+        setFormDataUser(prevData => ({
+            ...prevData,
+            [name]: value
+        }));
+    };
+
+    console.log(formDataUser);
 
     return (
         <div className={styles.userRegistrationContainer}>
@@ -27,41 +34,46 @@ export default function UserRegistration() {
                 <h5>A um click da solução do seu problema.</h5>
                 <h2>CADASTRE-SE!</h2>
                 <form>
+                   
                     <input 
                         type="text" 
                         placeholder="Nome Completo" 
-                        value={nome}
-                        onChange={(e) => setNome(e.target.value)}
+                        name='nome' 
+                        onChange={handleChangeSetDataUser} 
+                        value={formDataUser.nome || ''} 
                         required 
                     />
                     
                     <div className={styles.input50}>
-                        {/* CPF: 000.000.000-00 */}
+                       
                         <IMaskInput
                             mask="000.000.000-00"
-                            value={cpf}
-                            onAccept={(value) => setCpf(value)}
+                            name='cpf' // Adicionado name
+                            value={formDataUser.cpf || ''}
+                            onAccept={handleMaskedInputChange} 
                             placeholder='Cpf'
                             type="text" 
                             required 
                         /> 
                         
-                        {/* DATA DE NASCIMENTO: 00/00/0000 */}
+                       
                         <IMaskInput
                             mask="00/00/0000"
-                            value={dataNascimento}
-                            onAccept={(value) => setDataNascimento(value)}
+                            name='dataNascimento'
+                            value={formDataUser.dataNascimento || ''}
+                            onAccept={handleMaskedInputChange} 
                             placeholder='Data de nascimento'
                             type="text"
                             required 
                         /> 
                     </div>
                     
-                    {/* SELETOR DE SEXO (Substituindo o input de texto) */}
+                   
                     <select 
                         id="sexo" 
-                        value={sexo} 
-                        onChange={handleSelectChange}
+                        name='sexo' 
+                        value={formDataUser.sexo || ''} 
+                        onChange={handleChangeSetDataUser} 
                         required
                     >
                         <option value="" disabled hidden>Sexo</option>
@@ -70,37 +82,44 @@ export default function UserRegistration() {
                         <option value="nao-informado">Prefiro não informar</option>
                     </select>
                     
+                    {/* ENDEREÇO */}
                     <input 
                         type="text" 
                         placeholder='Endereço' 
-                        value={endereco}
-                        onChange={(e) => setEndereco(e.target.value)}
+                        name='endereco' 
+                        value={formDataUser.endereco || ''} 
+                        onChange={handleChangeSetDataUser} 
+                        required
                     /> 
                     
-                    {/* CEP: 00000-000 */}
+                    {/* CEP: 00000-000 (IMaskInput) */}
                     <IMaskInput
                         mask="00000-000"
-                        value={cep}
-                        onAccept={(value) => setCep(value)}
+                        name='cep' // Adicionado name
+                        value={formDataUser.cep || ''} // Valor controlado
+                        onAccept={handleMaskedInputChange} // Usando onAccept
                         placeholder='Cep'
                         type="text" 
                         required 
                     /> 
                     
-                    {/* TELEFONE: (00) 00000-0000 (Máscara Dinâmica) */}
+                    {/* TELEFONE: (00) 00000-0000 (IMaskInput Dinâmico) */}
                     <IMaskInput
                         mask={['(00) 0000-0000', '(00) 00000-0000']}
-                        value={telefone}
-                        onAccept={(value) => setTelefone(value)}
+                        name='telefone' // Adicionado name
+                        value={formDataUser.telefone || ''} // Valor controlado
+                        onAccept={handleMaskedInputChange} // Usando onAccept
                         placeholder='Telefone'
                         type="tel" 
                         required 
                     /> 
                     
-                    <input type="email" placeholder="Email" required />
-                    <input type="email" placeholder="Confirme seu Email" required />
-                    <input type="password" placeholder="Senha" required />
-                    <input type="password" placeholder="Confirme a Senha" required />
+                    {/* CAMPOS DE LOGIN */}
+                    <input type="email" placeholder="Email" name='email' onChange={handleChangeSetDataUser} value={formDataUser.email || ''} required />
+                    <input type="email" placeholder="Confirme seu Email" name='confirmEmail' onChange={handleChangeSetDataUser} value={formDataUser.confirmEmail || ''} required />
+                    <input type="password" placeholder="Senha" name='password' onChange={handleChangeSetDataUser} value={formDataUser.password || ''} required />
+                    <input type="password" placeholder="Confirme a Senha" name='confirmPassword' onChange={handleChangeSetDataUser} value={formDataUser.confirmPassword || ''} required />
+                    
                     <button type="submit">Cadastrar</button>
                 </form>
             </div>
