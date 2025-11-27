@@ -4,14 +4,14 @@ import styles from './chatbot.module.css';
 const WEBHOOK_URL = "https://mathewsand.app.n8n.cloud/webhook/d985422e-3bc3-46d8-8377-9c346c23046d";
 
 const RobotIcon = () => (
-   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-      <rect x="12" y="20" width="40" height="28" rx="6" ry="6" fill="white"/>
-      <circle cx="24" cy="34" r="4" fill="#ff6b35"/>
-      <circle cx="40" cy="34" r="4" fill="#ff6b35"/>
-      <rect x="26" y="48" width="12" height="4" rx="2" fill="white"/>
-      <rect x="30" y="12" width="4" height="8" rx="2" fill="white"/>
-      <circle cx="32" cy="8" r="3" fill="#ff6b35"/>
-    </svg>
+   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+      <rect x="12" y="20" width="40" height="28" rx="6" ry="6" fill="white"/>
+      <circle cx="24" cy="34" r="4" fill="#ff6b35"/>
+      <circle cx="40" cy="34" r="4" fill="#ff6b35"/>
+      <rect x="26" y="48" width="12" height="4" rx="2" fill="white"/>
+      <rect x="30" y="12" width="4" height="8" rx="2" fill="white"/>
+      <circle cx="32" cy="8" r="3" fill="#ff6b35"/>
+    </svg>
 );
 
 const AttachmentIcon = () => (
@@ -50,12 +50,32 @@ const Chatbot = () => {
     
     const messagesEndRef = useRef(null);
     const fileInputRef = useRef(null);
+    const chatbotRef = useRef(null); // Ref adicionada para o componente principal
 
     useEffect(() => {
         if (messagesEndRef.current) {
             messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
         }
     }, [messages, isTyping]);
+    
+    // NOVO useEffect para gerenciar o clique fora
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            // Se o chat estiver aberto E o clique não for dentro do componente chatbot
+            if (isOpen && chatbotRef.current && !chatbotRef.current.contains(event.target)) {
+                setIsOpen(false);
+            }
+        };
+
+        // Adiciona o listener
+        document.addEventListener('mousedown', handleClickOutside);
+        
+        // Remove o listener ao desmontar o componente
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isOpen]);
+
 
     const sendMessage = useCallback(async (text = null, file = null) => {
         const message = text || inputValue.trim();
@@ -130,7 +150,7 @@ const Chatbot = () => {
     };
 
     return (
-        <div className={styles.chatbot}>
+        <div className={styles.chatbot} ref={chatbotRef}>
             <button 
                 id="abrirChat" 
                 className={styles.abrirChat} 
