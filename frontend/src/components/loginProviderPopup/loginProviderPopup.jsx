@@ -43,7 +43,7 @@ export default function LoginProviderPopup ({open, close}) {
                         <form>
                             <input onChange={handleChangeLogin} name='email' type="email" placeholder='Email' />
                             <input onChange={handleChangeLogin} name='password' type="password" placeholder='Senha' />
-                            <button onClick={()=> navigate('/userPerfil')} type='submit'>Entrar</button>
+                            <button type='submit'>Entrar</button>
                             <a href="#">Esqueceu a senha?</a>
                         </form>
                             
