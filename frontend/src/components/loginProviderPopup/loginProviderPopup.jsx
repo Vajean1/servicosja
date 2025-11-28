@@ -1,11 +1,27 @@
 
 import styles from './loginUserPopup.module.css'
 import {Dialog} from '@mui/material'
+import { useState } from 'react';
 import { IoExitOutline } from "react-icons/io5";
 
 
 export default function LoginProviderPopup ({open, close}) {
 
+
+        const [providerLogin, setProviderLogin] = useState({});
+    
+        const handleChangeLogin = (e) => {
+            const { name, value } = e.target;
+            
+            const newValue = name === 'email' ? value.toLowerCase() : value;
+    
+            setProviderLogin({
+                ...providerLogin,
+                [name]: newValue 
+            });
+        }
+
+        console.log(providerLogin);
    
     return (
         <>
@@ -24,8 +40,8 @@ export default function LoginProviderPopup ({open, close}) {
                         <p>Entre com email e senha para ter acesso a sua conta</p>
 
                         <form>
-                            <input type="email" placeholder='Email' />
-                            <input type="password" placeholder='Senha' />
+                            <input onChange={handleChangeLogin} name='email' type="email" placeholder='Email' />
+                            <input onChange={handleChangeLogin} name='password' type="password" placeholder='Senha' />
                             <button type='submit'>Entrar</button>
                             <a href="#">Esqueceu a senha?</a>
                         </form>

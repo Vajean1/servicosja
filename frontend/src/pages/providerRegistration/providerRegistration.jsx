@@ -5,7 +5,7 @@ import styles from './Registration.module.css';
 export default function ProviderRegistration() {
     const [categoria, setCategoria] = useState('');
     const [formDataProvider, setFormDataProvider] = useState({});
-
+ 
     const caseSensitiveFields = ['password', 'confirmPassword'];
 
     const handleChangeSetDataProvider = (e) => {
