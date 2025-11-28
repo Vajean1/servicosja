@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ProviderBox from '../../components/ProviderBox/ProviderBox';
+import ProviderBox from '../../components/providerBox/providerBox';
 import styles from './services.module.css'
 import { FaSearch ,FaStar } from "react-icons/fa";
 

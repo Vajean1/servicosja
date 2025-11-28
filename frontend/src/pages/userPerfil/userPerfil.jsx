@@ -2,7 +2,7 @@ import {useState} from 'react';
 
 import styles from './userPerfil.module.css';
 import {FaUserCircle} from 'react-icons/fa';
-import ProviderBox from '../../components/ProviderBox/ProviderBox';
+import ProviderBox from '../../components/providerBox/providerBox';
 import ProviderContactPopup from '../../components/providerContactPopup/providerContactPopup';
 
 export default function UserPerfil () {
