@@ -3,11 +3,12 @@ import styles from './loginUserPopup.module.css'
 import {Dialog} from '@mui/material'
 import { useState } from 'react';
 import { IoExitOutline } from "react-icons/io5";
+import { useNavigate } from 'react-router';
 
 
 export default function LoginProviderPopup ({open, close}) {
 
-
+        const navigate = useNavigate();
         const [providerLogin, setProviderLogin] = useState({});
     
         const handleChangeLogin = (e) => {
@@ -42,14 +43,14 @@ export default function LoginProviderPopup ({open, close}) {
                         <form>
                             <input onChange={handleChangeLogin} name='email' type="email" placeholder='Email' />
                             <input onChange={handleChangeLogin} name='password' type="password" placeholder='Senha' />
-                            <button type='submit'>Entrar</button>
+                            <button onClick={()=> navigate('/userPerfil')} type='submit'>Entrar</button>
                             <a href="#">Esqueceu a senha?</a>
                         </form>
                             
                     </div>
 
                     <div className={styles.popupFooter}>
-                        <a href="/providerRegistration"><button>Não Tem Uma Conta? Cadastre-se</button></a>
+                       <button onClick={() => navigate("/providerRegistration")}>Não Tem Uma Conta? Cadastre-se</button>
                     </div>
                </div>
 

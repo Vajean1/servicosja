@@ -17,6 +17,7 @@
 }
 
 .popupMenu{
+    
     display:flex;
     padding: 10px 10px ;
     gap: 15px;
@@ -34,7 +35,7 @@
 }
 
 .popupBody{
-    height: 300px;
+    height: 350px;
     background-color: white;
     display: flex;
     flex-direction: column;

@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { IMaskInput } from 'react-imask';
 import styles from './Registration.module.css';
 
 export default function UserRegistration() {
     const [formDataUser, setFormDataUser] = useState({});
+    
 
     const caseSensitiveFields = ['password', 'confirmPassword'];
 
@@ -30,7 +31,7 @@ export default function UserRegistration() {
         }));
     };
 
-    console.log(formDataUser);
+   
 
     return (
         <div className={styles.userRegistrationContainer}>

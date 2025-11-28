@@ -73,7 +73,7 @@
   position: absolute;
   bottom: 85px;
   right: 0;
-  width: 420px;
+  width: 360px;
   height: 480px;
   background: #fff;
   border-radius: 16px;
@@ -201,4 +201,12 @@
 
 .enviarChat:hover {
   background-color: #002b80;
+}
+
+@media screen and (max-width: 780px) {
+  .abrirChat {
+    height: 65px;
+    width: 65px;
+  }
+  
 }

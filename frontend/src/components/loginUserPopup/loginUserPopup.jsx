@@ -9,6 +9,8 @@ export default function LoginUserPopup ({open, close}) {
 
     const [userLogin, setUserLogin] = useState({});
 
+
+
     const handleChangeLogin = (e) => {
         const { name, value } = e.target;
         
@@ -55,7 +57,7 @@ export default function LoginUserPopup ({open, close}) {
                             />
                         
                             <button 
-                                onClick={() => navigate('/userPerfil')} 
+                             
                                 type='submit'
                             >
                                 Entrar
@@ -66,7 +68,7 @@ export default function LoginUserPopup ({open, close}) {
                     </div>
 
                     <div className={styles.popupFooter}>
-                        <a href="/userRegistration"><button>Não Tem Uma Conta? Cadastre-se</button></a>
+                       <button onClick={() => navigate("/userRegistration")}>Não Tem Uma Conta? Cadastre-se</button>
                     </div>
                </div>
 

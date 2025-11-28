@@ -1,113 +1,179 @@
-import {useState} from 'react';
+import React, { useState } from 'react';
+import styles from './userPerfil.module.css'; 
 
-import styles from './userPerfil.module.css';
-import {FaUserCircle} from 'react-icons/fa';
-import ProviderBox from '../../components/providerBox/providerBox';
-import ProviderContactPopup from '../../components/providerContactPopup/providerContactPopup';
+const mockUserData = {
+    nome: "Eduardo Jesen",
+    cargo: "Designer Gráfico",
+    dataNasc: "17/09/1997",
+    genero: "Masculino",
+    telefone: "(81) 99966-6600",
+    dataRegistro: "28/11/2025",
+    email: "eduardojesen@example.com",
+    linkedIn: "user2025",
+    perfilImg: "../assets/img/perfil.jpg", 
+    mensagens: [
+        { nome: "João Victor", data: "28/11" },
+        { nome: "Maria Silva", data: "27/11" },
+        { nome: "Pedro Lima", data: "26/11" },
+    ],
+    galeria: [
+        "../assets/img/imagemServico1.png",
+        "../assets/img/imagemServico2.png",
+        "../assets/img/imagemServico3.png",
+        "../assets/img/imagemServico4.png",
+    ],
+    avaliacoes: [
+        { estrelas: 5, percentual: 82 },
+        { estrelas: 4, percentual: 10 },
+        { estrelas: 3, percentual: 4 },
+        { estrelas: 2, percentual: 2 },
+        { estrelas: 1, percentual: 2 },
+    ]
+};
 
-export default function UserPerfil () {
+const TABS = {
+    DASHBOARD: 'Dashboard',
+    MESSAGES: 'Mensagens'
+};
 
-       const [openProvider, setOpenProvider] = useState(false);
+export default function UserPerfil({ userData = mockUserData }) {
+    const [activeTab, setActiveTab] = useState(TABS.DASHBOARD);
     
-        const handleCloseProvider = () => {
-            setOpenProvider(!openProvider);
-        }   
-
-        const handleOpenProvider = () => {
-            setOpenProvider(true);
-        }
+    // O objeto 'styles' agora contém todas as suas classes CSS
     
-    return(
-        <div className={styles.providerDatailsContainer}>
-            <div className={styles.providerDatailsHome}>
-                <div className={styles.providerDatailsImage}>
-                    <img src="/img/exemples/Group 8.png" alt="Imagem do Prestador" />
-                </div>
+    // Função auxiliar para combinar classes (útil para tabs)
+    const getTabClassName = (tab) => {
+        // Combina a classe base (styles.tab) com a classe 'active' se for a aba ativa
+        return `${styles.tab} ${activeTab === tab ? styles.active : ''}`;
+    };
 
-                <div className={styles.providerDatailsInfo}>
-                    <h2>Nome do Prestador</h2>
-                    <h5>Especialidade</h5>
-                    <div className={styles.line}></div>
-                    <p>Descrição detalhada do prestador de serviço, suas qualificações, experiência e outras informações relevantes que possam ajudar o cliente a tomar uma decisão informada.</p>
+    return (
+        <div className={styles.dashboardPage}>
+            {/* --- Cabeçalho (Header) --- */}
+            <header className={styles.header}>
+                <div className={styles.perfil}>
+                    <img src={userData.perfilImg} alt="perfil" />
+                    <div>
+                        <h2>{userData.nome}</h2>
+                        <p>{userData.cargo}</p>
+                    </div>
                 </div>
+            </header>
+
+            {/* --- Abas de Navegação (Tabs) --- */}
+            <div className={styles.tabs}>
+                <a 
+                    href="#" 
+                    onClick={(e) => { e.preventDefault(); setActiveTab(TABS.DASHBOARD); }}
+                    // Uso de template literal para classes condicionais
+                    className={getTabClassName(TABS.DASHBOARD)} 
+                >
+                    {TABS.DASHBOARD}
+                </a>
+                <a 
+                    href="#" 
+                    onClick={(e) => { e.preventDefault(); setActiveTab(TABS.MESSAGES); }}
+                    className={getTabClassName(TABS.MESSAGES)}
+                >
+                    {TABS.MESSAGES}
+                </a>
             </div>
 
-            <div className={styles.requestService}>
-             <button onClick={handleOpenProvider} >Solicitar serviço</button>
-           </div>
+            {/* --- Conteúdo Principal (Container) --- */}
+            <div className={styles.container}>
 
-            <div className={styles.providerDatailsServices}>
-                <div className={styles.providerDatailsAvailableServices}>
-                    <div className={styles.providerAvailable}>
-                        <h3><FaUserCircle/>  4.6</h3>
-                        <div className={styles.stars}>
+                {/* --- Informações Pessoais (Descrição) --- */}
+                <div className={styles.box}>
+                    <h2>Informações Pessoais</h2>
+                    <div className={styles.descricaoGrid}>
+                        <span>Nome: {userData.nome}</span>
+                        <span>Data de Nasc: {userData.dataNasc}</span>
+                        <span>Gênero: {userData.genero}</span>
+                        <span>Telefone: {userData.telefone}</span>
+                        <span>Cargo: {userData.cargo}</span>
+                        <span>Data de Registro: {userData.dataRegistro}</span>
+                        <span>Email: {userData.email}</span>
+                        <span>LinkedIn: {userData.linkedIn}</span>
+                    </div>
+                </div>
 
-                            <div className={styles.status}>
-                                <h5>Exelente</h5>
+                {/* --- Mensagens e Calendário --- */}
+                <div className={styles.flex}>
+                    
+                    {/* Mensagens */}
+                    <div className={`${styles.box} ${styles.mensagens}`}> 
+                        <h2>Mensagens</h2>
+                        <table>
+                            <thead>
+                                <tr><th>Nome</th><th>Data</th></tr>
+                            </thead>
+                            <tbody>
+                                {userData.mensagens.map((msg, index) => (
+                                    <tr key={index}>
+                                        <td>{msg.nome}</td>
+                                        <td>{msg.data}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* Calendário */}
+                    <div className={`${styles.box} ${styles.calendario}`}>
+                        <h2>Calendário</h2>
+                        <div className={styles.calendarBox}>
+                            Novembro 2025
+                            <div className={styles.calendarGrid}>
+                                {Array.from({ length: 30 }, (_, i) => i + 1).map(day => (
+                                    <div key={day}>{day}</div>
+                                ))}
                             </div>
+                        </div>
+                    </div>
+                </div>
 
-                            <div className={styles.starFull}>
-                                ★★★★★
+                {/* --- Galeria de Fotos (Fotos) --- */}
+                <div className={styles.box}>
+                    <h2>Galeria de Fotos</h2>
+                    <div className={styles.fotosGrid}>
+                        {userData.galeria.map((src, index) => (
+                            <img key={index} src={src} alt={`Serviço ${index + 1}`} />
+                        ))}
+                    </div>
+                </div>
+
+                {/* --- Avaliações (Avaliações) --- */}
+                <div className={`${styles.box} ${styles.avaliacoesBox}`}>
+                    <h2>Avaliações</h2>
+
+                    {/* Gráfico de Linhas (SVG) */}
+                    <div className={styles.graficoLinhas}>
+                        <svg width="100%" height="150" viewBox="0 0 320 125">
+                            <polyline 
+                                points="10,120 60,80 110,90 160,40 210,70 260,30 310,50" 
+                                fill="none" 
+                                stroke="#1a06c9" 
+                                strokeWidth="3" 
+                            />
+                        </svg>
+                    </div>
+
+                    {/* Avaliações em 5 níveis */}
+                    <div className={styles.ratingsList}>
+                        {userData.avaliacoes.map((rating) => (
+                            <div key={rating.estrelas} className={styles.ratingRow}>
+                                <span>{rating.estrelas} ★</span>
+                                {/* Combinação de classe estática (styles.bar) e dinâmica (styles.bar5) */}
+                                <div 
+                                    className={`${styles.bar} ${styles[`bar${rating.estrelas}`]}`} 
+                                    style={{ width: `${rating.percentual}%` }}
+                                ></div>
+                                <span>{rating.percentual}%</span>
                             </div>
-                        </div>        
-                    </div >  
-
-                      <div className={styles.comments}>
-                            <div className={styles.commentUser}>
-                               <h5> <FaUserCircle/>  Muito profissional!</h5>
-
-                                <div className={styles.starFull}>
-                                ★★★★★
-                                 </div>
-                            </div>   
-
-                           
-                             <div className={styles.commentUser}>
-                               <h5> <FaUserCircle/>  pontual!</h5>
-
-                                <div className={styles.starFull}>
-                                ★★★★★
-                                 </div>
-                            </div>  
-
-                             <div className={styles.commentUser}>
-                               <h5> <FaUserCircle/>  Otimo profissional!</h5>
-
-                                <div className={styles.starFull}>
-                                ★★★★★
-                                 </div>
-                            </div>  
-
-                             <div className={styles.commentUser}>
-                               <h5> <FaUserCircle/>  Muito profissional!</h5>
-
-                                <div className={styles.starFull}>
-                                ★★★★★
-                                 </div>
-                            </div>   
-                        </div>     
-                </div>    
-
-                <div className={styles.providerDatailsGallery}>
-                    <div className={styles.imgGallery}><img src="/img/exemples/ex1.jpg" alt="Galeria do prestador" /></div>
-                    <div className={styles.imgGallery}><img src="/img/exemples/ex2.jpg" alt="Galeria do prestador" /></div>
-                    <div className={styles.imgGallery}><img src="/img/exemples/ex3.jpg" alt="Galeria do prestador" /></div>
-                    <div className={styles.imgGallery}><img src="/img/exemples/ex4.jpg" alt="Galeria do prestador" /></div>
-                    <div className={styles.imgGallery}><img src="/img/exemples/ex5.png" alt="Galeria do prestador" /></div>
-                    <div className={styles.imgGallery}><img src="/img/exemples/ex5.png" alt="Galeria do prestador" /></div>
+                        ))}
+                    </div>
                 </div>
             </div>
-
-           
-
-            <div className={styles.proviersSearch}>
-                <ProviderBox />
-                <ProviderBox />
-                <ProviderBox />
-
-            </div>
-
-            <ProviderContactPopup open={openProvider} close={handleCloseProvider} />
         </div>
-    )
+    );
 }

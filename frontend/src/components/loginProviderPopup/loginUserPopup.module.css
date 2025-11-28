@@ -1,5 +1,6 @@
 
 .popupContainer{
+   
 }
 
 .popup{
@@ -34,7 +35,7 @@
 }
 
 .popupBody{
-    height: 300px;
+    height: 350px;
     background-color: white;
     display: flex;
     flex-direction: column;

@@ -13,17 +13,21 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, A11y } from 'swiper/modules';
 
 import 'swiper/css';
+import { useNavigate } from 'react-router';
 
 
 
 
 export default function Home () {
+
+    const navigate = useNavigate();
     return(
         <main className={styles.homeContainer}>
            <BannerHome/>
 
            <div className={styles.bannerRota}>
-                <img src="/img/banner/bannerRota.jpeg" alt="banner rotas" />
+                <img src="/img/banner/bannerRota.png" alt="banner rotas" />
+                <button onClick={() => navigate('/about')}> Saiba Mais</button>
            </div>
 
            <section className={styles.searched}>

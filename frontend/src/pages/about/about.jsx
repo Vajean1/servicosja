@@ -167,6 +167,13 @@ export default function About () {
                         <p>Back-end</p>
                     </div>
 
+                    
+                    <div data-aos="zoom-out" className={styles.teambox}>
+                        <img src="/img/students/wildson.jpeg" alt="" />
+                        <h4>Wildson</h4>
+                        <p>Back-end</p>
+                    </div>
+
 
                      <div data-aos="zoom-out" className={styles.teambox}>
                         <img src="/img/students/pedrov.jpeg" alt="" />

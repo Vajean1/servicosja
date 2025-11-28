@@ -161,13 +161,17 @@
 
 @media screen and (max-width:830px) {
 
+    .servicesMenu{
+        display: none;
+    }
+
  .servicesFilter{
     display: none;
  }
 
  .providerContainer{
-    width: 100%;
-   
+    width: 80%;
+   margin: 0 auto;
  }
 
 }

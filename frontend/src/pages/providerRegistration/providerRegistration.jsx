@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { IMaskInput } from 'react-imask';
 import styles from './Registration.module.css';
 
@@ -29,8 +29,6 @@ export default function ProviderRegistration() {
             }));
         }
     };
-
-    console.log(formDataProvider);
 
     return (
         <div className={styles.userRegistrationContainer}>

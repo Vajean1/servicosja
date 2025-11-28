@@ -175,7 +175,7 @@ export default function Services () {
                         <div   key={item.id}  className={styles.menuItem} onMouseEnter={() => setActiveMenuId(item.id)} >
                             <a id={item.id} href="#">{item.label} </a>
                         </div>
-                    ))}
+                    ))} 
                 </div>
 
                
@@ -232,7 +232,7 @@ export default function Services () {
 
                 <section className={styles.providerContainer}>
                     {[...Array(18)].map((_, index) => (
-                        <ProviderBox key={index} />
+                        <ProviderBox name={"Aline Souza"} location={'Recife, Boa Vigem'} rating={4.9} resum={'Trancista. Especialista em tranças e penteados afro. Atendimento em domicílio.'} key={index} />
                     ))}
                 </section>
             </div>

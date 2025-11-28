@@ -142,10 +142,14 @@
     }
 
     .logoContainer {
-    width: 250px;
+    width: 200px;
 }
 
     .logoContainer img{
-        width: 230px;
+        width: 200px;
+    }
+
+    .social img{
+        display: none;
     }
 }

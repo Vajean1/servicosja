@@ -2,7 +2,7 @@ import styles from './providerBox.module.css'
 import { FaStar } from 'react-icons/fa'  
 import {useNavigate} from 'react-router-dom';
 
-export default function ProviderBox () {
+export default function ProviderBox ({name , location, resum, rating}) {
 
     const naviagtion = useNavigate();
 
@@ -11,13 +11,41 @@ export default function ProviderBox () {
         <div className={styles.providerBox} onClick={() => naviagtion('/providerDatails')}>
             <img src="/img/exemples/Group 8.png" alt="imagem usuario" />
             <div className={styles.providerInfos}>
-                <h3>Aline Souza</h3>
-                <p>Recife, Boa Vigem</p>
+                <h3>{name}</h3>
+                <p>{location}</p>
 
                 <div className={styles.providerResum}>
-                    <p>Trancista. Especialista em tranças e penteados afro. Atendimento em domicílio.</p>
+                    <p>{resum}</p>
                     <div className={styles.starSponsored}>
-                        <FaStar /><FaStar /><FaStar /><FaStar /><FaStar />
+                        {rating == 5 && (
+                            <>
+                                ★★★★★
+                            </>
+                        )}
+                           
+                        {rating >= 4 && rating < 5 && (
+                            <>
+                                ★★★★☆
+                            </>
+                            )}   
+
+                        {rating >= 3 && rating < 4 && (
+                            <>
+                                ★★★☆☆
+                            </>
+                            )}
+
+                        {rating >= 2 && rating < 3 && (
+                            <>
+                                ★★☆☆☆
+                            </>
+                            )}
+
+                        {rating >= 1 && rating < 2 && (
+                            <>
+                                ★☆☆☆☆
+                            </>
+                            )}            
                    </div>
                 </div>
             </div>

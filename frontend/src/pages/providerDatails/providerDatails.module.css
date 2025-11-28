@@ -1,10 +1,11 @@
+/* --- AJUSTES NA ESTRUTURA PRINCIPAL --- */
 .providerDatailsContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-   width: 70%;
-   margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    width: 70%;
+    margin: 0 auto;
 }
 
 .providerDatailsHome{
@@ -18,7 +19,6 @@
 
 .providerDatailsImage{
     width: 50%;
-    
 }
 
 .providerDatailsImage img{
@@ -51,14 +51,14 @@
     flex-wrap: wrap;
     width: 100%;
     margin-bottom: 100px;
-    align-items: top;
+    align-items: flex-start; /* Alinhamento corrigido */
     margin-top: 30px;
 }
 
 .providerDatailsAvailableServices{
     width: 50%;
     display: flex;
-   flex-direction: column;
+    flex-direction: column;
     justify-content: space-between;
     margin-top: 20px;
     gap: 20px;
@@ -94,20 +94,19 @@
 }
 
 .comments{
-   
     display: flex;
     flex-direction: column;
     overflow-y: auto;
     height: 300px;
     gap: 20px;
     width: 60%;
+    padding-right: 10px; /* Adiciona padding para evitar que o scrollbar toque o conteúdo */
 }
 
 .commentUser{
     background-color: #f9f9f9;
     width: 100%;
     display: flex;
-    padding: 0 20px;
     justify-content: space-between;
     padding: 20px;
     border-radius: 15px;
@@ -125,20 +124,25 @@
     align-items: center;
     gap: 15px;
     font-size: 15px;
-   
 }
 
+/* --- ESTILIZAÇÃO DA NOVA GALERIA INTERATIVA --- */
+
+/* 1. Ajuste o contêiner principal da galeria (era GRID, agora deve ser contêiner da nova galeria) */
 .providerDatailsGallery{
-    width: 50%;
-    border: 3px solid var(--orange);
+    width: 50%; /* Mantém a largura de 50% */
+    /* Remova as propriedades de grid e de altura fixa que conflitam com .galleryContainer */
+    /* border: 3px solid var(--orange); */ /* Removido para ter apenas a sombra na imagem principal */
     border-radius: 25px;
-    height: 400px;
-    padding: 30px;
-    display: grid;
-    grid-template-columns: repeat(3,1fr);
-
+    /* height: 400px; */ /* Removido */
+    padding: 0; /* Removido o padding para o .galleryContainer gerenciar */
+    display: flex; /* Garante que o .galleryContainer preencha o espaço */
+    align-items: center;
+    justify-content: center;
 }
 
+/* 2. Remover ou comentar os estilos da galeria antiga (baseada em imgGallery) */
+/*
 .imgGallery {
     cursor: pointer;
 }
@@ -149,10 +153,135 @@
     object-fit: cover;
     overflow: hidden;
     border-radius: 15px;
+}
+*/
 
+/* 3. Estilos da Nova Galeria (mantidos e confirmados) */
+.galleryContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    margin-top: 20px;
 }
 
+.mainImageContainer {
+    width: 100%;
+    height: 350px;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f8f8;
+    border: 1px solid #eee;
+}
+
+.mainImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.emptyMainImage {
+    color: #a0a0a0;
+    font-size: 18px;
+    text-align: center;
+    padding: 30px;
+    font-style: italic;
+}
+
+.thumbnailsContainer {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    padding-top: 5px;
+    border-top: 1px solid #f0f0f0;
+    justify-content: flex-start;
+}
+
+.thumbnailsContainer::-webkit-scrollbar {
+    height: 6px;
+}
+.thumbnailsContainer::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+.thumbnailsContainer::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+.addThumbnail {
+    flex-shrink: 0;
+    width: 90px;
+    height: 90px;
+    border-radius: 8px;
+    border: 2px dashed #d1d1d1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: #777;
+    cursor: pointer;
+    transition: border-color 0.3s, background-color 0.3s, transform 0.2s;
+    text-align: center;
+    padding: 8px;
+    background-color: #fff;
+}
+
+.addThumbnail:hover {
+    border-color: #007bff;
+    background-color: #eaf5ff;
+    transform: translateY(-2px);
+    color: #0056b3;
+}
+
+.addThumbnail span {
+    font-size: 30px;
+    margin-bottom: 6px;
+    color: #007bff;
+}
+
+.thumbnail {
+    flex-shrink: 0;
+    width: 90px;
+    height: 90px;
+    overflow: hidden;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.thumbnail:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.activeThumbnail {
+    border: 3px solid #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.6);
+    transform: scale(1.03);
+}
+
+/* --- ESTILOS DE OUTROS COMPONENTES --- */
+
 .proviersSearch{
+
     width: 100%;
     display: flex;
     gap: 20px;
@@ -176,4 +305,67 @@
     font-size: 18px;
     cursor: pointer;
     margin-bottom: 50px;
+}
+
+@media screen and (max-width:768px) {
+
+    .providerDatailsContainer {
+    width: 100%;
+   
+}
+
+   .providerDatailsHome{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-wrap: wrap;
+  
+}
+
+.providerDatailsImage img{
+    margin: 0;
+    width: 100%;
+   
+}
+
+.providerDatailsInfo{
+    width: 100%;
+    margin-top: 20px;
+}
+
+.requestService{
+    margin: 0;
+    justify-content: center;
+}
+
+.providerDatailsServices{
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.providerDatailsAvailableServices{
+    width: 100%;
+    
+}
+
+.providerAvailable{
+    width: 100%;
+    }
+
+.comments{
+    width: 100%;
+} 
+
+.providerDatailsGallery{
+    width: 100%;
+    margin: 40px 0;
+}
+
+
+.proviersSearch{
+    width: 100%;
+}
+
 }
