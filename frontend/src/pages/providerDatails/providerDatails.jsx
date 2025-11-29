@@ -140,7 +140,7 @@ export default function UserPerfil () {
 
                 <div className={styles.providerDatailsInfo}>
                     <h2>{providerSelected.nome}</h2>
-                    <h5>{providerSelected.servico.name}</h5>
+                    <h5>{providerSelected.servico.nome}</h5>
                     <div className={styles.line}></div>
                     <p>Descrição detalhada do prestador de serviço, suas qualificações, experiência e outras informações relevantes que possam ajudar o cliente a tomar uma decisão informada.</p>
                 </div>
