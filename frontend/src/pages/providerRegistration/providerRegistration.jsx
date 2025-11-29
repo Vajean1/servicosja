@@ -4,6 +4,17 @@ import styles from './Registration.module.css';
 import ProviderServices from '../../services/provider';
 import Loading from '../loading/loading';
 
+const allCategores = [
+    { "id": 1, "nome": "Beleza e Bem-estar", "descricao": "Serviços relacionados a Beleza e Bem-estar", "icone": null },
+    { "id": 2, "nome": "Cuidado Pessoal", "descricao": "Serviços relacionados a Cuidado Pessoal", "icone": null },
+    { "id": 3, "nome": "Lazer e Eventos", "descricao": "Serviços relacionados a Lazer e Eventos", "icone": null },
+    { "id": 4, "nome": "Limpeza e Organização", "descricao": "Serviços relacionados a Limpeza e Organização", "icone": null },
+    { "id": 5, "nome": "Manutenção e Reparos", "descricao": "Serviços relacionados a Manutenção e Reparos", "icone": null },
+    { "id": 6, "nome": "Reforma e Construção", "descricao": "Serviços relacionados a Reforma e Construção", "icone": null },
+    { "id": 7, "nome": "Soluções Profissionais", "descricao": "Serviços relacionados a Soluções Profissionais", "icone": null },
+    { "id": 8, "nome": "Transporte", "descricao": "Serviços relacionados a Transporte", "icone": null }
+]
+
 const allServices = [
     { "id": 1, "nome": "Alongamento de unha", "value": "alongamento-unha", "categoria": "beleza-bem-estar" },
     { "id": 2, "nome": "Depilador/Epilador(a)", "value": "depilador", "categoria": "beleza-bem-estar" },
@@ -121,6 +132,23 @@ const serviceIdMap = allServices.reduce((acc, service) => {
     return acc;
 }, {});
 
+// FUNÇÃO AUXILIAR: Remove acentos, padroniza minúsculas, remove " e ", e substitui espaços por hífens.
+const formatCategoryToKey = (name) => {
+    return name
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Remove acentos
+        .toLowerCase()
+        .replace(/\s+e\s+/g, '-') // Substitui " e " por "-"
+        .replace(/\s+/g, '-');    // Substitui outros espaços por "-"
+};
+
+// Mapa para buscar o ID da categoria pelo seu 'value' (nome em minúsculas e formatado)
+const categoryIdMap = allCategores.reduce((acc, category) => {
+    const categoryValue = formatCategoryToKey(category.nome);
+    acc[categoryValue] = category.id;
+    return acc;
+}, {});
+
+
 // Função auxiliar para remover todos os caracteres não numéricos
 const cleanNonNumeric = (value) => {
     return value ? value.replace(/[^0-9]/g, '') : '';
@@ -136,80 +164,91 @@ const formatDateToISO = (dateStr) => {
     return dateStr;
 };
 
-// Função auxiliar para filtrar os serviços pela categoria
+// Função auxiliar para filtrar os serviços pela categoria (Usa o 'value' da categoria)
 const getServicesByCategory = (category) => {
     return allServices.filter(service => service.categoria === category);
 };
 
-// ----------------------------------------------------------------------
+
 
 export default function ProviderRegistration() {
-    const [categoria, setCategoria] = useState('');
-    const [formDataProvider, setFormDataProvider] = useState({ servicos: [] });
+    // ESTADO: Armazena a STRING (value) da categoria para uso no filtro do select de serviços.
+    const [categoria, setCategoria] = useState(''); 
+    
+    // ESTADO: Armazena os dados do formulário, incluindo o ID da categoria.
+    const [formDataProvider, setFormDataProvider] = useState({}); 
 
     const caseSensitiveFields = ['password', 'password2'];
 
     const handleChangeSetDataProvider = (e) => {
         const { name, value } = e.target;
-        
+
         // 1. Tratamento de Case Sensitive e Lowercase
         const lowerCasedValue = caseSensitiveFields.includes(name)
             ? value
             : (typeof value === 'string' ? value.toLowerCase() : value);
-        
+
         let finalValueToSave = lowerCasedValue;
 
         // 2. Remoção de Máscara e Formatação para API (Executado antes da lógica especial)
         if (name === 'cpf' || name === 'cep' || name === 'telefone_publico') {
             finalValueToSave = cleanNonNumeric(lowerCasedValue);
         } else if (name === 'dt_nascimento') {
-            finalValueToSave = formatDateToISO(lowerCasedValue); 
+            finalValueToSave = formatDateToISO(lowerCasedValue);
         }
 
         // 3. Lógica Especial para Categoria e Serviço
         if (name === 'categoria') {
-            // Salva a categoria no estado local e no formulário, e limpa o serviço
-            setCategoria(lowerCasedValue);
+            // O valor recebido aqui é a string formatada (ex: 'beleza-bem-estar')
+            const selectedValue = lowerCasedValue; 
+            const selectedId = categoryIdMap[selectedValue]; // Busca o ID da categoria
+
+            // 1. Atualiza o estado de string para filtro de serviço
+            setCategoria(selectedValue);
+            
+            // 2. Atualiza o formData com o ID da categoria e limpa o serviço
             setFormDataProvider(prevData => ({
                 ...prevData,
-                [name]: lowerCasedValue, 
-                'servicos': [] 
+                [name]: selectedId !== undefined ? selectedId : null, // Salva o ID da categoria
+                'servico': null // **IMPORTANTE**: Altera para NULL ou '' para limpar, já que não é mais um array
             }));
-            return; 
-            
-        } else if (name === 'servicos') {
-            // Salva o ID do serviço como um array [id]
+            return;
+
+        } else if (name === 'servico') {
+            // Salva o ID do serviço, NÃO em um array.
             const selectedId = serviceIdMap[lowerCasedValue];
-            
+
             setFormDataProvider(prevData => ({
                 ...prevData,
-                [name]: selectedId !== undefined ? [selectedId] : []
+                // ALTERAÇÃO AQUI: Salva apenas o ID (número ou null)
+                [name]: selectedId !== undefined ? selectedId : null
             }));
-            return; 
-        } 
-        
-        // 4. Tratamento Genérico para os demais campos (Rua, Número, Email, Senhas, etc.)
+            return;
+        }
+
+        // 4. Tratamento Genérico para os demais campos
         setFormDataProvider(prevData => ({
             ...prevData,
-            [name]: finalValueToSave // Usa o valor limpo/formatado/lowercase
+            [name]: finalValueToSave
         }));
     };
 
-    const {register ,loading } = ProviderServices();
+    const { register, loading } = ProviderServices();
 
     console.log(formDataProvider);
 
     // Variável para garantir que o select de serviço exiba o valor correto após a seleção
-    const selectedServiceValue = formDataProvider.servicos && formDataProvider.servicos.length > 0
-        ? allServices.find(s => s.id === formDataProvider.servicos[0])?.value || ''
+    // AJUSTE NA PROPRIEDADE: Agora buscamos o 'value' do serviço diretamente pelo ID salvo em formDataProvider.servico
+    const selectedServiceValue = formDataProvider.servico
+        ? allServices.find(s => s.id === formDataProvider.servico)?.value || ''
         : '';
 
-        if(loading){
-            return(
-                <Loading/>
-            )
-        }
-    
+    if (loading) {
+        return (
+            <Loading />
+        )
+    }
+
     return (
         <div className={styles.userRegistrationContainer}>
             <div className={styles.registrationForm}>
@@ -230,7 +269,6 @@ export default function ProviderRegistration() {
                             name='cpf'
                             placeholder='Cpf'
                             type="text"
-                            // Controla o valor do IMaskInput para exibição formatada
                             value={formDataProvider.cpf || ''} 
                             onChange={handleChangeSetDataProvider}
                             required
@@ -305,24 +343,31 @@ export default function ProviderRegistration() {
                         <select
                             id="categoria"
                             name='categoria'
-                            value={categoria}
+                            // Usa o estado de string 'categoria' para controlar o select de categoria
+                            value={categoria} 
                             onChange={handleChangeSetDataProvider}
                             required
                         >
                             <option value="" disabled hidden>Categoria do serviço</option>
-                            <option value="beleza-bem-estar">Beleza e bem-estar</option>
-                            <option value="cuidado-pessoal">Cuidado Pessoal</option>
-                            <option value="lazer-eventos">Lazer e eventos</option>
-                            <option value="limpeza-organizacao">Limpeza e organização</option>
-                            <option value="manutencao-reparos">Manutenção e reparos</option>
-                            <option value="reforma-construcao">Reforma e construção</option>
-                            <option value="solucoes-profissionais">Soluções Profissionais</option>
-                            <option value="transporte">Transporte</option>
+                            {/* Mapeia as categorias usando a função corrigida */}
+                            {allCategores.map(cat => {
+                                // Usa a função corrigida para gerar a chave/value
+                                const categoryValue = formatCategoryToKey(cat.nome);
+                                return (
+                                    <option
+                                        key={cat.id}
+                                        value={categoryValue} 
+                                    >
+                                        {cat.nome}
+                                    </option>
+                                );
+                            })}
                         </select>
 
                         <select
-                            id="servicos"
-                            name='servicos'
+                            id="servico"
+                            name='servico'
+                            // Usa o valor do serviço (string) para exibir o item selecionado
                             value={selectedServiceValue} 
                             onChange={handleChangeSetDataProvider}
                             required
@@ -333,10 +378,11 @@ export default function ProviderRegistration() {
                                 <option value="" disabled>Selecione uma categoria</option>
                             )}
 
+                            {/* Usa o estado de string 'categoria' para filtrar os serviços exibidos */}
                             {getServicesByCategory(categoria).map(service => (
                                 <option
                                     key={service.id}
-                                    value={service.value} // Usa a chave única para a busca do ID
+                                    value={service.value} 
                                 >
                                     {service.nome}
                                 </option>
@@ -361,7 +407,7 @@ export default function ProviderRegistration() {
                     <input type="email" placeholder="Email" name='email' onChange={handleChangeSetDataProvider} required />
                     <input type="password" placeholder="Senha" onChange={handleChangeSetDataProvider} name='password' required />
                     <input type="password" placeholder="Confirme a Senha" onChange={handleChangeSetDataProvider} name='password2' required />
-                    
+
                     <button onClick={(e) => { e.preventDefault(); register(formDataProvider); }} type="submit">Cadastrar</button>
                 </form>
             </div>
