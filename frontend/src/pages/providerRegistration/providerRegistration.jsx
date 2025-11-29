@@ -4,6 +4,7 @@ import styles from './Registration.module.css';
 import ProviderServices from '../../services/provider';
 import Loading from '../loading/loading';
 
+// --- ARRAYS E FUNÇÕES AUXILIARES (PERMANECEM INALTERADOS) ---
 const allCategores = [
     { "id": 1, "nome": "Beleza e Bem-estar", "descricao": "Serviços relacionados a Beleza e Bem-estar", "icone": null },
     { "id": 2, "nome": "Cuidado Pessoal", "descricao": "Serviços relacionados a Cuidado Pessoal", "icone": null },
@@ -34,7 +35,6 @@ const allServices = [
     { "id": 16, "nome": "Lash designer", "value": "lash-designer", "categoria": "beleza-bem-estar" },
     { "id": 17, "nome": "Visagista", "value": "visagista", "categoria": "beleza-bem-estar" },
     { "id": 18, "nome": "Maquiador(a)", "value": "maquiador", "categoria": "beleza-bem-estar" },
-
     { "id": 19, "nome": "Acupunturista", "value": "acupunturista", "categoria": "cuidado-pessoal" },
     { "id": 20, "nome": "Fisioterapeuta domiciliar", "value": "fisioterapeuta-domiciliar", "categoria": "cuidado-pessoal" },
     { "id": 21, "nome": "Aromaterapeuta", "value": "aromaterapeuta", "categoria": "cuidado-pessoal" },
@@ -44,7 +44,6 @@ const allServices = [
     { "id": 25, "nome": "Cuidador(a) de idosos", "value": "cuidador-idosos", "categoria": "cuidado-pessoal" },
     { "id": 26, "nome": "Ventosaterapeuta", "value": "ventosaterapeuta", "categoria": "cuidado-pessoal" },
     { "id": 27, "nome": "Enfermeiro(a) particular", "value": "enfermeiro-particular", "categoria": "cuidado-pessoal" },
-
     { "id": 28, "nome": "Aluguel de brinquedos", "value": "aluguel-brinquedos", "categoria": "lazer-eventos" },
     { "id": 29, "nome": "Decorador de festas", "value": "decorador-festas", "categoria": "lazer-eventos" },
     { "id": 30, "nome": "Aluguel de equi. eletrônicos", "value": "aluguel-eletronicos", "categoria": "lazer-eventos" },
@@ -57,7 +56,6 @@ const allServices = [
     { "id": 37, "nome": "Animador/palhaço", "value": "animador-palhaco", "categoria": "lazer-eventos" },
     { "id": 38, "nome": "Sonoplastia/Téc. de som", "value": "sonoplastia", "categoria": "lazer-eventos" },
     { "id": 39, "nome": "Buffet", "value": "buffet", "categoria": "lazer-eventos" },
-
     { "id": 40, "nome": "Dedetizador", "value": "dedetizador", "categoria": "limpeza-organizacao" },
     { "id": 41, "nome": "Limpeza de estofados e colchões", "value": "limpeza-estofados-colchoes", "categoria": "limpeza-organizacao" },
     { "id": 42, "nome": "Diarista", "value": "diarista", "categoria": "limpeza-organizacao" },
@@ -70,7 +68,6 @@ const allServices = [
     { "id": 49, "nome": "Limpeza de carpete", "value": "limpeza-carpete", "categoria": "limpeza-organizacao" },
     { "id": 50, "nome": "Tratamento de pragas", "value": "tratamento-pragas", "categoria": "limpeza-organizacao" },
     { "id": 51, "nome": "Zelador", "value": "zelador", "categoria": "limpeza-organizacao" },
-
     { "id": 52, "nome": "Borracheiro", "value": "borracheiro", "categoria": "manutencao-reparos" },
     { "id": 53, "nome": "Eletricista", "value": "eletricista", "categoria": "manutencao-reparos" },
     { "id": 54, "nome": "Instalação de bomba e caixa d'água", "value": "instalacao-bomba-caixa", "categoria": "manutencao-reparos" },
@@ -91,7 +88,6 @@ const allServices = [
     { "id": 69, "nome": "Conserto de máquina de lavar", "value": "conserto-maquina-lavar", "categoria": "manutencao-reparos" },
     { "id": 70, "nome": "Téc. em refrigeração", "value": "tec-refrigeracao", "categoria": "manutencao-reparos" },
     { "id": 71, "nome": "Vedação", "value": "vedacao", "categoria": "manutencao-reparos" },
-
     { "id": 72, "nome": "Aplicação de massa corrida", "value": "aplicacao-massa-corrida", "categoria": "reforma-construcao" },
     { "id": 73, "nome": "Instalação de bancadas e pias", "value": "instalacao-bancadas-pias", "categoria": "reforma-construcao" },
     { "id": 74, "nome": "Azulejista", "value": "azulejista", "categoria": "reforma-construcao" },
@@ -106,7 +102,6 @@ const allServices = [
     { "id": 83, "nome": "Reforma de fachadas", "value": "reforma-fachadas", "categoria": "reforma-construcao" },
     { "id": 84, "nome": "Impermeabilização de lajes e paredes", "value": "impermeabilizacao-lajes-paredes", "categoria": "reforma-construcao" },
     { "id": 85, "nome": "Reforma de pisos", "value": "reforma-pisos", "categoria": "reforma-construcao" },
-
     { "id": 86, "nome": "Consultor de marketing", "value": "consultor-marketing", "categoria": "solucoes-profissionais" },
     { "id": 87, "nome": "Professor profisional", "value": "professor", "categoria": "solucoes-profissionais" },
     { "id": 88, "nome": "Designer Gráfico", "value": "design-grafico", "categoria": "solucoes-profissionais" },
@@ -116,7 +111,6 @@ const allServices = [
     { "id": 92, "nome": "Social media", "value": "social-media", "categoria": "solucoes-profissionais" },
     { "id": 93, "nome": "Web designer", "value": "web-designer", "categoria": "solucoes-profissionais" },
     { "id": 94, "nome": "Ilustrador digital", "value": "ilustrador-digital", "categoria": "solucoes-profissionais" },
-
     { "id": 95, "nome": "Aluguel de caminhão", "value": "caminhao", "categoria": "transporte" },
     { "id": 96, "nome": "Moto-boy", "value": "motoboy", "categoria": "transporte" },
     { "id": 97, "nome": "Aluguel de carro/van", "value": "carro", "categoria": "transporte" },
@@ -132,29 +126,24 @@ const serviceIdMap = allServices.reduce((acc, service) => {
     return acc;
 }, {});
 
-// FUNÇÃO AUXILIAR: Remove acentos, padroniza minúsculas, remove " e ", e substitui espaços por hífens.
 const formatCategoryToKey = (name) => {
     return name
-        .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Remove acentos
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
         .toLowerCase()
-        .replace(/\s+e\s+/g, '-') // Substitui " e " por "-"
-        .replace(/\s+/g, '-');    // Substitui outros espaços por "-"
+        .replace(/\s+e\s+/g, '-')
+        .replace(/\s+/g, '-');
 };
 
-// Mapa para buscar o ID da categoria pelo seu 'value' (nome em minúsculas e formatado)
 const categoryIdMap = allCategores.reduce((acc, category) => {
     const categoryValue = formatCategoryToKey(category.nome);
     acc[categoryValue] = category.id;
     return acc;
 }, {});
 
-
-// Função auxiliar para remover todos os caracteres não numéricos
 const cleanNonNumeric = (value) => {
     return value ? value.replace(/[^0-9]/g, '') : '';
 };
 
-// Função auxiliar para converter DD/MM/AAAA para AAAA-MM-DD
 const formatDateToISO = (dateStr) => {
     if (!dateStr || dateStr.length !== 10) return dateStr;
     const [day, month, year] = dateStr.split('/');
@@ -164,69 +153,76 @@ const formatDateToISO = (dateStr) => {
     return dateStr;
 };
 
-// Função auxiliar para filtrar os serviços pela categoria (Usa o 'value' da categoria)
 const getServicesByCategory = (category) => {
     return allServices.filter(service => service.categoria === category);
 };
-
-
+// --- FIM ARRAYS E FUNÇÕES AUXILIARES ---
 
 export default function ProviderRegistration() {
-    // ESTADO: Armazena a STRING (value) da categoria para uso no filtro do select de serviços.
     const [categoria, setCategoria] = useState(''); 
-    
-    // ESTADO: Armazena os dados do formulário, incluindo o ID da categoria.
     const [formDataProvider, setFormDataProvider] = useState({}); 
 
-    const caseSensitiveFields = ['password', 'password2'];
+    // ESTADO para erros da API
+    const [formErrors, setFormErrors] = useState({}); 
+
+    const caseSensitiveFields = ['password', 'password2' ,'genero'];
+    
+    // Função auxiliar para obter a mensagem de erro (o primeiro item do array)
+    const getErrorMessage = (fieldName) => {
+        if (formErrors[fieldName] && Array.isArray(formErrors[fieldName]) && formErrors[fieldName].length > 0) {
+            return formErrors[fieldName][0];
+        }
+        return null;
+    };
 
     const handleChangeSetDataProvider = (e) => {
         const { name, value } = e.target;
 
-        // 1. Tratamento de Case Sensitive e Lowercase
+        // Limpa o erro para o campo atual ao iniciar a edição
+        setFormErrors(prevErrors => ({
+            ...prevErrors,
+            [name]: null 
+        }));
+
         const lowerCasedValue = caseSensitiveFields.includes(name)
             ? value
             : (typeof value === 'string' ? value.toLowerCase() : value);
 
         let finalValueToSave = lowerCasedValue;
 
-        // 2. Remoção de Máscara e Formatação para API (Executado antes da lógica especial)
         if (name === 'cpf' || name === 'cep' || name === 'telefone_publico') {
             finalValueToSave = cleanNonNumeric(lowerCasedValue);
         } else if (name === 'dt_nascimento') {
             finalValueToSave = formatDateToISO(lowerCasedValue);
         }
 
-        // 3. Lógica Especial para Categoria e Serviço
         if (name === 'categoria') {
-            // O valor recebido aqui é a string formatada (ex: 'beleza-bem-estar')
             const selectedValue = lowerCasedValue; 
-            const selectedId = categoryIdMap[selectedValue]; // Busca o ID da categoria
+            const selectedId = categoryIdMap[selectedValue]; 
 
-            // 1. Atualiza o estado de string para filtro de serviço
             setCategoria(selectedValue);
             
-            // 2. Atualiza o formData com o ID da categoria e limpa o serviço
             setFormDataProvider(prevData => ({
                 ...prevData,
-                [name]: selectedId !== undefined ? selectedId : null, // Salva o ID da categoria
-                'servico': null // **IMPORTANTE**: Altera para NULL ou '' para limpar, já que não é mais um array
+                [name]: selectedId !== undefined ? selectedId : null, 
+                'servico': null 
+            }));
+            setFormErrors(prevErrors => ({
+                ...prevErrors,
+                'servico': null
             }));
             return;
 
         } else if (name === 'servico') {
-            // Salva o ID do serviço, NÃO em um array.
             const selectedId = serviceIdMap[lowerCasedValue];
 
             setFormDataProvider(prevData => ({
                 ...prevData,
-                // ALTERAÇÃO AQUI: Salva apenas o ID (número ou null)
                 [name]: selectedId !== undefined ? selectedId : null
             }));
             return;
         }
 
-        // 4. Tratamento Genérico para os demais campos
         setFormDataProvider(prevData => ({
             ...prevData,
             [name]: finalValueToSave
@@ -235,10 +231,21 @@ export default function ProviderRegistration() {
 
     const { register, loading } = ProviderServices();
 
-  
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setFormErrors({}); 
 
-    // Variável para garantir que o select de serviço exiba o valor correto após a seleção
-    // AJUSTE NA PROPRIEDADE: Agora buscamos o 'value' do serviço diretamente pelo ID salvo em formDataProvider.servico
+        register(formDataProvider)
+            .then((result) => {
+                console.log('Cadastro realizado com sucesso!', result);
+                // Adicione aqui a lógica de sucesso (redirecionamento)
+            })
+            .catch((errorObject) => {
+                console.error('Erros de validação da API:', errorObject);
+                setFormErrors(errorObject); // Salva o objeto de erros no estado
+            });
+    };
+
     const selectedServiceValue = formDataProvider.servico
         ? allServices.find(s => s.id === formDataProvider.servico)?.value || ''
         : '';
@@ -248,14 +255,20 @@ export default function ProviderRegistration() {
             <Loading />
         )
     }
-
+    
     return (
         <div className={styles.userRegistrationContainer}>
             <div className={styles.registrationForm}>
                 <h5>Seu próximo cliente está a um click.</h5>
                 <h2>CADASTRE-SE!</h2>
-                <form>
+                <form onSubmit={handleSubmit}> 
+                    
+                    {/* Campo: nome_completo */}
+                    {getErrorMessage('nome_completo') && (
+                        <p className={styles.errorMessage}>{getErrorMessage('nome_completo')}</p>
+                    )}
                     <input
+                        value={formDataProvider.nome_completo || ''} 
                         type="text"
                         placeholder="Nome Completo"
                         name='nome_completo'
@@ -263,7 +276,15 @@ export default function ProviderRegistration() {
                         required
                     />
 
+                       {/* Campo: cpf */}
+                        {getErrorMessage('cpf') && (
+                            <p className={styles.errorMessage}>{getErrorMessage('cpf')}</p>
+                        )}  
+                     {getErrorMessage('dt_nascimento') && (
+                            <p className={styles.errorMessage}>{getErrorMessage('dt_nascimento')}</p>
+                        )}
                     <div className={styles.input50}>
+                       
                         <IMaskInput
                             mask="000.000.000-00"
                             name='cpf'
@@ -273,10 +294,13 @@ export default function ProviderRegistration() {
                             onChange={handleChangeSetDataProvider}
                             required
                         />
-
+                        
+                       
+                       
                         <IMaskInput
                             mask="00/00/0000"
                             name='dt_nascimento'
+                            value={formDataProvider.dt_nascimento || ''}
                             placeholder='Data de nascimento'
                             onChange={handleChangeSetDataProvider}
                             type="text"
@@ -284,22 +308,30 @@ export default function ProviderRegistration() {
                         />
                     </div>
 
+                    {/* Campo: genero */}
+                    {getErrorMessage('genero') && (
+                        <p className={styles.errorMessage}>{getErrorMessage('genero')}</p>
+                    )}
                     <select
-                        id="sexo"
-                        name='sexo'
-                        value={formDataProvider.sexo || ''}
+                        id="genero"
+                        name='genero'
+                        value={formDataProvider.genero || ''}
                         onChange={handleChangeSetDataProvider}
                         required
                     >
-                        <option value="" disabled hidden>Sexo</option>
-                        <option value="m">Masculino</option>
-                        <option value="f">Feminino</option>
+                        <option value="" disabled hidden>Genero</option>
+                        <option value="M">Masculino</option>
+                        <option value="F">Feminino</option>
                         <option value="t">Transgênero</option>
                         <option value="nao-binario">Não-binário</option>
                         <option value="nao-informado">Prefiro não informar</option>
                     </select>
 
                     <div className={styles.input50}>
+                        {/* Campo: rua */}
+                        {getErrorMessage('rua') && (
+                            <p className={styles.errorMessage}>{getErrorMessage('rua')}</p>
+                        )}
                         <input
                             type="text"
                             placeholder='Rua'
@@ -308,7 +340,11 @@ export default function ProviderRegistration() {
                             onChange={handleChangeSetDataProvider}
                             required
                         />
-
+                        
+                        {/* Campo: numero_casa */}
+                         {getErrorMessage('numero_casa') && (
+                            <p className={styles.errorMessage}>{getErrorMessage('numero_casa')}</p>
+                        )}
                         <input
                             type="number"
                             placeholder='Numero'
@@ -319,6 +355,10 @@ export default function ProviderRegistration() {
                         />
                     </div>
 
+                    {/* Campo: cep */}
+                    {getErrorMessage('cep') && (
+                        <p className={styles.errorMessage}>{getErrorMessage('cep')}</p>
+                    )}
                     <IMaskInput
                         mask="00000-000"
                         name='cep'
@@ -329,6 +369,10 @@ export default function ProviderRegistration() {
                         required
                     />
 
+                    {/* Campo: telefone_publico */}
+                    {getErrorMessage('telefone_publico') && (
+                        <p className={styles.errorMessage}>{getErrorMessage('telefone_publico')}</p>
+                    )}
                     <IMaskInput
                         mask={['(00) 0000-0000', '(00) 00000-0000']}
                         name='telefone_publico'
@@ -340,18 +384,19 @@ export default function ProviderRegistration() {
                     />
 
                     <div className={styles.input50}>
+                        {/* Campo: categoria */}
+                        {getErrorMessage('categoria') && (
+                            <p className={styles.errorMessage}>{getErrorMessage('categoria')}</p>
+                        )}
                         <select
                             id="categoria"
                             name='categoria'
-                            // Usa o estado de string 'categoria' para controlar o select de categoria
                             value={categoria} 
                             onChange={handleChangeSetDataProvider}
                             required
                         >
                             <option value="" disabled hidden>Categoria do serviço</option>
-                            {/* Mapeia as categorias usando a função corrigida */}
                             {allCategores.map(cat => {
-                                // Usa a função corrigida para gerar a chave/value
                                 const categoryValue = formatCategoryToKey(cat.nome);
                                 return (
                                     <option
@@ -364,10 +409,13 @@ export default function ProviderRegistration() {
                             })}
                         </select>
 
+                        {/* Campo: servico */}
+                        {getErrorMessage('servico') && (
+                            <p className={styles.errorMessage}>{getErrorMessage('servico')}</p>
+                        )}
                         <select
                             id="servico"
                             name='servico'
-                            // Usa o valor do serviço (string) para exibir o item selecionado
                             value={selectedServiceValue} 
                             onChange={handleChangeSetDataProvider}
                             required
@@ -378,7 +426,6 @@ export default function ProviderRegistration() {
                                 <option value="" disabled>Selecione uma categoria</option>
                             )}
 
-                            {/* Usa o estado de string 'categoria' para filtrar os serviços exibidos */}
                             {getServicesByCategory(categoria).map(service => (
                                 <option
                                     key={service.id}
@@ -390,11 +437,16 @@ export default function ProviderRegistration() {
                         </select>
                     </div>
 
-                    <div className={styles.select50}>
+                    
+                    <div className={styles.input50}>
+                        {/* Campo: disponibilidade */}
+                        {getErrorMessage('disponibilidade') && (
+                            <p className={styles.errorMessage}>{getErrorMessage('disponibilidade')}</p>
+                        )}
                         <select
-                            id="horario"
-                            name='horario'
-                            value={formDataProvider.horario || ''}
+                            id="disponibilidade"
+                            name='disponibilidade'
+                            value={formDataProvider.disponibilidade|| ''}
                             onChange={handleChangeSetDataProvider}
                             required
                         >
@@ -402,13 +454,43 @@ export default function ProviderRegistration() {
                             <option value="true">Sim</option>
                             <option value="false">Não</option>
                         </select>
+
+                        {/* Campo: atende_fim_de_semana */}
+                        {getErrorMessage('atende_fim_de_semana') && (
+                            <p className={styles.errorMessage}>{getErrorMessage('atende_fim_de_semana')}</p>
+                        )}
+                        <select
+                            id="atende_fim_de_semana"
+                            name='atende_fim_de_semana'
+                            value={formDataProvider.atende_fim_de_semana || ''}
+                            onChange={handleChangeSetDataProvider}
+                            required
+                        >
+                            <option value="" disabled hidden>Final de semana</option>
+                            <option value="true">Sim</option>
+                            <option value="false">Não</option>
+                        </select>
                     </div>
 
-                    <input type="email" placeholder="Email" name='email' onChange={handleChangeSetDataProvider} required />
-                    <input type="password" placeholder="Senha" onChange={handleChangeSetDataProvider} name='password' required />
-                    <input type="password" placeholder="Confirme a Senha" onChange={handleChangeSetDataProvider} name='password2' required />
+                    {/* Campo: email */}
+                    {getErrorMessage('email') && (
+                        <p className={styles.errorMessage}>{getErrorMessage('email')}</p>
+                    )}
+                    <input type="email" value={formDataProvider.email || ''} placeholder="Email" name='email' onChange={handleChangeSetDataProvider} required />
 
-                    <button onClick={(e) => { e.preventDefault(); register(formDataProvider); }} type="submit">Cadastrar</button>
+                    {/* Campo: password */}
+                    {getErrorMessage('password') && (
+                        <p className={styles.errorMessage}>{getErrorMessage('password')}</p>
+                    )}
+                    <input type="password" value={formDataProvider.password || ''} placeholder="Senha" onChange={handleChangeSetDataProvider} name='password' required />
+                    
+                    {/* Campo: password2 */}
+                    {getErrorMessage('password2') && (
+                        <p className={styles.errorMessage}>{getErrorMessage('password2')}</p>
+                    )}
+                    <input type="password" value={formDataProvider.password2 || ''} placeholder="Confirme a Senha" onChange={handleChangeSetDataProvider} name='password2' required />
+
+                    <button type="submit">Cadastrar</button>
                 </form>
             </div>
 

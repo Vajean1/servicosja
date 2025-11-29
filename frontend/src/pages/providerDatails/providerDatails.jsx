@@ -5,6 +5,8 @@ import {FaUserCircle} from 'react-icons/fa';
 import ProviderBox from '../../components/providerBox/providerBox';
 import ProviderContactPopup from '../../components/providerContactPopup/providerContactPopup';
 import { useProviderContext } from '../../context/providerSelected';
+import { FaArrowLeft } from "react-icons/fa6";
+import { useNavigate } from 'react-router';
 
 // --- COMPONENTE DE GALERIA ---
 const Gallery = ({ images, onImageSelect, onImageUpload, selectedImage }) => {
@@ -127,11 +129,14 @@ export default function UserPerfil () {
     const handleOpenProvider = () => {
         setOpenProvider(true);
     }
-    console.log(providerSelected)
+    
+    const navigate = useNavigate()
 
     return(
         <div className={styles.providerDatailsContainer}>
-           
+           <div className={styles.arrow} onClick={()=>navigate('/services')}>
+            <FaArrowLeft />
+           </div>
 
             <div className={styles.providerDatailsHome}>
                 <div className={styles.providerDatailsImage}>
@@ -153,7 +158,7 @@ export default function UserPerfil () {
             <div className={styles.providerDatailsServices}>
                 <div className={styles.providerDatailsAvailableServices}>
                     <div className={styles.providerAvailable}>
-                        <h3><FaUserCircle/>  4.6</h3>
+                        <h3><FaUserCircle/> 4.6</h3>
                         <div className={styles.stars}>
 
                             <div className={styles.status}>
@@ -205,14 +210,6 @@ export default function UserPerfil () {
                         selectedImage={currentMainImage}
                     /> 
                 </div>
-            </div>
-
-
-
-            <div className={styles.proviersSearch}>
-                <ProviderBox name={"Aline Souza"} location={'Recife, Boa Vigem'} rating={5} resum={'Trancista. Especialista em tranças e penteados afro. Atendimento em domicílio.'} />
-                <ProviderBox name={"Aline Souza"} location={'Recife, Boa Vigem'} rating={4.9} resum={'Trancista. Especialista em tranças e penteados afro. Atendimento em domicílio.'}  />
-                <ProviderBox name={"Aline Souza"} location={'Recife, Boa Vigem'} rating={3} resum={'Trancista. Especialista em tranças e penteados afro. Atendimento em domicílio.'}  />
             </div>
 
             <ProviderContactPopup open={openProvider} close={handleCloseProvider} />

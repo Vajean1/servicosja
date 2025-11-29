@@ -23,6 +23,7 @@ export default function LoginProviderPopup ({open, close}) {
         }
 
         console.log(providerLogin);
+
    
     return (
         <>
@@ -43,7 +44,7 @@ export default function LoginProviderPopup ({open, close}) {
                         <form>
                             <input onChange={handleChangeLogin} name='email' type="email" placeholder='Email' />
                             <input onChange={handleChangeLogin} name='password' type="password" placeholder='Senha' />
-                            <button type='submit'>Entrar</button>
+                            <button  type='submit' onClick={() => navigate("/providerPerfil")}>Entrar</button>
                             <a href="#">Esqueceu a senha?</a>
                         </form>
                             

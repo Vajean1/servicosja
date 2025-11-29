@@ -1,0 +1,327 @@
+/* --- Variável de Fonte --- */
+/* Você deve definir --font no seu arquivo global de estilos (ex: index.css) ou no :root */
+/* Exemplo: :root { --font: 'Roboto', sans-serif; } */
+
+
+/* --- Header --- */
+.header {
+    width: 100%;
+    height: 160px;
+    background: #110263;
+    border-radius: 0 0 20px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    position: relative;
+    font-family: var(--font); /* Usando a variável de fonte */
+}
+
+.perfil {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.perfil img {
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    border: 4px solid white;
+    object-fit: cover;
+}
+
+/* --- Tabs --- */
+.tabs {
+    width: 100%;
+    background: white;
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+    margin-top: -10px;
+    gap: 40px;
+    font-weight: bold;
+    font-family: var(--font);
+}
+
+.tabs a { 
+    text-decoration: none; 
+    color: #444; 
+}
+
+/* Classe 'active' para a aba selecionada no React */
+.active {
+    color: #1a06c9 !important; /* Exemplo de cor ativa */
+    border-bottom: 2px solid #1a06c9;
+}
+
+/* --- Container Geral --- */
+.container {
+    width: 85%;
+    margin: auto;
+    margin-top: 20px;
+    font-family: var(--font);
+}
+
+/* --- Box Padrão --- */
+.box {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    margin-bottom: 25px;
+}
+
+.box h2 {
+    margin-top: 0;
+    font-size: 18px;
+    color: #110263;
+}
+
+.descricaoGrid { /* descricao-grid -> descricaoGrid */
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* --- Mensagens + Calendário (Flex) --- */
+.flex {
+    display: flex;
+    gap: 20px;
+}
+
+.mensagens, .calendario {
+    flex: 1;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+table th, table td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+}
+
+/* --- Calendário simples --- */
+.calendarBox { /* calendar-box -> calendarBox */
+    text-align: center;
+}
+
+.calendarGrid { /* calendar-grid -> calendarGrid */
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin-top: 15px;
+}
+
+.calendarGrid div {
+    background: #f3f3f3;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+/* --- Fotos --- */
+.fotosGrid { /* fotos-grid -> fotosGrid */
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.fotosGrid img {
+    width: 100%;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+/* --- Avaliações --- */
+.avaliacoesBox { /* avaliacoes-box -> avaliacoesBox */
+    margin-top: 20px;
+}
+
+.rating {
+    font-size: 50px;
+    font-weight: bold;
+    color: #1a06c9;
+    text-align: center;
+}
+
+/* Removemos .grafico-demo, pois não estava no HTML original e não é necessário */
+
+.graficoLinhas { /* grafico-linhas -> graficoLinhas */
+    margin-top: 15px;
+    background: #eee;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+/* Lista de avaliações */
+.ratingsList { /* ratings-list -> ratingsList */
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ratingRow { /* rating-row -> ratingRow */
+    display: grid;
+    grid-template-columns: 40px 1fr 40px;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+}
+
+.bar {
+    height: 10px;
+    border-radius: 10px;
+    background: #d4d4ff;
+    position: relative;
+    overflow: hidden;
+}
+
+/* A barra colorida que representa a porcentagem */
+.bar::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: #1a06c9;
+}
+
+/* --- Classes dinâmicas para porcentagem (usadas na barra::after) --- */
+.bar5::after { width: 82%; } /* bar-5 -> bar5 */
+.bar4::after { width: 10%; } /* bar-4 -> bar4 */
+.bar3::after { width: 4%; }  /* bar-3 -> bar3 */
+.bar2::after { width: 2%; }  /* bar-2 -> bar2 */
+.bar1::after { width: 2%; }  /* bar-1 -> bar1 */
+
+.galleryContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.mainImageContainer {
+    width: 100%;
+    height: 350px;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f8f8;
+    border: 1px solid #eee;
+}
+
+.mainImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.emptyMainImage {
+    color: #a0a0a0;
+    font-size: 18px;
+    text-align: center;
+    padding: 30px;
+    font-style: italic;
+}
+
+.thumbnailsContainer {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    padding-top: 5px;
+    border-top: 1px solid #f0f0f0;
+    justify-content: flex-start;
+}
+
+.thumbnailsContainer::-webkit-scrollbar {
+    height: 6px;
+}
+.thumbnailsContainer::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+.thumbnailsContainer::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+.addThumbnail {
+    flex-shrink: 0;
+    width: 90px;
+    height: 90px;
+    border-radius: 8px;
+    border: 2px dashed #d1d1d1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: #777;
+    cursor: pointer;
+    transition: border-color 0.3s, background-color 0.3s, transform 0.2s;
+    text-align: center;
+    padding: 8px;
+    background-color: #fff;
+}
+
+.addThumbnail:hover {
+    border-color: #007bff;
+    background-color: #eaf5ff;
+    transform: translateY(-2px);
+    color: #0056b3;
+}
+
+.addThumbnail span {
+    font-size: 30px;
+    margin-bottom: 6px;
+    color: #007bff;
+}
+
+.thumbnail {
+    flex-shrink: 0;
+    width: 90px;
+    height: 90px;
+    overflow: hidden;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.thumbnail:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.activeThumbnail {
+    border: 3px solid #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.6);
+    transform: scale(1.03);
+}
+
+.w_50{
+    width: 50%;
+}

@@ -166,8 +166,16 @@ export default function Services () {
 
     const activeMenuItem = menuData.find(item => item.id === activeMenuId);
 
-    const {getProviders , providers , refetchProviders , loading} = ProviderServices()
+    const {getProviders , providers , refetchProviders , loading, findmaterial,find24h, setRefetchProviders ,findWeekend} = ProviderServices()
     const { setProviderSelected } = useProviderContext();
+
+
+    const [findMat , setFindMat] = useState(false)
+    const [hora , setHora] = useState(false)
+    const [fds,setFds] = useState(false)
+
+
+
 
     useEffect (()=>{
         if(refetchProviders){
@@ -177,11 +185,45 @@ export default function Services () {
     },[refetchProviders])
 
 
+    useEffect(() => {
+        
+        findmaterial(findMat); 
+    }, [findMat]);
 
-    const handleProviderSelected = (provider) =>{
-        setProviderSelected(provider)
-    } 
+
+
+    useEffect(() => {
+        find24h(hora); 
+    }, [hora]);
+
+
+    useEffect(() => {
+        findWeekend(fds); 
+    }, [fds]);
+
+
+
+        const handleProviderSelected = (provider) =>{
+            setProviderSelected(provider)
+        } 
     
+        const handleChangeMaterial = (event) => {
+        setFindMat(event.target.checked);
+        };
+
+         const handleChangehora = (event) => {
+        setHora(event.target.checked);
+        };
+
+        const handleChangeTodos =()=>{
+            setRefetchProviders(true)
+        }
+
+        const handleChangeWeekend = () => {
+            setFds(event.target.checked)
+        }
+
+
 
     return(
         <div className={styles.services}>
@@ -218,6 +260,7 @@ export default function Services () {
 
                     <div className={styles.serviceClassific}>
                         <h4>Filtrar por:</h4>
+
                         <div className={styles.serviceClassificBox}>
                             <h2>Classificação de Profissionais</h2>
                             <div className={styles.starSponsored}>
@@ -226,26 +269,30 @@ export default function Services () {
                         </div>
                     </div>
 
+
+                        <div className={styles.serviceItem}>
+                            <input onChange={handleChangeTodos} type="checkbox" />
+                            <span >Todos</span>
+                        </div>
                     <div className={styles.servicesList}>
                         <h3>Material Próprio</h3>
                         <div className={styles.serviceItem}>
-                            <input type="checkbox" />
-                            <span>Sim , Possuo Material</span>
+                            <input checked={findMat} onChange={handleChangeMaterial} type="checkbox" />
+                            <span >Possui Material</span>
                         </div>
-                        <div className={styles.serviceItem}>
-                            <input type="checkbox" />
-                            <span>Não, o cliente fornece</span>
-                        </div>
+                        
                     </div>
+
+                    
 
                     <div className={styles.servicesList}>
                         <h3>Disponibilidade</h3>
                         <div className={styles.serviceItem}>
-                            <input type="checkbox" />
+                            <input  checked={hora} onChange={handleChangehora} type="checkbox" />
                             <span>Atende 24h</span>
                         </div>
                         <div className={styles.serviceItem}>
-                            <input type="checkbox" />
+                            <input checked={fds} onChange={handleChangeWeekend} type="checkbox" />
                             <span>Atende fim de semana</span>
                         </div>
                     </div>

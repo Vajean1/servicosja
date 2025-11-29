@@ -12,6 +12,7 @@ import UserRegistration from './pages/userRegistration/userRegistration.jsx'
 import ProviderRegistration from './pages/providerRegistration/providerRegistration.jsx'
 import ProviderDatails from './pages/providerDatails/providerDatails.jsx'
 import UserPerfil from './pages/userPerfil/userPerfil.jsx'
+import ProviderPerfil from './pages/providerPerfil/providerPerfil.jsx'
 
 const pages = createBrowserRouter([
   {
@@ -27,6 +28,7 @@ const pages = createBrowserRouter([
       { path: '/providerRegistration' , element: <ProviderRegistration/> },
       { path: '/providerDatails' , element: <ProviderDatails/> },
       { path: '/userPerfil' , element: <UserPerfil/> },
+      { path: '/providerPerfil' , element: <ProviderPerfil/> },
     ]
   }
 ])

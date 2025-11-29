@@ -58,6 +58,58 @@
      border-radius: 25px;
 }
 
+/* Registration.module.css */
+
+/* --- Estilos para Erros --- */
+.errorMessage {
+    color: #cc0000; 
+    font-size: 0.85rem; 
+    width: 100%; 
+    padding: 0;
+    text-align: left; 
+    /* Ajusta margens para posicionar acima e dar espaço ao input */
+    margin-top: 5px; 
+    margin-bottom: 5px; 
+    display: block;
+    font-weight: 500;
+}
+
+
+
+
+
+/* Se o erro for o primeiro elemento, garanta que ele tenha margem inferior adequada */
+.input50 .errorMessage {
+    /* Ajusta a largura para que o erro fique alinhado à sua coluna */
+    flex-basis: calc(50% - 7.5px); 
+    margin-bottom: 5px; /* Reduz o espaçamento do erro para o input que está abaixo dele */
+    margin-top: 0; /* Posicionamento no topo da coluna */
+}
+
+
+/* --- Responsividade (Opcional, mas recomendado) --- */
+@media (max-width: 768px) {
+    .userRegistrationContainer {
+        flex-direction: column;
+    }
+
+    .registrationForm {
+        padding: 20px;
+    }
+
+    .input50 {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    /* Faz os itens dentro de input50 ocuparem a largura total em telas pequenas */
+    .input50 > * {
+        width: 100%;
+        flex-basis: 100%; 
+        min-width: auto;
+    }
+}
+
 @media screen and (max-width:1000px){
     .registrationForm{
         width: 100%;
