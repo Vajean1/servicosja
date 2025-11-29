@@ -4,6 +4,8 @@ import styles from './services.module.css'
 import { FaSearch ,FaStar } from "react-icons/fa";
 import ProviderServices from '../../services/provider';
 import Loading from '../loading/loading';
+import { useProviderContext } from '../../context/providerSelected';
+import Loading2 from '../loading/loading2';
 
 export default function Services () {
     const [activeMenuId, setActiveMenuId] = useState(null);
@@ -165,6 +167,7 @@ export default function Services () {
     const activeMenuItem = menuData.find(item => item.id === activeMenuId);
 
     const {getProviders , providers , refetchProviders , loading} = ProviderServices()
+    const { setProviderSelected } = useProviderContext();
 
     useEffect (()=>{
         if(refetchProviders){
@@ -173,14 +176,11 @@ export default function Services () {
         }
     },[refetchProviders])
 
-    if(loading){
-        return(
-            <Loading/>
-        )
-    }
 
-    console.log(providers)
 
+    const handleProviderSelected = (provider) =>{
+        setProviderSelected(provider)
+    } 
     
 
     return(
@@ -253,8 +253,14 @@ export default function Services () {
 
                 <section className={styles.providerContainer}>
 
+                   {loading && (
+                    <Loading2/>
+                   )}
+
                     {providers.map((provider)=> (
-                        <ProviderBox name={provider.nome} location={`${provider.cidade}, ${provider.bairro}`} rating={4.9} resum={'Trancista. Especialista em tranças e penteados afro. Atendimento em domicílio.'} key={provider.id} />
+                        <div className={styles.box} onClick={() => {handleProviderSelected(provider)}} key={provider.id}>
+                            <ProviderBox name={provider.nome}  location={`${provider.cidade}, ${provider.bairro}`} rating={4.9} resum={'Trancista. Especialista em tranças e penteados afro. Atendimento em domicílio.'} key={provider.id} />
+                        </div>
                     ))}
                    
                 </section>

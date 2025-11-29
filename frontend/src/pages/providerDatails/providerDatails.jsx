@@ -4,10 +4,13 @@ import styles from './providerDatails.module.css';
 import {FaUserCircle} from 'react-icons/fa';
 import ProviderBox from '../../components/providerBox/providerBox';
 import ProviderContactPopup from '../../components/providerContactPopup/providerContactPopup';
+import { useProviderContext } from '../../context/providerSelected';
 
 // --- COMPONENTE DE GALERIA ---
 const Gallery = ({ images, onImageSelect, onImageUpload, selectedImage }) => {
-    // Certifique-se de que a imagem selecionada é a URL
+    
+    
+
     return (
         <div className={styles.galleryContainer}>
             {/* Imagem em Destaque */}
@@ -54,34 +57,32 @@ const Gallery = ({ images, onImageSelect, onImageUpload, selectedImage }) => {
         </div>
     );
 };
-// ----------------------------------------------------------------------
+
 
 
 export default function UserPerfil () {
     const [openProvider, setOpenProvider] = useState(false);
 
-    // Armazena objetos { id, url }
+    
     const [userGalleryImages, setUserGalleryImages] = useState([]);
     const [currentMainImage, setCurrentMainImage] = useState(null);
 
+    const { providerSelected } = useProviderContext();
     
-    // EFEITO DE LIMPEZA: Revoga as URLs temporárias de objeto
-    // A função de retorno é executada ANTES da próxima renderização ou desmontagem.
-    // Isso garante que as URLs antigas (se forem substituídas/descartadas) sejam limpas.
+    
     useEffect(() => {
         return () => {
-             // Limpa todas as URLs temporárias ao desmontar o componente.
+             
              userGalleryImages.forEach(item => URL.revokeObjectURL(item.url));
         };
-    // Sem dependências, ele é chamado apenas na desmontagem
+
     }, []); 
     
-    // EFEITO DE GERENCIAMENTO DE DESTAQUE: Garante que haja um destaque
+
     useEffect(() => {
         const imageUrls = userGalleryImages.map(item => item.url);
         
-        // Se a imagem principal atual não existe mais no array, ou se não há imagem principal
-        // mas há imagens na galeria, define a primeira como destaque.
+
         if (userGalleryImages.length > 0 && 
             (!currentMainImage || !imageUrls.includes(currentMainImage))) {
             
@@ -94,28 +95,27 @@ export default function UserPerfil () {
     }, [userGalleryImages, currentMainImage]);
 
 
-    // Função para adicionar uma nova imagem
+
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
         if (file) {
-            // Cria uma URL temporária. ESTA URL PERMANECE VÁLIDA até ser revogada.
+           
             const newImageUrl = URL.createObjectURL(file);
             const newImageItem = {
                 id: Date.now() + Math.random(),
                 url: newImageUrl
             };
             
-            // Adiciona o novo item ao array
+          
             setUserGalleryImages(prevImages => [...prevImages, newImageItem]);
             
-            // Define a nova imagem como a imagem principal automaticamente
-            // Isso acionará o useEffect de gerenciamento de destaque, se necessário.
+         
             setCurrentMainImage(newImageUrl);
         }
         event.target.value = null;
     };
 
-    // Função para selecionar uma imagem para o destaque
+ 
     const handleImageSelect = (url) => {
         setCurrentMainImage(url);
     };
@@ -127,10 +127,11 @@ export default function UserPerfil () {
     const handleOpenProvider = () => {
         setOpenProvider(true);
     }
+    console.log(providerSelected)
 
     return(
         <div className={styles.providerDatailsContainer}>
-            {/* ... restante do seu código ... */}
+           
 
             <div className={styles.providerDatailsHome}>
                 <div className={styles.providerDatailsImage}>
@@ -138,8 +139,8 @@ export default function UserPerfil () {
                 </div>
 
                 <div className={styles.providerDatailsInfo}>
-                    <h2>Nome do Prestador</h2>
-                    <h5>Especialidade</h5>
+                    <h2>{providerSelected.nome}</h2>
+                    <h5>{providerSelected.servico.name}</h5>
                     <div className={styles.line}></div>
                     <p>Descrição detalhada do prestador de serviço, suas qualificações, experiência e outras informações relevantes que possam ajudar o cliente a tomar uma decisão informada.</p>
                 </div>

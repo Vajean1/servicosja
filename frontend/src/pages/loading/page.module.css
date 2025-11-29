@@ -10,3 +10,16 @@
     background-size: cover;
     background-position: center;
 }
+
+.loading2{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 80vh;
+    color: var(--orange);
+    font-size: 3rem;
+    font-family: var(--font);
+    gap: 35px;
+}

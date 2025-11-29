@@ -6,7 +6,7 @@ export default function ProviderBox ({name , location, resum, rating}) {
 
     const naviagtion = useNavigate();
 
-
+    
    return (
         <div className={styles.providerBox} onClick={() => naviagtion('/providerDatails')}>
             <img src="/img/exemples/Group 8.png" alt="imagem usuario" />

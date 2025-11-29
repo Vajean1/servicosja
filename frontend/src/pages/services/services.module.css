@@ -91,6 +91,11 @@
     box-shadow: 4px 4px 8px #767474;
 }
 
+.box{
+    width: 100%;
+    display: flex;
+}
+
 .filterItem button{
     position:absolute;
     right: 0;
@@ -154,8 +159,8 @@
     gap: 30px;
     cursor: pointer;
     padding-top: 60px;
-    align-items: center;
-    justify-content: center;
+    margin-bottom: 50px;
+    padding-bottom: 120px;
 }
 
 
@@ -165,7 +170,12 @@
 
  .providerContainer{
     display: flex;
-   margin: 0 auto;
+   margin: auto auto;           
+   margin-bottom: 50px;
+ }
+
+ .box{
+    width: 40%;
  }
 
 }
@@ -178,6 +188,7 @@
 
     .servicesMenu{
         display: none;
+
     }
 
  .servicesFilter{
@@ -187,7 +198,7 @@
  .providerContainer{
     width: 80%;
     display: flex;
-   margin: 0 auto;
+   margin:  auto;
  }
 
 }

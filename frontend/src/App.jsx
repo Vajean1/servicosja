@@ -6,6 +6,7 @@ import { Outlet } from "react-router"
 import Navbar from "./components/navbar/navbar"
 import Footer from "./components/footer/footer"
 import Chatbot from "./components/chatbot/chatbot"
+import { ProviderProvider } from './context/providerSelected';
 
 
 
@@ -26,12 +27,12 @@ export default function App() {
 
 
   return (
-    <>
+    <ProviderProvider>
         <Navbar/>
         <Outlet/>
         <Chatbot/>
         <Footer/>
-    </>
+    </ProviderProvider>
   )
 }
 
