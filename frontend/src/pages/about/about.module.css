@@ -232,8 +232,14 @@
     width: 50%;
    }
 
+   .teamContent{
+    width: 80%;
+    gap: 35px;
+    justify-content: space-around;
+   }
+
     .teambox{
-    width: 100%;
+    width: 35%;
    }
 
    .journeyContainer p{

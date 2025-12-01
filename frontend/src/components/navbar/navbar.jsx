@@ -11,26 +11,25 @@ export default function Navbar () {
     const currentPath = location.pathname;
 
     const [openMenu , setOpenMenu] = useState(false);
-    // 1. Estado para rastrear a última posição de rolagem
+    
     const [lastScrollY, setLastScrollY] = useState(0); 
-    // 2. Estado para controlar a visibilidade da Navbar (true = visível, false = oculta)
+    
     const [showNavbar, setShowNavbar] = useState(true); 
 
     const handleOpenMenu = () => {
         setOpenMenu(!openMenu)
     }
 
-    // Função que verifica a direção da rolagem e atualiza o estado de visibilidade
+    
     const controlNavbar = () => {
-        // Se a rolagem atual for maior que a anterior (rolando para baixo) E se a rolagem for maior que 100px:
-        // O valor '100' é um buffer para que o menu não desapareça imediatamente ao iniciar a rolagem.
+        
         if (typeof window !== 'undefined' && window.scrollY > lastScrollY && window.scrollY > 100) {
-            // Rolar para baixo - Ocultar Navbar
+            
             setShowNavbar(false); 
         } 
-        // Se a rolagem atual for menor que a anterior (rolando para cima) OU se a rolagem estiver perto do topo (abaixo de 100px):
+       
         else if (typeof window !== 'undefined' && window.scrollY < lastScrollY || window.scrollY <= 100) {
-            // Rolar para cima - Mostrar Navbar
+            
             setShowNavbar(true);
         }
         
@@ -38,18 +37,18 @@ export default function Navbar () {
         setLastScrollY(window.scrollY); 
     };
 
-    // Efeito para adicionar e remover o event listener de rolagem
+    
     useEffect(() => {
         if (typeof window !== 'undefined') {
             window.addEventListener('scroll', controlNavbar);
 
-            // Cleanup function: remove o listener quando o componente é desmontado
+            
             return () => {
                 window.removeEventListener('scroll', controlNavbar);
             };
         }
-    }, [lastScrollY]); // Dependência em lastScrollY para garantir que a comparação seja sempre precisa.
-    
+    }, [lastScrollY]); 
+
     const isNavLinkActive = (path) => {
     
         if (path === '/') {
@@ -68,7 +67,7 @@ export default function Navbar () {
     };
 
     return (
-        // 3. Adicionar a classe condicional `navbarHidden` baseada no estado `showNavbar`
+        
         <nav className={`${styles.navbarContainer} ${showNavbar ? '' : styles.navbarHidden}`}>
             <Link to={'/'}><img src="/img/logo/logo.png" alt="logo Serviçosjá"/></Link>
 
@@ -106,7 +105,7 @@ export default function Navbar () {
             </div> 
 
             <div className={styles.MobileNavbarLinksContainer}>
-                <TiThMenu className={styles.navbarIcons} onClick={handleOpenMenu} />                    
+                <TiThMenu className={styles.navbarIcons} onClick={handleOpenMenu} /> 
             </div>
 
             <Drawer
@@ -118,29 +117,33 @@ export default function Navbar () {
                             <Link 
                     className={getLinkClassName('/')} 
                     to={'/'}
+                    onClick={handleOpenMenu}
                 >
                     Inicio
                 </Link>
                 <Link 
                     className={getLinkClassName('/services')} 
                     to={'/services'}
+                    onClick={handleOpenMenu}
                 >
                     Serviços
                 </Link>
                 <Link 
                     className={getLinkClassName('/about')} 
                     to={'/about'}
+                    onClick={handleOpenMenu}
                 >
                     Sobre nós
                 </Link>
                 <Link 
                     className={getLinkClassName('/plans')} 
                     to={'/plans'}
+                    onClick={handleOpenMenu}
                 >
                     Planos
                 </Link >
-                <Link to={'/login'} className={styles.loginButton}> 
-                    <FaRegUser className={styles.icon} /> Entrar
+                <Link to={'/login' } onClick={handleOpenMenu} className={styles.loginButton}> 
+                    <FaRegUser className={styles.icon}  /> Entrar
                 </Link>
                         </div>
                         
