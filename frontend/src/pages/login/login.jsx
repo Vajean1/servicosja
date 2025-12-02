@@ -16,13 +16,24 @@ export default function Login () {
     // Hook useEffect para checar o localStorage na montagem do componente
     useEffect(() => {
         // Verifica se 'auth' existe no localStorage
-        const authData = localStorage.getItem('auth');
+        const auth = localStorage.getItem('auth');
+        const authData = JSON.parse(auth)
+        const userType = authData?.tipo_usuario
 
-        if (authData) {
+
+        if (userType === "prestador") {
             // Se 'auth' existir, redireciona para '/providerPerfil'
             console.log('Item "auth" encontrado no localStorage. Redirecionando...');
             navigate('/providerPerfil');
         }
+
+        if (userType === "cliente") {
+            // Se 'auth' existir, redireciona para '/providerPerfil'
+            console.log('Item "auth" encontrado no localStorage. Redirecionando...');
+            navigate('/userPerfil');
+        }
+
+
     }, [navigate]); // O array de dependências inclui 'navigate'
 
     // --- Lógica de estado e popups (mantida) ---
