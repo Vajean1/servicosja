@@ -4,6 +4,7 @@ import styles from './Registration.module.css';
 import ProviderServices from '../../services/provider';
 import Loading from '../loading/loading';
 import { useNavigate } from 'react-router';
+import { useAuth } from '../../context/AuthContext';
 
 // --- ARRAYS E FUNÇÕES AUXILIARES (PERMANECEM INALTERADOS) ---
 const allCategores = [
@@ -231,6 +232,7 @@ export default function ProviderRegistration() {
     };
 
     const { register, loading } = ProviderServices();
+    const { setAuthData } = useAuth();
 
     const navigate = useNavigate()
 
@@ -241,12 +243,8 @@ export default function ProviderRegistration() {
         register(formDataProvider)
             .then((result) => {
                 console.log('Cadastro realizado com sucesso!', result);
-                 localStorage.setItem(
-                'auth',
-                JSON.stringify(result)
-                
-            );
-            navigate('/providerPerfil')
+                setAuthData(result);
+                navigate('/providerPerfil')
             })
             .catch((errorObject) => {
                 console.error('Erros de validação da API:', errorObject);

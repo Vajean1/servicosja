@@ -1,0 +1,43 @@
+.modalContent {
+    padding: 20px;
+    width: 400px;
+    background: white;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.modalContent h2 {
+    color: #110263;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.modalContent form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.modalContent input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.modalContent button {
+    padding: 10px;
+    background-color: #1a06c9;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.modalContent button:hover {
+    background-color: #110263;
+}

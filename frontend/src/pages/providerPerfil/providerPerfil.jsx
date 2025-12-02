@@ -3,9 +3,10 @@ import styles from './providerPerfil.module.css';
 import ProviderServices from '../../services/provider';
 import { useNavigate } from 'react-router';
 import RatingChart from './RatingChart'; 
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaSignOutAlt } from "react-icons/fa";
+import { useAuth } from '../../context/AuthContext';
+import EditProviderModal from '../../components/editProviderModal/EditProviderModal';
 
-// --- MOCK DATA (Seus dados mockados) ---
 const mockUserData = {
     nome: "Eduardo Jesen",
     cargo: "Designer Gráfico",
@@ -90,6 +91,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
     const [activeTab, setActiveTab] = useState(TABS.DASHBOARD);
     const [userGalleryImages, setUserGalleryImages] = useState([]);
     const [currentMainImage, setCurrentMainImage] = useState(null);
+    const [openEditModal, setOpenEditModal] = useState(false);
 
     const getTabClassName = (tab) => {
         return `${styles.tab} ${activeTab === tab ? styles.active : ''}`;
@@ -127,20 +129,19 @@ export default function ProviderPerfil({ userData = mockUserData }) {
     };
     
     const {getProviderPerfil, providerAccount} = ProviderServices()
-    const auth = localStorage.getItem('auth')
-    const authData =  JSON.parse(auth) 
-    const profileId = authData.profile_id; 
+    
+    const { user, logout, loading } = useAuth(); // Use AuthContext
+    const profileId = user?.profile_id; 
 
     const navigate = useNavigate()
 
     useEffect(() => {
-        if (!profileId) {
-            const timer = setTimeout(() => {
-                navigate('/login');
-            }, 0);
-            return () => clearTimeout(timer);
+        // If not loading and no user or profileId, redirect to login
+        if (!loading && !profileId) {
+             // Maybe user is not a provider or not logged in
+             navigate('/login');
         } 
-    }, [profileId, navigate]); 
+    }, [profileId, loading, navigate]); 
 
     // 2. Chamada da API
     useEffect(()=>{
@@ -184,6 +185,17 @@ export default function ProviderPerfil({ userData = mockUserData }) {
         newRatings.sort((a, b) => b.estrelas - a.estrelas);
         return newRatings;
     }, [estatisticas, userData.avaliacoes]); 
+
+    const handleLogout = () => {
+        logout();
+        navigate('/');
+    };
+
+    const handleUpdateProfile = () => {
+        if (profileId) {
+            getProviderPerfil(profileId); // Refresh data
+        }
+    };
     
     
     return (
@@ -196,6 +208,9 @@ export default function ProviderPerfil({ userData = mockUserData }) {
                         <p>{providerAccount?.servico?.nome}</p>
                     </div>
                 </div>
+                <button onClick={handleLogout} className={styles.logoutButton} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', fontSize: '1rem', marginLeft: 'auto', padding: '0 20px' }}>
+                    <FaSignOutAlt /> Sair
+                </button>
             </header>
 
             <div className={styles.container}>
@@ -203,7 +218,9 @@ export default function ProviderPerfil({ userData = mockUserData }) {
                 {/* 1. Informações Pessoais */}
                 <div className={styles.box}>
                     <h2>Informações Pessoais</h2>
-                    <div className={styles.iconEdit}><FaEdit /></div>
+                    <div className={styles.iconEdit} onClick={() => setOpenEditModal(true)}>
+                        <FaEdit />
+                    </div>
                     <div className={styles.descricaoGrid}>
                         <span>Nome: {providerAccount?.nome}</span>
                         <span>Data de Nasc: {providerAccount?.data_nascimento}</span>
@@ -221,8 +238,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
                 <div className={styles.box}>
                     <h2>Descrição</h2>
 
-                    <textarea placeholder='Digite sua descrição'>
-
+                    <textarea placeholder='Digite sua descrição' value={providerAccount?.biografia || ''} readOnly>
                     </textarea>
                 </div>
 
@@ -265,6 +281,13 @@ export default function ProviderPerfil({ userData = mockUserData }) {
                 {/* 4. BLOCO DO MAPA (AGORA APENAS INFORMAÇÃO DE LOCALIZAÇÃO) */}
                
             </div>
+
+            <EditProviderModal 
+                open={openEditModal} 
+                close={() => setOpenEditModal(false)} 
+                providerData={providerAccount} 
+                onUpdate={handleUpdateProfile} 
+            />
         </div>
     );
 }

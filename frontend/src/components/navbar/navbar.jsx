@@ -1,13 +1,20 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styles from './navbar.module.css';
-import { FaRegUser } from "react-icons/fa";
+import { FaRegUser, FaSignOutAlt } from "react-icons/fa";
 import { Drawer } from '@mui/material';
 import { TiThMenu } from "react-icons/ti";
 import { useState, useEffect } from 'react';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Navbar () {
-    
+    const { user, isAuthenticated, logout } = useAuth();
     const location = useLocation();
+    const navigate = useNavigate();
+    
+    const handleLogout = () => {
+        logout();
+        navigate('/');
+    };
     const currentPath = location.pathname;
 
     const [openMenu , setOpenMenu] = useState(false);
@@ -97,12 +104,23 @@ export default function Navbar () {
                 >
                     Planos
                 </Link >
-                <Link to={'/login'} className={styles.loginButton}> 
-                    <FaRegUser className={styles.icon} /> Entrar
-                </Link>
+                {isAuthenticated ? (
+                    <>
+                        <Link to={user?.tipo_usuario === 'prestador' ? '/providerPerfil' : '/userPerfil'} className={styles.loginButton}>
+                            <FaRegUser className={styles.icon} /> {user?.nome?.split(' ')[0] || 'Perfil'}
+                        </Link>
+                        <div onClick={handleLogout} className={styles.loginButton} style={{ cursor: 'pointer', marginLeft: '10px' }}>
+                             <FaSignOutAlt className={styles.icon} /> Sair
+                        </div>
+                    </>
+                ) : (
+                    <Link to={'/login'} className={styles.loginButton}>
+                        <FaRegUser className={styles.icon} /> Entrar
+                    </Link>
+                )}
 
-                    
-            </div> 
+
+            </div>
 
             <div className={styles.MobileNavbarLinksContainer}>
                 <TiThMenu className={styles.navbarIcons} onClick={handleOpenMenu} /> 
@@ -142,9 +160,20 @@ export default function Navbar () {
                 >
                     Planos
                 </Link >
-                <Link to={'/login' } onClick={handleOpenMenu} className={styles.loginButton}> 
-                    <FaRegUser className={styles.icon}  /> Entrar
-                </Link>
+                {isAuthenticated ? (
+                    <>
+                        <Link to={user?.tipo_usuario === 'prestador' ? '/providerPerfil' : '/userPerfil'} onClick={handleOpenMenu} className={styles.loginButton}>
+                            <FaRegUser className={styles.icon} /> {user?.nome?.split(' ')[0] || 'Perfil'}
+                        </Link>
+                        <div onClick={() => { handleLogout(); handleOpenMenu(); }} className={styles.loginButton} style={{ cursor: 'pointer' }}>
+                             <FaSignOutAlt className={styles.icon} /> Sair
+                        </div>
+                    </>
+                ) : (
+                    <Link to={'/login'} onClick={handleOpenMenu} className={styles.loginButton}>
+                        <FaRegUser className={styles.icon} /> Entrar
+                    </Link>
+                )}
                         </div>
                         
                 </Drawer>

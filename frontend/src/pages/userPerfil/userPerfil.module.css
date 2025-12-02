@@ -2,6 +2,9 @@
 /* Você deve definir --font no seu arquivo global de estilos (ex: index.css) ou no :root */
 /* Exemplo: :root { --font: 'Roboto', sans-serif; } */
 
+.dashboardPage {
+    padding-top: 120px; /* Ajuste para compensar a Navbar fixa */
+}
 
 /* --- Header --- */
 .header {

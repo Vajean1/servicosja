@@ -197,6 +197,9 @@ export default function ProviderPerfil({ userData = mockUserData }) {
                         <p>Usuario</p>
                     </div>
                 </div>
+                <button onClick={handleLogout} className={styles.logoutButton} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', fontSize: '1rem', marginLeft: 'auto', padding: '0 20px' }}>
+                    <FaSignOutAlt /> Sair
+                </button>
             </header>
 
             <div className={styles.container}>
@@ -220,6 +223,13 @@ export default function ProviderPerfil({ userData = mockUserData }) {
                
                
             </div>
+            
+            <EditUserModal 
+                open={openEditModal} 
+                close={() => setOpenEditModal(false)} 
+                userData={profileData} 
+                onUpdate={handleUpdateProfile} 
+            />
         </div>
     );
 }

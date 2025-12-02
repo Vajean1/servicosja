@@ -90,11 +90,11 @@ export default function LoginProviderPopup ({open, close}) {
                     </div>
 
                     <div className={styles.popupFooter}>
-                       <button onClick={() => navigate("/userRegistration")}>Não Tem Uma Conta? Cadastre-se</button>
+                        <button onClick={() => navigate("/userRegistration")}>Não Tem Uma Conta? Cadastre-se</button>
                     </div>
                 </div>
 
             </Dialog>
         </>
-    )  
+    )
 }
