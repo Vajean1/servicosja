@@ -10,7 +10,7 @@
 .header {
     width: 100%;
     height: 160px;
-    background: #110263;
+    background: var(--orange);
     border-radius: 0 0 20px 20px;
     display: flex;
     align-items: center;
@@ -18,6 +18,7 @@
     color: white;
     position: relative;
     font-family: var(--font); /* Usando a variável de fonte */
+    margin-top: 60px;
 }
 
 .perfil {
@@ -73,12 +74,13 @@
     padding: 20px;
     box-shadow: 0 0 5px rgba(0,0,0,0.1);
     margin-bottom: 25px;
+    position: relative;
 }
 
 .box h2 {
     margin-top: 0;
     font-size: 18px;
-    color: #110263;
+    color: var(--orange);
 }
 
 .descricaoGrid { /* descricao-grid -> descricaoGrid */
@@ -203,3 +205,188 @@ table th, table td {
 .bar3::after { width: 4%; }  /* bar-3 -> bar3 */
 .bar2::after { width: 2%; }  /* bar-2 -> bar2 */
 .bar1::after { width: 2%; }  /* bar-1 -> bar1 */
+
+.galleryContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.mainImageContainer {
+    width: 100%;
+    height: 350px;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f8f8;
+    border: 1px solid #eee;
+}
+
+.mainImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.emptyMainImage {
+    color: #a0a0a0;
+    font-size: 18px;
+    text-align: center;
+    padding: 30px;
+    font-style: italic;
+}
+
+.thumbnailsContainer {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    padding-top: 5px;
+    border-top: 1px solid #f0f0f0;
+    justify-content: flex-start;
+}
+
+.thumbnailsContainer::-webkit-scrollbar {
+    height: 6px;
+}
+.thumbnailsContainer::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+.thumbnailsContainer::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+.addThumbnail {
+    flex-shrink: 0;
+    width: 90px;
+    height: 90px;
+    border-radius: 8px;
+    border: 2px dashed #d1d1d1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: #777;
+    cursor: pointer;
+    transition: border-color 0.3s, background-color 0.3s, transform 0.2s;
+    text-align: center;
+    padding: 8px;
+    background-color: #fff;
+}
+
+.addThumbnail:hover {
+    border-color: #007bff;
+    background-color: #eaf5ff;
+    transform: translateY(-2px);
+    color: #0056b3;
+}
+
+.addThumbnail span {
+    font-size: 30px;
+    margin-bottom: 6px;
+    color: #007bff;
+}
+
+.thumbnail {
+    flex-shrink: 0;
+    width: 90px;
+    height: 90px;
+    overflow: hidden;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.thumbnail:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.activeThumbnail {
+    border: 3px solid #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.6);
+    transform: scale(1.03);
+}
+
+.w_50{
+    width: 50%;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.commentsBox{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    overflow-x: auto;
+    border: 2px solid var(--orange);
+    padding: 0 20px ;
+    border-radius: 12px;
+    margin-top: 15px;
+
+}
+
+.flexBox{
+    width: 100%;
+    align-items: center;
+    justify-content: space-around;
+    display: flex;
+}
+
+.imgEdit{
+    position: relative;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.iconEdit{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 25px;
+    color: var(--orange);
+    cursor: pointer;
+}
+
+.imgEdit svg{
+    position: absolute;
+    bottom: 0;
+    right: -4px;
+}
+@media screen and (max-width:800px) {
+    .colum{
+    flex-direction: column;
+}
+
+.w_50{
+    width: 100%;
+}
+
+.descricaoGrid { /* descricao-grid -> descricaoGrid */
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+}
+}

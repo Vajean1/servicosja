@@ -85,8 +85,11 @@ export default function UserRegistration() {
         register(formDataUser)
             .then((result) => {
                 console.log('Cadastro realizado com sucesso!', result);
-                setAuthData(result);
-                // 🚀 REDIRECIONAMENTO CORRIGIDO: Usa navigate()
+                  localStorage.setItem(
+                'auth',
+                JSON.stringify(result)
+                
+            );
                 navigate('/userPerfil'); 
             })
             .catch((errorObject) => {

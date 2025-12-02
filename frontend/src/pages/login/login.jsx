@@ -14,14 +14,26 @@ export default function Login() {
     const { isAuthenticated, user } = useAuth();
 
     useEffect(() => {
-        if (isAuthenticated) {
-            if (user?.tipo_usuario === 'prestador') {
-                navigate('/providerPerfil');
-            } else {
-                navigate('/userPerfil');
-            }
+        // Verifica se 'auth' existe no localStorage
+        const auth = localStorage.getItem('auth');
+        const authData = JSON.parse(auth)
+        const userType = authData?.tipo_usuario
+
+
+        if (userType === "prestador") {
+            // Se 'auth' existir, redireciona para '/providerPerfil'
+            console.log('Item "auth" encontrado no localStorage. Redirecionando...');
+            navigate('/providerPerfil');
         }
-    }, [isAuthenticated, user, navigate]);
+
+        if (userType === "cliente") {
+            // Se 'auth' existir, redireciona para '/providerPerfil'
+            console.log('Item "auth" encontrado no localStorage. Redirecionando...');
+            navigate('/userPerfil');
+        }
+
+
+    }, [navigate]); // O array de dependências inclui 'navigate'
 
 
     const [openUser, setOpenUser] = useState(false);
