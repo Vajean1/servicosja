@@ -1,5 +1,10 @@
-import React, { useState } from 'react';
-import styles from './userPerfil.module.css'; 
+import React, { useState, useEffect } from 'react';
+import styles from './userPerfil.module.css';
+import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { FaSignOutAlt, FaEdit } from "react-icons/fa";
+import UserServices from '../../services/user';
+import EditUserModal from '../../components/editUserModal/EditUserModal';
 
 const mockUserData = {
     nome: "Eduardo Jesen",
@@ -10,7 +15,7 @@ const mockUserData = {
     dataRegistro: "28/11/2025",
     email: "eduardojesen@example.com",
     linkedIn: "user2025",
-    perfilImg: "../assets/img/perfil.jpg", 
+    perfilImg: "../assets/img/perfil.jpg",
     mensagens: [
         { nome: "João Victor", data: "28/11" },
         { nome: "Maria Silva", data: "27/11" },
@@ -38,9 +43,52 @@ const TABS = {
 
 export default function UserPerfil({ userData = mockUserData }) {
     const [activeTab, setActiveTab] = useState(TABS.DASHBOARD);
-    
+    const { logout } = useAuth();
+    const navigate = useNavigate();
+    const [openEditModal, setOpenEditModal] = useState(false);
+
+    const [profileData, setProfileData] = useState(null);
+    const { getMe } = UserServices();
+
+    useEffect(() => {
+        getMe()
+            .then(data => {
+                setProfileData(data);
+            })
+            .catch(err => {
+                console.error("Erro ao buscar dados do perfil:", err);
+            });
+    }, []);
+
+    const handleLogout = () => {
+        logout();
+        navigate('/');
+    };
+
+    const handleUpdateProfile = () => {
+        getMe().then(data => setProfileData(data));
+    };
+
+    // Combine mock data structure with real data if available
+    const displayData = profileData ? {
+        nome: profileData.nome_completo || "Nome não informado",
+        cargo: profileData.tipo_usuario === 'cliente' ? "Cliente" : "Prestador",
+        // Tenta pegar de perfil_cliente ou da raiz
+        dataNasc: profileData.perfil_cliente?.dt_nascimento || profileData.dt_nascimento || "N/A",
+        genero: profileData.perfil_cliente?.genero || profileData.genero || "N/A",
+        telefone: profileData.perfil_cliente?.telefone_contato || profileData.telefone_contato || "N/A",
+        dataRegistro: profileData.data_joined ? new Date(profileData.data_joined).toLocaleDateString('pt-BR') : "N/A",
+        email: profileData.email || "Email não informado",
+        linkedIn: "N/A", // Não existe no cadastro
+        perfilImg: userData.perfilImg, // Mantém imagem mockada por enquanto
+        mensagens: userData.mensagens, // Mantém mock
+        galeria: userData.galeria, // Mantém mock
+        avaliacoes: userData.avaliacoes // Mantém mock
+    } : userData;
+
+
     // O objeto 'styles' agora contém todas as suas classes CSS
-    
+
     // Função auxiliar para combinar classes (útil para tabs)
     const getTabClassName = (tab) => {
         // Combina a classe base (styles.tab) com a classe 'active' se for a aba ativa
@@ -52,26 +100,36 @@ export default function UserPerfil({ userData = mockUserData }) {
             {/* --- Cabeçalho (Header) --- */}
             <header className={styles.header}>
                 <div className={styles.perfil}>
-                    <img src={userData.perfilImg} alt="perfil" />
+                    <img src={displayData.perfilImg} alt="perfil" />
                     <div>
-                        <h2>{userData.nome}</h2>
-                        <p>{userData.cargo}</p>
+                        <h2 style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            {displayData.nome} 
+                            <FaEdit 
+                                style={{ cursor: 'pointer', fontSize: '18px' }} 
+                                onClick={() => setOpenEditModal(true)} 
+                                title="Editar Perfil"
+                            />
+                        </h2>
+                        <p>{displayData.cargo}</p>
                     </div>
                 </div>
+                <button onClick={handleLogout} className={styles.logoutButton} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', fontSize: '1rem', marginLeft: 'auto', padding: '0 20px' }}>
+                    <FaSignOutAlt /> Sair
+                </button>
             </header>
 
             {/* --- Abas de Navegação (Tabs) --- */}
             <div className={styles.tabs}>
-                <a 
-                    href="#" 
+                <a
+                    href="#"
                     onClick={(e) => { e.preventDefault(); setActiveTab(TABS.DASHBOARD); }}
                     // Uso de template literal para classes condicionais
-                    className={getTabClassName(TABS.DASHBOARD)} 
+                    className={getTabClassName(TABS.DASHBOARD)}
                 >
                     {TABS.DASHBOARD}
                 </a>
-                <a 
-                    href="#" 
+                <a
+                    href="#"
                     onClick={(e) => { e.preventDefault(); setActiveTab(TABS.MESSAGES); }}
                     className={getTabClassName(TABS.MESSAGES)}
                 >
@@ -86,29 +144,29 @@ export default function UserPerfil({ userData = mockUserData }) {
                 <div className={styles.box}>
                     <h2>Informações Pessoais</h2>
                     <div className={styles.descricaoGrid}>
-                        <span>Nome: {userData.nome}</span>
-                        <span>Data de Nasc: {userData.dataNasc}</span>
-                        <span>Gênero: {userData.genero}</span>
-                        <span>Telefone: {userData.telefone}</span>
-                        <span>Cargo: {userData.cargo}</span>
-                        <span>Data de Registro: {userData.dataRegistro}</span>
-                        <span>Email: {userData.email}</span>
-                        <span>LinkedIn: {userData.linkedIn}</span>
+                        <span>Nome: {displayData.nome}</span>
+                        <span>Data de Nasc: {displayData.dataNasc}</span>
+                        <span>Gênero: {displayData.genero}</span>
+                        <span>Telefone: {displayData.telefone}</span>
+                        <span>Cargo: {displayData.cargo}</span>
+                        <span>Data de Registro: {displayData.dataRegistro}</span>
+                        <span>Email: {displayData.email}</span>
+                        <span>LinkedIn: {displayData.linkedIn}</span>
                     </div>
                 </div>
 
                 {/* --- Mensagens e Calendário --- */}
                 <div className={styles.flex}>
-                    
+
                     {/* Mensagens */}
-                    <div className={`${styles.box} ${styles.mensagens}`}> 
+                    <div className={`${styles.box} ${styles.mensagens}`}>
                         <h2>Mensagens</h2>
                         <table>
                             <thead>
                                 <tr><th>Nome</th><th>Data</th></tr>
                             </thead>
                             <tbody>
-                                {userData.mensagens.map((msg, index) => (
+                                {displayData.mensagens.map((msg, index) => (
                                     <tr key={index}>
                                         <td>{msg.nome}</td>
                                         <td>{msg.data}</td>
@@ -136,7 +194,7 @@ export default function UserPerfil({ userData = mockUserData }) {
                 <div className={styles.box}>
                     <h2>Galeria de Fotos</h2>
                     <div className={styles.fotosGrid}>
-                        {userData.galeria.map((src, index) => (
+                        {displayData.galeria.map((src, index) => (
                             <img key={index} src={src} alt={`Serviço ${index + 1}`} />
                         ))}
                     </div>
@@ -149,23 +207,23 @@ export default function UserPerfil({ userData = mockUserData }) {
                     {/* Gráfico de Linhas (SVG) */}
                     <div className={styles.graficoLinhas}>
                         <svg width="100%" height="150" viewBox="0 0 320 125">
-                            <polyline 
-                                points="10,120 60,80 110,90 160,40 210,70 260,30 310,50" 
-                                fill="none" 
-                                stroke="#1a06c9" 
-                                strokeWidth="3" 
+                            <polyline
+                                points="10,120 60,80 110,90 160,40 210,70 260,30 310,50"
+                                fill="none"
+                                stroke="#1a06c9"
+                                strokeWidth="3"
                             />
                         </svg>
                     </div>
 
                     {/* Avaliações em 5 níveis */}
                     <div className={styles.ratingsList}>
-                        {userData.avaliacoes.map((rating) => (
+                        {displayData.avaliacoes.map((rating) => (
                             <div key={rating.estrelas} className={styles.ratingRow}>
                                 <span>{rating.estrelas} ★</span>
                                 {/* Combinação de classe estática (styles.bar) e dinâmica (styles.bar5) */}
-                                <div 
-                                    className={`${styles.bar} ${styles[`bar${rating.estrelas}`]}`} 
+                                <div
+                                    className={`${styles.bar} ${styles[`bar${rating.estrelas}`]}`}
                                     style={{ width: `${rating.percentual}%` }}
                                 ></div>
                                 <span>{rating.percentual}%</span>
@@ -174,6 +232,13 @@ export default function UserPerfil({ userData = mockUserData }) {
                     </div>
                 </div>
             </div>
+            
+            <EditUserModal 
+                open={openEditModal} 
+                close={() => setOpenEditModal(false)} 
+                userData={profileData} 
+                onUpdate={handleUpdateProfile} 
+            />
         </div>
     );
 }

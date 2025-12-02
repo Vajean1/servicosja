@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom'; // 👈 Importação para React 
 import styles from './Registration.module.css';
 import UserServices from '../../services/user';
 import Loading from '../loading/loading';
+import { useAuth } from '../../context/AuthContext';
 
 
 // --- Funções Auxiliares (Não Mudaram) ---
@@ -25,6 +26,7 @@ const getErrorMessage = (formErrors, fieldName) => {
 export default function UserRegistration() {
     // 💡 Hook de navegação do React Router Dom
     const navigate = useNavigate(); 
+    const { setAuthData } = useAuth();
     
     const [formDataUser, setFormDataUser] = useState({});
     const [formErrors, setFormErrors] = useState({}); 
@@ -83,7 +85,7 @@ export default function UserRegistration() {
         register(formDataUser)
             .then((result) => {
                 console.log('Cadastro realizado com sucesso!', result);
-                
+                setAuthData(result);
                 // 🚀 REDIRECIONAMENTO CORRIGIDO: Usa navigate()
                 navigate('/userPerfil'); 
             })

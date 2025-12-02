@@ -7,6 +7,7 @@ import Navbar from "./components/navbar/navbar"
 import Footer from "./components/footer/footer"
 import Chatbot from "./components/chatbot/chatbot"
 import { ProviderProvider } from './context/providerSelected';
+import { AuthProvider } from './context/AuthContext';
 
 
 
@@ -27,13 +28,13 @@ export default function App() {
 
 
   return (
-    <ProviderProvider>
-        <Navbar/>
-        <Outlet/>
-        <Chatbot/>
-        <Footer/>
-    </ProviderProvider>
+    <AuthProvider>
+      <ProviderProvider>
+          <Navbar/>
+          <Outlet/>
+          <Chatbot/>
+          <Footer/>
+      </ProviderProvider>
+    </AuthProvider>
   )
 }
-
-

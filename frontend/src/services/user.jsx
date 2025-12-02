@@ -29,15 +29,6 @@ export default function UserServices() {
                 throw result; 
             }
             
-            // LÓGICA CORRIGIDA: Salva no localStorage APENAS se a resposta for OK (HTTP 2xx)
-            if (result && result.access && result.nome_completo) {
-                localStorage.setItem(
-                    'auth',
-                    JSON.stringify({ token: result.access, user: result.nome_completo })
-                );
-                console.log('Dados salvos no localStorage:', result);
-            }
-            
             // Retorna o resultado de sucesso
             return result; 
         })
@@ -52,6 +43,97 @@ export default function UserServices() {
             console.log('finalizado');
         });
     };
+
+    const getMe = async () => {
+        setLoading(true);
+        try {
+            const storedAuth = localStorage.getItem('auth');
+            const token = storedAuth ? JSON.parse(storedAuth).access : null;
+
+            if (!token) throw new Error("No token found");
+
+            const response = await fetch(`${url}/accounts/me/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            const result = await response.json();
+            if (!response.ok) throw result;
+            return result;
+        } catch (error) {
+            console.error("Error getting user profile:", error);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const initiateContact = async (providerUserId, serviceId) => {
+        setLoading(true);
+        try {
+            const storedAuth = localStorage.getItem('auth');
+            const token = storedAuth ? JSON.parse(storedAuth).access : null;
+            
+            if (!token) throw new Error("User not authenticated");
+
+            const payload = {
+                prestador_id: providerUserId,
+                servico: serviceId
+            };
+            console.log("Initiating Contact Payload:", payload);
+
+            const response = await fetch(`${url}/contratacoes/iniciar/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+            if (!response.ok) {
+                console.error("API Error Detail:", result);
+                throw result;
+            }
+            return result;
+        } catch (error) {
+            console.error("Error initiating contact:", error);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const updateUser = async (data) => {
+        setLoading(true);
+        try {
+            const storedAuth = localStorage.getItem('auth');
+            const token = storedAuth ? JSON.parse(storedAuth).access : null;
+            if (!token) throw new Error("No token found");
+
+            const response = await fetch(`${url}/accounts/me/`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            if (!response.ok) throw result;
+            return result;
+        } catch (error) {
+            console.error("Error updating user:", error);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
     
-    return{register , loading}
+    return{register , loading, getMe, initiateContact, updateUser}
 }
