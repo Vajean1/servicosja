@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Dialog } from '@mui/material';
 import styles from './EditProviderModal.module.css';
-import ProviderServices from '../../services/provider';
 import UserServices from '../../services/user';
+import ProviderServices from '../../services/provider'; // Import ProviderServices
 
 export default function EditProviderModal({ open, close, providerData, onUpdate }) {
     const [formData, setFormData] = useState({
@@ -16,6 +16,18 @@ export default function EditProviderModal({ open, close, providerData, onUpdate 
         rua: '',
         numero_casa: ''
     });
+
+    const [selectedPhoto, setSelectedPhoto] = useState(null); // State for photo
+    const [previewUrl, setPreviewUrl] = useState(null);
+
+    // Cleanup preview URL
+    useEffect(() => {
+        return () => {
+            if (previewUrl) {
+                URL.revokeObjectURL(previewUrl);
+            }
+        };
+    }, [previewUrl]);
 
     useEffect(() => {
         if (providerData) {
@@ -33,16 +45,25 @@ export default function EditProviderModal({ open, close, providerData, onUpdate 
         }
     }, [providerData]);
     
-    // const { updateProvider } = ProviderServices(); // Not used anymore if we use updateUser for everything
     const { updateUser } = UserServices();
+    const { updateProviderProfile } = ProviderServices(); // Destructure
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const handlePhotoChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setSelectedPhoto(file);
+            setPreviewUrl(URL.createObjectURL(file));
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            // 1. Update text fields (via JSON)
             const payload = {
                 nome_completo: formData.nome_completo,
                 perfil_prestador: {
@@ -58,6 +79,16 @@ export default function EditProviderModal({ open, close, providerData, onUpdate 
             };
 
             await updateUser(payload);
+
+            // 2. Update photo (via FormData) if selected
+            if (selectedPhoto) {
+                const photoFormData = new FormData();
+                photoFormData.append('foto_perfil', selectedPhoto);
+                // Also send bio/availability as they are part of provider profile, just in case,
+                // but updateUser handled them above. If backend updates provider fields via JSON correctly, we are good.
+                // We mainly need this for the file.
+                await updateProviderProfile(photoFormData);
+            }
             
             if (onUpdate) onUpdate();
             close();
@@ -72,6 +103,19 @@ export default function EditProviderModal({ open, close, providerData, onUpdate 
             <div className={styles.modalContent}>
                 <h2>Editar Perfil</h2>
                 <form onSubmit={handleSubmit}>
+                    <label>Foto de Perfil:</label>
+                    <input type="file" accept="image/*" onChange={handlePhotoChange} style={{marginBottom: '10px'}} />
+                    
+                    {previewUrl && (
+                        <div style={{ marginBottom: '15px', textAlign: 'center' }}>
+                            <img 
+                                src={previewUrl} 
+                                alt="Preview" 
+                                style={{ width: '100px', height: '100px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #ddd' }} 
+                            />
+                        </div>
+                    )}
+
                     <label>Nome:</label>
                     <input name="nome_completo" value={formData.nome_completo} onChange={handleChange} placeholder="Nome" />
                     

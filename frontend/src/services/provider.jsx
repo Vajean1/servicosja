@@ -116,7 +116,7 @@ export default function ProviderServices() {
         })
     }, [url, setLoading, setProviderAccount])
 
-    const getFilteredProviders = useCallback(async ({ material, hours24, weekend, service, category, minRating }) => {
+    const getFilteredProviders = useCallback(async ({ material, hours24, weekend, service, category, minRating, orderByDistance, latitude, longitude }) => {
         setLoading(true);
         const params = [];
         
@@ -137,6 +137,11 @@ export default function ProviderServices() {
         }
         if (minRating) {
             params.push(`nota_minima=${minRating}`);
+        }
+        if (orderByDistance && latitude && longitude) {
+            params.push(`ordenar_por_distancia=true`);
+            params.push(`latitude=${latitude}`);
+            params.push(`longitude=${longitude}`);
         }
 
         const queryString = params.length > 0 ? '?' + params.join('&') : '';
@@ -197,25 +202,130 @@ export default function ProviderServices() {
         }
     }, [url]);
 
-    const updateProvider = async (data) => {
+    const getProviderSolicitations = async () => {
         setLoading(true);
         try {
             const storedAuth = localStorage.getItem('auth');
             const token = storedAuth ? JSON.parse(storedAuth).access : null;
             if (!token) throw new Error("No token found");
 
-            const isFormData = data instanceof FormData;
-            const headers = {
-                'Authorization': `Bearer ${token}`
-            };
-            if (!isFormData) {
-                headers['Content-Type'] = 'application/json';
+            const response = await fetch(`${url}/contratacoes/prestador/solicitacoes/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            const result = await response.json();
+            if (!response.ok) throw result;
+            return result;
+        } catch (error) {
+            console.error("Error getting provider solicitations:", error);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const completeService = async (id) => {
+        setLoading(true);
+        try {
+            const storedAuth = localStorage.getItem('auth');
+            const token = storedAuth ? JSON.parse(storedAuth).access : null;
+            if (!token) throw new Error("No token found");
+
+            const response = await fetch(`${url}/contratacoes/solicitacoes/${id}/concluir/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            const result = await response.json();
+            if (!response.ok) throw result;
+            return result;
+        } catch (error) {
+            console.error("Error completing service:", error);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const addPortfolioItem = async (formData) => {
+        setLoading(true);
+        try {
+            const storedAuth = localStorage.getItem('auth');
+            const token = storedAuth ? JSON.parse(storedAuth).access : null;
+            if (!token) throw new Error("No token found");
+
+            // No Content-Type header for FormData, browser sets it with boundary
+            const response = await fetch(`${url}/portfolio/itens/`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            const result = await response.json();
+            if (!response.ok) throw result;
+            return result;
+        } catch (error) {
+            console.error("Error adding portfolio item:", error);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const deletePortfolioItem = async (id) => {
+        setLoading(true);
+        try {
+            const storedAuth = localStorage.getItem('auth');
+            const token = storedAuth ? JSON.parse(storedAuth).access : null;
+            if (!token) throw new Error("No token found");
+
+            const response = await fetch(`${url}/portfolio/itens/${id}/`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                 // Try to parse error if content exists, otherwise throw status
+                 try {
+                    const result = await response.json();
+                    throw result;
+                 } catch (e) {
+                    throw new Error(`Delete failed with status: ${response.status}`);
+                 }
             }
+            return true;
+        } catch (error) {
+            console.error("Error deleting portfolio item:", error);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const updateProviderProfile = async (formData) => {
+        setLoading(true);
+        try {
+            const storedAuth = localStorage.getItem('auth');
+            const token = storedAuth ? JSON.parse(storedAuth).access : null;
+            if (!token) throw new Error("No token found");
 
             const response = await fetch(`${url}/accounts/perfil/prestador/editar/`, {
                 method: 'PATCH',
-                headers: headers,
-                body: isFormData ? data : JSON.stringify(data)
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
             });
 
             const result = await response.json();
@@ -243,6 +353,10 @@ export default function ProviderServices() {
         getFilteredProviders,
         getBestRatedProviders,
         getReviews,
-        updateProvider
+        getProviderSolicitations,
+        completeService,
+        addPortfolioItem,
+        deletePortfolioItem,
+        updateProviderProfile
     };
 }

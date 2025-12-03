@@ -8,6 +8,13 @@ import Loading from '../loading/loading';
 import { useProviderContext } from '../../context/providerSelected';
 import Loading2 from '../loading/loading2';
 
+const getImageUrl = (url) => {
+    if (!url) return '';
+    if (url.startsWith('http') || url.startsWith('blob:')) return url;
+    if (url.startsWith('/img') || url.startsWith('/assets')) return url;
+    return `https://back-end-servicosja-api.onrender.com${url}`;
+};
+
 export default function Services () {
     const [activeMenuId, setActiveMenuId] = useState(null);
 
@@ -30,6 +37,11 @@ export default function Services () {
     const [fds,setFds] = useState(null)
     const [selectedService, setSelectedService] = useState(null);
     const [selectedRating, setSelectedRating] = useState(null);
+    const [searchTerm, setSearchTerm] = useState("");
+    
+    // Proximity Filter States
+    const [orderByDistance, setOrderByDistance] = useState(null);
+    const [userLocation, setUserLocation] = useState({ lat: null, lng: null });
 
 
     const handleProviderSelected = useCallback((provider) =>{
@@ -50,6 +62,32 @@ export default function Services () {
         setFds(event.target.checked ? true : null); 
     };
 
+    const handleChangeProximity = (event) => {
+        if (event.target.checked) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        setUserLocation({
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        });
+                        setOrderByDistance(true);
+                    },
+                    (error) => {
+                        console.error("Error getting location:", error);
+                        alert("Não foi possível obter sua localização. Verifique as permissões do navegador.");
+                        // Uncheck the box visually if possible, or just fail silently regarding state update
+                    }
+                );
+            } else {
+                alert("Geolocalização não é suportada pelo seu navegador.");
+            }
+        } else {
+            setOrderByDistance(null);
+            setUserLocation({ lat: null, lng: null });
+        }
+    };
+
     // Handler para "Todos" (Resetar filtros)
     const handleChangeTodos =() => {
         // Zera os filtros
@@ -58,6 +96,8 @@ export default function Services () {
         setFds(null);
         setSelectedService(null);
         setSelectedRating(null);
+        setOrderByDistance(null);
+        setUserLocation({ lat: null, lng: null });
         // Força o getProviders (buscar todos sem filtro)
         setRefetchProviders(true); 
     }
@@ -86,13 +126,21 @@ export default function Services () {
         if (refetchProviders) return; 
 
         // Se pelo menos um filtro foi ativado (não é null), disparamos a busca combinada
-        if (findMat !== null || hora !== null || fds !== null || selectedService !== null || selectedRating !== null) {
+        if (findMat !== null || hora !== null || fds !== null || selectedService !== null || selectedRating !== null || orderByDistance !== null) {
+            // Se for por distância, precisamos garantir que temos lat/lng
+            if (orderByDistance && (!userLocation.lat || !userLocation.lng)) {
+                return; // Aguarda a geolocalização completar
+            }
+
             getFilteredProviders({
                 material: findMat,
                 hours24: hora,
                 weekend: fds,
                 service: selectedService,
-                minRating: selectedRating
+                minRating: selectedRating,
+                orderByDistance: orderByDistance,
+                latitude: userLocation.lat,
+                longitude: userLocation.lng
             });
             console.log('Filtro(s) aplicado(s)')
         } else {
@@ -102,9 +150,12 @@ export default function Services () {
              console.log('Todos os filtros removidos. Buscando todos novamente.')
         }
 
-    }, [findMat, hora, fds, selectedService, selectedRating, getFilteredProviders, refetchProviders, getProviders]); 
+    }, [findMat, hora, fds, selectedService, selectedRating, orderByDistance, userLocation, getFilteredProviders, refetchProviders, getProviders]); 
 
-        
+    // Filtragem local case-insensitive pelo nome
+    const displayedProviders = providers.filter(provider => 
+        provider.nome && provider.nome.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return(
         <div className={styles.services}>
@@ -137,7 +188,15 @@ export default function Services () {
             <div className={styles.servicesBody}>
                 
                 <div className={styles.servicesFilter}>
-                    <div className={styles.filterItem}><input type="text" /><button><FaSearch /></button></div>
+                    <div className={styles.filterItem}>
+                        <input 
+                            type="text" 
+                            placeholder="Buscar por nome..." 
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        <button><FaSearch /></button>
+                    </div>
 
                     <div className={styles.serviceClassific}>
                         <h4>Filtrar por:</h4>
@@ -161,11 +220,17 @@ export default function Services () {
                             <input 
                                 onChange={handleChangeTodos} 
                                 type="checkbox" 
-                                checked={findMat === null && hora === null && fds === null && selectedService === null && selectedRating === null}
+                                checked={findMat === null && hora === null && fds === null && selectedService === null && selectedRating === null && orderByDistance === null}
                             />
                             <span >Todos</span>
                         </div>
                     <div className={styles.servicesList}>
+                        <h3>Filtros</h3>
+                        <div className={styles.serviceItem}>
+                            <input checked={orderByDistance === true} onChange={handleChangeProximity} type="checkbox" />
+                            <span>Mais Próximos</span>
+                        </div>
+
                         <h3>Material Próprio</h3>
                         <div className={styles.serviceItem}>
                             {/* checked={findMat === true} verifica se o filtro TRUE está ativo */}
@@ -196,9 +261,16 @@ export default function Services () {
                     <Loading2/>
                     )}
 
-                    {providers.map((provider)=> (
+                    {displayedProviders.map((provider)=> (
                         <div className={styles.box} onClick={() => {handleProviderSelected(provider)}} key={provider.id}>
-                            <ProviderBox name={provider.nome} location={`${provider.cidade}, ${provider.bairro}`} rating={provider.nota_media} resum={'Trancista. Especialista em tranças e penteados afro. Atendimento em domicílio.'} key={provider.id} />
+                            <ProviderBox 
+                                name={provider.nome} 
+                                location={`${provider.cidade}, ${provider.bairro}`} 
+                                rating={provider.nota_media} 
+                                resum={'Trancista. Especialista em tranças e penteados afro. Atendimento em domicílio.'} 
+                                image={getImageUrl(provider.foto || provider.foto_perfil)}
+                                key={provider.id} 
+                            />
                         </div>
                     ))}
                     

@@ -48,7 +48,8 @@ export default function UserPerfil({ userData = mockUserData }) {
     const [openEditModal, setOpenEditModal] = useState(false);
 
     const [profileData, setProfileData] = useState(null);
-    const { getMe } = UserServices();
+    const [pendingReviews, setPendingReviews] = useState([]);
+    const { getMe, getClientSolicitations, createReview } = UserServices();
 
     useEffect(() => {
         getMe()
@@ -58,7 +59,42 @@ export default function UserPerfil({ userData = mockUserData }) {
             .catch(err => {
                 console.error("Erro ao buscar dados do perfil:", err);
             });
+            
+        getClientSolicitations()
+            .then(data => {
+                // Filter: completed service but NOT evaluated
+                if (Array.isArray(data)) {
+                    const pending = data.filter(s => s.servico_realizado && !s.avaliacao_realizada);
+                    setPendingReviews(pending);
+                }
+            })
+            .catch(err => console.error("Erro ao buscar solicitações:", err));
     }, []);
+
+    const handleCreateReview = async (solicitacaoId) => {
+        const notaStr = prompt("Dê uma nota de 1 a 5:");
+        if (!notaStr) return;
+        const nota = parseInt(notaStr);
+        if (isNaN(nota) || nota < 1 || nota > 5) {
+            alert("Nota inválida. Digite um número entre 1 e 5.");
+            return;
+        }
+        
+        const comentario = prompt("Escreva um comentário (opcional):") || "";
+        
+        try {
+            await createReview({
+                solicitacao_contato_id: solicitacaoId,
+                nota: nota,
+                comentario: comentario
+            });
+            alert("Avaliação enviada com sucesso!");
+            setPendingReviews(prev => prev.filter(p => p.id !== solicitacaoId));
+        } catch (error) {
+            console.error("Erro ao avaliar:", error);
+            alert("Erro ao enviar avaliação.");
+        }
+    };
 
     const handleLogout = () => {
         logout();
@@ -123,6 +159,44 @@ export default function UserPerfil({ userData = mockUserData }) {
             {/* --- Conteúdo Principal (Container) --- */}
             <div className={styles.container}>
                 
+                {/* --- Serviços Pendentes de Avaliação --- */}
+                {pendingReviews.length > 0 && (
+                    <div className={styles.box} style={{ marginBottom: '20px' }}>
+                        <h2>Avaliar Serviços Concluídos</h2>
+                        <table style={{width: '100%', borderCollapse: 'collapse'}}>
+                            <thead>
+                                <tr style={{borderBottom: '1px solid #ddd'}}>
+                                    <th style={{padding: '10px', textAlign: 'left'}}>Prestador</th>
+                                    <th style={{padding: '10px', textAlign: 'left'}}>Data</th>
+                                    <th style={{padding: '10px', textAlign: 'left'}}>Ação</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {pendingReviews.map((sol) => (
+                                    <tr key={sol.id} style={{borderBottom: '1px solid #eee'}}>
+                                        <td style={{padding: '10px'}}>{sol.prestador_nome || sol.prestador_id}</td>
+                                        <td style={{padding: '10px'}}>{new Date(sol.data_solicitacao).toLocaleDateString()}</td>
+                                        <td style={{padding: '10px'}}>
+                                            <button 
+                                                onClick={() => handleCreateReview(sol.id)}
+                                                style={{
+                                                    padding: '5px 10px',
+                                                    backgroundColor: '#1a06c9',
+                                                    color: 'white',
+                                                    border: 'none',
+                                                    borderRadius: '5px',
+                                                    cursor: 'pointer'
+                                                }}
+                                            >
+                                                Avaliar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
 
                 {/* --- Informações Pessoais (Descrição) --- */}
                 <div className={styles.box}>
