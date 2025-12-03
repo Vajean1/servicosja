@@ -325,6 +325,7 @@ table th, table td {
     transition: border 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    position: relative; /* Adicionado para posicionar botão de exclusão */
 }
 
 .thumbnail:hover {
@@ -423,4 +424,27 @@ table th, table td {
     gap: 10px;
     margin-top: 10px;
 }
+}
+
+.deleteButton {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(220, 53, 69, 0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    z-index: 10;
+    transition: background 0.2s;
+}
+
+.deleteButton:hover {
+    background: rgba(200, 35, 51, 1);
 }

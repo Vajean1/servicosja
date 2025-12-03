@@ -9,7 +9,7 @@ export default defineConfig({
     proxy: {
       // Quando o Front-end pedir por '/api', o Vite reescreve para a URL de destino
       '/api': {
-        target: 'https://back-end-servicosja-api.onrender.com', // A URL da sua API
+        target: 'https://back-end-servicosja-api.onrender.com',
         changeOrigin: true, // Necessário para hospedar servidores virtuais
         secure: true, // Use 'true' pois o servidor é HTTPS
       },

@@ -2,7 +2,7 @@ import styles from './providerBox.module.css'
 import { FaStar } from 'react-icons/fa'  
 import {useNavigate} from 'react-router-dom';
 
-export default function ProviderBox ({name , location, resum, rating}) {
+export default function ProviderBox ({name , location, resum, rating, image}) {
 
     const naviagtion = useNavigate();
 
@@ -42,7 +42,7 @@ export default function ProviderBox ({name , location, resum, rating}) {
     
     return (
         <div className={styles.providerBox} onClick={() => naviagtion('/providerDatails')}>
-            <img src="/img/exemples/Group 8.png" alt="imagem usuario" />
+            <img src={image || "/img/exemples/Group 8.png"} alt="imagem usuario" />
             <div className={styles.providerInfos}>
                 {/* Now 'primeiroNome' and 'sobrenome' are properly defined in scope */}
                 <h3>{primeiroNome} {sobrenome}</h3>

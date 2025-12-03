@@ -10,11 +10,15 @@ import { useAuth } from '../../context/AuthContext';
 import UserServices from '../../services/user';
 import ProviderServices from '../../services/provider';
 
-// --- COMPONENTE DE GALERIA ---
-const Gallery = ({ images, onImageSelect, onImageUpload, selectedImage }) => {
-    
-    
+const getImageUrl = (url) => {
+    if (!url) return '';
+    if (url.startsWith('http') || url.startsWith('blob:')) return url;
+    if (url.startsWith('/img') || url.startsWith('/assets')) return url;
+    return `https://back-end-servicosja-api.onrender.com${url}`;
+};
 
+// --- COMPONENTE DE GALERIA (Visualização) ---
+const Gallery = ({ images, onImageSelect, selectedImage }) => {
     return (
         <div className={styles.galleryContainer}>
             {/* Imagem em Destaque */}
@@ -27,25 +31,18 @@ const Gallery = ({ images, onImageSelect, onImageUpload, selectedImage }) => {
                     />
                 ) : (
                     <div className={styles.emptyMainImage}>
-                        Adicione e selecione uma imagem para ver em destaque.
+                        {images.length > 0 ? "Selecione uma imagem para visualizar." : "Este prestador não possui imagens no portfólio."}
                     </div>
                 )}
             </div>
 
-            {/* Miniaturas da Galeria e Botão de Adicionar */}
+            {/* Miniaturas da Galeria */}
             <div className={styles.thumbnailsContainer}>
-
-                {/* Botão de Adicionar Foto (Input escondido) */}
-                <label htmlFor="file-upload" className={styles.addThumbnail}>
-                    <span role="img" aria-label="Adicionar Foto">➕</span> Adicionar Foto
-                </label>
-                <input
-                    id="file-upload"
-                    type="file"
-                    accept="image/*"
-                    onChange={onImageUpload}
-                    style={{ display: 'none' }}
-                />
+                {images.length === 0 && (
+                     <div style={{color: '#666', fontStyle: 'italic', padding: '10px', width: '100%', textAlign: 'center'}}>
+                        Sem fotos disponíveis.
+                     </div>
+                )}
 
                 {/* Renderiza as miniaturas das imagens do usuário */}
                 {images.map((item, index) => (
@@ -62,17 +59,17 @@ const Gallery = ({ images, onImageSelect, onImageUpload, selectedImage }) => {
     );
 };
 
-
-
 export default function ProviderDatails () {
     
     const [userGalleryImages, setUserGalleryImages] = useState([]);
     const [currentMainImage, setCurrentMainImage] = useState(null);
+    const [comments, setComments] = useState([]);
+    const [fullProviderData, setFullProviderData] = useState(null);
 
     const { providerSelected } = useProviderContext();
     const navigate = useNavigate();
     const { isAuthenticated, user } = useAuth();
-    const { initiateContact } = UserServices();
+    const { initiateContact, getClientSolicitations } = UserServices();
     const { getProviderPerfil } = ProviderServices();
 
     const renderStars = (currentRating) => {
@@ -86,53 +83,36 @@ export default function ProviderDatails () {
         return stars;
     };
     
-    
+    // Fetch real provider data on load
     useEffect(() => {
-        return () => {
-             
-             userGalleryImages.forEach(item => URL.revokeObjectURL(item.url));
-        };
+        if (providerSelected?.id) {
+            getProviderPerfil(providerSelected.id)
+                .then(data => {
+                    setFullProviderData(data);
+                    
+                    // Setup Portfolio
+                    if (data.portfolio && Array.isArray(data.portfolio)) {
+                        const formattedImages = data.portfolio.map(item => ({
+                            id: item.id,
+                            url: getImageUrl(item.imagem)
+                        }));
+                        setUserGalleryImages(formattedImages);
+                        if (formattedImages.length > 0) {
+                            setCurrentMainImage(formattedImages[0].url);
+                        }
+                    }
 
-    }, []); 
-    
-
-    useEffect(() => {
-        const imageUrls = userGalleryImages.map(item => item.url);
-        
-
-        if (userGalleryImages.length > 0 && 
-            (!currentMainImage || !imageUrls.includes(currentMainImage))) {
-            
-            setCurrentMainImage(userGalleryImages[0].url);
-            
-        } else if (userGalleryImages.length === 0) {
-            setCurrentMainImage(null);
+                    // Setup Comments
+                    if (data.ultimas_avaliacoes && Array.isArray(data.ultimas_avaliacoes)) {
+                        setComments(data.ultimas_avaliacoes);
+                    }
+                })
+                .catch(err => {
+                    console.error("Error fetching provider full details:", err);
+                });
         }
-        
-    }, [userGalleryImages, currentMainImage]);
+    }, [providerSelected, getProviderPerfil]);
 
-
-
-    const handleImageUpload = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-           
-            const newImageUrl = URL.createObjectURL(file);
-            const newImageItem = {
-                id: Date.now() + Math.random(),
-                url: newImageUrl
-            };
-            
-          
-            setUserGalleryImages(prevImages => [...prevImages, newImageItem]);
-            
-         
-            setCurrentMainImage(newImageUrl);
-        }
-        event.target.value = null;
-    };
-
- 
     const handleImageSelect = (url) => {
         setCurrentMainImage(url);
     };
@@ -154,17 +134,22 @@ export default function ProviderDatails () {
             // Attempt to get user_id from various common property names
             let providerUserId = providerSelected.user_id || providerSelected.user || providerSelected.userId;
 
+            // Use fullProviderData if available to ensure correct IDs
+            if (fullProviderData) {
+                 if (fullProviderData.user_id) providerUserId = fullProviderData.user_id;
+                 if (fullProviderData.servico) serviceId = fullProviderData.servico.id || fullProviderData.servico;
+            }
+
             console.log("Handle Request Service - Selected:", providerSelected);
+            console.log("Handle Request Service - Full Data:", fullProviderData);
             
-            // FIX: If user_id is missing, fetch full profile
+            // Fallback if user_id missing
             if (!providerUserId) {
                 console.log("user_id missing in context, fetching profile...");
                 try {
-                    // Use id (profile id) to fetch
                     const fullProfile = await getProviderPerfil(providerSelected.id);
                     if (fullProfile && fullProfile.user_id) {
                         providerUserId = fullProfile.user_id;
-                        // Also update serviceId if needed
                         if (!serviceId && fullProfile.servico) {
                              serviceId = fullProfile.servico.id || fullProfile.servico;
                         }
@@ -182,6 +167,19 @@ export default function ProviderDatails () {
 
             console.log("Handle Request Service - Final IDs:", { providerUserId, serviceId });
 
+            // Check for pending evaluations
+            const solicitations = await getClientSolicitations();
+            // Filter: same provider AND not evaluated
+            const pending = solicitations.find(s => 
+                (s.prestador === providerUserId || s.prestador_id === providerUserId) && 
+                !s.avaliacao_realizada
+            );
+
+            if (pending) {
+                alert("Você possui um serviço pendente de avaliação com este prestador. Por favor, avalie o serviço anterior antes de solicitar um novo.");
+                return;
+            }
+
             const result = await initiateContact(providerUserId, serviceId);
             if (result && result.whatsapp_url) {
                 window.open(result.whatsapp_url, '_blank');
@@ -190,7 +188,6 @@ export default function ProviderDatails () {
             }
         } catch (error) {
             console.error("Failed to initiate contact", error);
-            // alert("Erro ao iniciar contato. Tente novamente.");
         }
     }
     
@@ -198,6 +195,10 @@ export default function ProviderDatails () {
     if (!providerSelected) {
         return <div style={{paddingTop: '100px', textAlign: 'center'}}>Nenhum prestador selecionado.</div>;
     }
+
+    const displayData = fullProviderData || providerSelected;
+    const notaMedia = displayData.nota_media !== undefined ? displayData.nota_media : (providerSelected.nota_media || 4.6);
+    // Nota: providerSelected.nota_media pode ser 0, então verifique undefined
 
     return(
         <div className={styles.providerDatailsContainer}>
@@ -207,14 +208,14 @@ export default function ProviderDatails () {
 
             <div className={styles.providerDatailsHome}>
                 <div className={styles.providerDatailsImage}>
-                    <img src={providerSelected.foto || "/img/exemples/Group 8.png"} alt="Imagem do Prestador" />
+                    <img src={getImageUrl(displayData.foto || displayData.perfilImg) || "/img/exemples/Group 8.png"} alt="Imagem do Prestador" />
                 </div>
 
                 <div className={styles.providerDatailsInfo}>
-                    <h2>{providerSelected.nome}</h2>
-                    <h5>{providerSelected.servico?.nome || providerSelected.categoria}</h5>
+                    <h2>{displayData.nome}</h2>
+                    <h5>{displayData.servico?.nome || displayData.categoria}</h5>
                     <div className={styles.line}></div>
-                    <p>{providerSelected.biografia || "Descrição detalhada do prestador de serviço, suas qualificações, experiência e outras informações relevantes que possam ajudar o cliente a tomar uma decisão informada."}</p>
+                    <p>{displayData.biografia || "Descrição detalhada do prestador de serviço, suas qualificações, experiência e outras informações relevantes que possam ajudar o cliente a tomar uma decisão informada."}</p>
                 </div>
             </div>
 
@@ -231,47 +232,38 @@ export default function ProviderDatails () {
             <div className={styles.providerDatailsServices}>
                 <div className={styles.providerDatailsAvailableServices}>
                     <div className={styles.providerAvailable}>
-                        <h3><FaUserCircle/> {providerSelected.nota_media || '4.6'}</h3>
+                        <h3><FaUserCircle/> {Number(notaMedia).toFixed(1)}</h3>
                         <div className={styles.stars}>
 
                             <div className={styles.status}>
-                                <h5>Excelente</h5>
+                                <h5>{notaMedia >= 4.5 ? "Excelente" : notaMedia >= 3 ? "Bom" : "Regular"}</h5>
                             </div>
 
                             <div className={styles.starFull}>
-                                {renderStars(providerSelected.nota_media)}
+                                {renderStars(notaMedia)}
                             </div>
                         </div>
                     </div >
 
                     <div className={styles.comments}>
-                        <div className={styles.commentUser}>
-                            <h5> <FaUserCircle/>  Muito profissional!</h5>
-                            <div className={styles.starFull}>
-                                ★★★★★
+                        {comments.length > 0 ? (
+                            comments.map((comment, index) => (
+                                <div key={index} className={styles.commentUser} style={{alignItems: 'flex-start', flexDirection: 'column', gap: '5px'}}>
+                                    <div style={{display: 'flex', alignItems: 'center', gap: '10px', width: '100%'}}>
+                                        <h5 style={{margin: 0}}> <FaUserCircle/> {comment.cliente_nome || "Cliente"}</h5>
+                                        <div className={styles.starFull} style={{marginLeft: 'auto'}}>
+                                            {renderStars(comment.nota)}
+                                        </div>
+                                    </div>
+                                    <p style={{fontSize: '0.9em', color: '#333', marginTop: '5px'}}>{comment.comentario}</p>
+                                </div>
+                            ))
+                        ) : (
+                            // Fallback estático se não houver comentários (para manter o layout ou avisar)
+                            <div style={{padding: '10px', color: '#666', textAlign: 'center', width: '100%'}}>
+                                Nenhuma avaliação recente.
                             </div>
-                        </div>
-
-                        <div className={styles.commentUser}>
-                            <h5> <FaUserCircle/>  pontual!</h5>
-                            <div className={styles.starFull}>
-                                ★★★★★
-                            </div>
-                        </div>
-
-                        <div className={styles.commentUser}>
-                            <h5> <FaUserCircle/>  Otimo profissional!</h5>
-                            <div className={styles.starFull}>
-                                ★★★★★
-                            </div>
-                        </div>
-
-                        <div className={styles.commentUser}>
-                            <h5> <FaUserCircle/>  Muito profissional!</h5>
-                            <div className={styles.starFull}>
-                                ★★★★★
-                            </div>
-                        </div>
+                        )}
                     </div>
                 </div>
 
@@ -279,7 +271,6 @@ export default function ProviderDatails () {
                     <Gallery
                         images={userGalleryImages}
                         onImageSelect={handleImageSelect}
-                        onImageUpload={handleImageUpload}
                         selectedImage={currentMainImage}
                     /> 
                 </div>

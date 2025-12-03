@@ -3,11 +3,17 @@ import styles from './providerPerfil.module.css';
 import ProviderServices from '../../services/provider';
 import { useNavigate } from 'react-router';
 import RatingChart from './RatingChart'; 
-import { FaEdit, FaSignOutAlt } from "react-icons/fa";
+import { FaEdit, FaSignOutAlt, FaTrash } from "react-icons/fa";
 import { FaCheckDouble , FaX  } from "react-icons/fa6";
 import { useAuth } from '../../context/AuthContext';
 import EditProviderModal from '../../components/editProviderModal/EditProviderModal';
 import { green } from '@mui/material/colors';
+
+const getImageUrl = (url) => {
+    if (!url) return '';
+    if (url.startsWith('http') || url.startsWith('blob:')) return url;
+    return `https://back-end-servicosja-api.onrender.com${url}`;
+};
 
 const mockUserData = {
     nome: "Eduardo Jesen",
@@ -44,8 +50,8 @@ const TABS = {
     MESSAGES: 'Mensagens'
 };
 
-// --- Componente Gallery (Não alterado) ---
-const Gallery = ({ images, onImageSelect, onImageUpload, selectedImage }) => {
+// --- Componente Gallery (Modificado com Exclusão) ---
+const Gallery = ({ images, onImageSelect, onImageUpload, onImageDelete, selectedImage }) => {
     return (
         <div className={styles.galleryContainer}>
             <div className={styles.mainImageContainer}>
@@ -81,6 +87,21 @@ const Gallery = ({ images, onImageSelect, onImageUpload, selectedImage }) => {
                         onClick={() => onImageSelect(item.url)}
                     >
                         <img src={item.url} alt={`Miniatura ${index + 1}`} />
+                        {/* Botão de Excluir - Apenas mostra se não for temp */}
+                        {!item.isTemp && (
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    if(window.confirm('Tem certeza que deseja excluir esta imagem?')) {
+                                        onImageDelete(item.id);
+                                    }
+                                }}
+                                className={styles.deleteButton}
+                                title="Excluir imagem"
+                            >
+                                <FaTrash />
+                            </button>
+                        )}
                     </div>
                 ))}
             </div>
@@ -94,6 +115,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
     const [userGalleryImages, setUserGalleryImages] = useState([]);
     const [currentMainImage, setCurrentMainImage] = useState(null);
     const [openEditModal, setOpenEditModal] = useState(false);
+    const [solicitations, setSolicitations] = useState([]);
 
     const getTabClassName = (tab) => {
         return `${styles.tab} ${activeTab === tab ? styles.active : ''}`;
@@ -110,18 +132,44 @@ export default function ProviderPerfil({ userData = mockUserData }) {
         };
     }, []); 
 
-    // --- Lógica de Upload e Seleção (Não alterado) ---
-    const handleImageUpload = (event) => {
+    const handleImageUpload = async (event) => {
         const file = event.target.files[0];
         if (file) {
-            const newImageUrl = URL.createObjectURL(file);
-            const newImageItem = {
-                id: Date.now() + Math.random(),
-                url: newImageUrl
-            };
-            
-            setUserGalleryImages(prevImages => [...prevImages, newImageItem]);
-            setCurrentMainImage(newImageUrl);
+            const tempId = Date.now();
+            const tempUrl = URL.createObjectURL(file);
+            const tempItem = { id: tempId, url: tempUrl, isTemp: true };
+
+            setUserGalleryImages(prevImages => [...prevImages, tempItem]);
+            setCurrentMainImage(tempUrl);
+
+            try {
+
+                const formData = new FormData();
+                formData.append('imagem', file);
+                
+                const result = await addPortfolioItem(formData);
+                console.log("Upload Result:", result);
+                
+                const finalUrl = getImageUrl(result.imagem || result.image || result.url);
+
+                setUserGalleryImages(prevImages => 
+                    prevImages.map(item => item.id === tempId ? { id: result.id, url: finalUrl } : item)
+                );
+                setCurrentMainImage(current => current === tempUrl ? finalUrl : current);
+                
+                URL.revokeObjectURL(tempUrl);
+
+                alert("Imagem salva com sucesso!");
+            } catch (error) {
+                console.error("Erro ao fazer upload da imagem:", error);
+                alert("Erro ao enviar imagem. O preview será removido.");
+                
+                setUserGalleryImages(prevImages => prevImages.filter(item => item.id !== tempId));
+                if (currentMainImage === tempUrl) {
+                    setCurrentMainImage(null);
+                }
+                URL.revokeObjectURL(tempUrl);
+            }
         }
         event.target.value = null;
     };
@@ -130,9 +178,36 @@ export default function ProviderPerfil({ userData = mockUserData }) {
         setCurrentMainImage(url);
     };
     
-    const {getProviderPerfil, providerAccount} = ProviderServices()
+    const {
+        getProviderPerfil, 
+        providerAccount,
+        getProviderSolicitations,
+        completeService,
+        addPortfolioItem,
+        deletePortfolioItem
+    } = ProviderServices()
     
-    const { user, logout, loading } = useAuth(); // Use AuthContext
+    const handleDeleteImage = async (id) => {
+        try {
+            await deletePortfolioItem(id);
+            setUserGalleryImages(prev => prev.filter(item => item.id !== id));
+            
+            if (currentMainImage === userGalleryImages.find(item => item.id === id)?.url) {
+                const remaining = userGalleryImages.filter(item => item.id !== id);
+                if (remaining.length > 0) {
+                    setCurrentMainImage(remaining[0].url);
+                } else {
+                    setCurrentMainImage(null);
+                }
+            }
+            alert("Imagem removida com sucesso!"); //Colocar um pop legalzin
+        } catch (error) {
+            console.error("Erro ao deletar imagem:", error);
+            alert("Erro ao remover imagem. Tente novamente.");
+        }
+    };
+    
+    const { user, logout, loading } = useAuth();
     const profileId = user?.profile_id; 
 
     const navigate = useNavigate()
@@ -149,6 +224,9 @@ export default function ProviderPerfil({ userData = mockUserData }) {
     useEffect(()=>{
         if (profileId) {
             getProviderPerfil(profileId);
+            getProviderSolicitations()
+                .then(data => setSolicitations(data))
+                .catch(err => console.error(err));
         }
     },[profileId]) 
     
@@ -157,6 +235,18 @@ export default function ProviderPerfil({ userData = mockUserData }) {
         if (providerAccount?.localizacao) {
             const locationQuery = providerAccount.localizacao;
             console.log(`Dados de localização carregados: ${locationQuery}. Nenhuma ação de mapa está sendo executada.`);
+        }
+        
+        // Popula galeria com dados da API
+        if (providerAccount?.portfolio && Array.isArray(providerAccount.portfolio)) {
+            const formattedImages = providerAccount.portfolio.map(item => ({
+                id: item.id,
+                url: getImageUrl(item.imagem)
+            }));
+            setUserGalleryImages(formattedImages);
+            if (formattedImages.length > 0) {
+                setCurrentMainImage(formattedImages[0].url);
+            }
         }
     }, [providerAccount]);
     // --------------------------------------------------------------------
@@ -212,12 +302,41 @@ export default function ProviderPerfil({ userData = mockUserData }) {
         }
     };
     
-    
+    const handleCompleteService = async (id) => {
+        if (window.confirm("Deseja marcar este serviço como concluído? Isso enviará uma mensagem para o cliente.")) {
+            try {
+                const result = await completeService(id);
+                console.log("Resultado da conclusão:", result);
+                
+                // Check for whatsapp_url (used in other parts) or whatsapp_link (docs)
+                const link = result.whatsapp_url || result.whatsapp_link;
+
+                setSolicitations(prev => prev.map(s => s.id === id ? { ...s, servico_realizado: true } : s));
+                
+                if (link) {
+                    window.open(link, '_blank');
+                } else {
+                    console.warn("Link do WhatsApp não retornado pela API", result);
+                    alert("Serviço marcado como concluído! (Link do WhatsApp não recebido)");
+                }
+            } catch (error) {
+                console.error("Erro ao concluir serviço:", error);
+                alert("Erro ao concluir serviço.");
+            }
+        }
+    };
+
     return (
         <div className={styles.dashboardPage}>
             <header className={styles.header}>
                 <div className={styles.perfil}>
-                    <div className={styles.imgEdit}><img src={userData.perfilImg} alt="perfil" /><FaEdit /></div>
+                    <div className={styles.imgEdit} onClick={() => setOpenEditModal(true)}>
+                        <img 
+                            src={getImageUrl(providerAccount?.foto || providerAccount?.foto_perfil) || userData.perfilImg} 
+                            alt="perfil" 
+                        />
+                        <FaEdit />
+                    </div>
                     <div>
                         <h2>{providerAccount?.nome?.toUpperCase()}</h2>
                         <p>{providerAccount?.servico?.nome}</p>
@@ -268,17 +387,29 @@ export default function ProviderPerfil({ userData = mockUserData }) {
                         
                     </div>
 
-                    <div className={styles.solicit}>
-                        <h5>Roberta moura</h5>
-                        <h5>03/12/2025</h5>
-                          <div style={{color:'green' , fontSize:'22px', cursor:'pointer'}}>
-                            <FaCheckDouble />
+                    {solicitations.length === 0 ? (
+                        <div className={styles.solicit} style={{justifyContent: 'center'}}>
+                            <p>Nenhuma solicitação encontrada.</p>
                         </div>
-
-                        <div  style={{color:'red' , fontSize:'22px', cursor:'pointer'}}>
-                            <FaX />
-                        </div>
-                    </div>
+                    ) : (
+                        solicitations.map((sol) => (
+                            <div key={sol.id} className={styles.solicit}>
+                                <h5>{sol.cliente_nome || sol.cliente || "Cliente"}</h5>
+                                <h5>{sol.data_solicitacao ? new Date(sol.data_solicitacao).toLocaleDateString('pt-BR') : new Date().toLocaleDateString('pt-BR')}</h5>
+                                <div>
+                                    {sol.servico_realizado ? (
+                                        <FaCheckDouble style={{color:'green' , fontSize:'22px'}} title="Serviço Realizado" />
+                                    ) : (
+                                        <FaCheckDouble 
+                                            style={{color:'gray', fontSize:'22px', cursor:'pointer'}} 
+                                            onClick={() => handleCompleteService(sol.id)}
+                                            title="Marcar como realizado"
+                                        />
+                                    )}
+                                </div>
+                            </div>
+                        ))
+                    )}
                 </div>
 
                
@@ -305,6 +436,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
                             images={userGalleryImages }
                             onImageSelect={handleImageSelect}
                             onImageUpload={handleImageUpload}
+                            onImageDelete={handleDeleteImage}
                             selectedImage={currentMainImage}
                         /> 
                     </div>

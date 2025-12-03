@@ -134,6 +134,67 @@ export default function UserServices() {
             setLoading(false);
         }
     };
+
+    const getClientSolicitations = async () => {
+        setLoading(true);
+        try {
+            const storedAuth = localStorage.getItem('auth');
+            const token = storedAuth ? JSON.parse(storedAuth).access : null;
+            if (!token) throw new Error("No token found");
+
+            const response = await fetch(`${url}/contratacoes/cliente/solicitacoes/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            const result = await response.json();
+            if (!response.ok) throw result;
+            return result;
+        } catch (error) {
+            console.error("Error getting client solicitations:", error);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const createReview = async (data) => {
+        setLoading(true);
+        try {
+            const storedAuth = localStorage.getItem('auth');
+            const token = storedAuth ? JSON.parse(storedAuth).access : null;
+            if (!token) throw new Error("No token found");
+
+            const response = await fetch(`${url}/avaliacoes/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            if (!response.ok) throw result;
+            return result;
+        } catch (error) {
+            console.error("Error creating review:", error);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
     
-    return{register , loading, getMe, initiateContact, updateUser}
+    return { 
+        register, 
+        loading, 
+        getMe, 
+        initiateContact, 
+        updateUser, 
+        getClientSolicitations, 
+        createReview 
+    };
 }
