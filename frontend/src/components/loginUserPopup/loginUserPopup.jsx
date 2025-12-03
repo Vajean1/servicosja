@@ -1,100 +1,106 @@
-import styles from './loginUserPopup.module.css';
-import { Dialog } from '@mui/material';
-import { useState } from 'react';
-import { IoExitOutline } from "react-icons/io5";
 import { useNavigate } from 'react-router';
-import ProviderServices from '../../services/provider';
-import Loading2 from '../../pages/loading/loading2';
+import styles from './loginUserPopup.module.css'
+import { Dialog } from '@mui/material'
+import { IoExitOutline } from "react-icons/io5";
+import { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 
-export default function LoginProviderPopup ({open, close}) {
+export default function LoginUserPopup({ open, close }) {
 
+    const [userLogin, setUserLogin] = useState({});
+    const [error, setError] = useState(null);
+    const { login } = useAuth();
     const navigate = useNavigate();
-    const [providerLogin, setProviderLogin] = useState({});
-    // Adicionamos um estado para feedback de erro/sucesso
-    const [error, setError] = useState(null); 
-
-    const { login,loading } = ProviderServices(); // Certifique-se de que ProviderServices é um hook ou retorna a função corretamente.
 
     const handleChangeLogin = (e) => {
         const { name, value } = e.target;
-        
-        // Converte o email para minúsculas
+
         const newValue = name === 'email' ? value.toLowerCase() : value;
 
-        setProviderLogin({
-            ...providerLogin,
-            [name]: newValue 
+        setUserLogin({
+            ...userLogin,
+            [name]: newValue
         });
     }
 
-    // NOVA FUNÇÃO PARA TRATAR O SUBMIT DO FORMULÁRIO
     const handleSubmit = async (e) => {
-        // 1. **IMPEDE O RECARREGAMENTO DA PÁGINA**
-        e.preventDefault(); 
-        setError(null); // Limpa erros anteriores
+        e.preventDefault();
+        setError(null);
 
         try {
+            const userData = await login(userLogin.email, userLogin.password);
+            close();
             
-            const result = await login(providerLogin);
-            
-           
-            console.log('Login bem-sucedido:', result);
-            close(); 
-            navigate('/userPerfil'); 
+            // Redirect based on user type
+            if (userData.tipo_usuario === 'prestador') {
+                navigate('/providerPerfil');
+            } else {
+                navigate('/userPerfil');
+            }
 
         } catch (err) {
-           
-            console.error('Erro de login:', err);
-            
-            setError(err.detail || 'Falha no login. Verifique suas credenciais.');
+            console.error("Erro no login:", err);
+            // Handle specific API error messages if available
+            if (err.detail) {
+                 setError(err.detail);
+            } else {
+                 setError("Falha no login. Verifique suas credenciais.");
+            }
         }
     }
-    
-   
+
     return (
         <>
             <Dialog className={styles.popupContainer} onClose={close} open={open}>
                 <div className={styles.popup}>
                     <div className={styles.popupMenu}>
                         <img src="/img/logo/logo.png" alt="Logo serviços já" />
-    
+                        <h2>Entrar</h2>
                         <div onClick={close} className={styles.exitIcon}>
                             <IoExitOutline />
                         </div>
                     </div>
-                    
-                    
+
                     <div className={styles.popupBody}>
-                        {loading ? <Loading2/>:
-                        <>
-                            <h3>Acesse Sua Conta</h3>
+                        <h3>Acesse Sua Conta</h3>
                         <p>Entre com email e senha para ter acesso a sua conta</p>
 
-                        {/* 3. ADICIONA O onSubmit AQUI */}
-                        <form onSubmit={handleSubmit}> 
-                            <input onChange={handleChangeLogin} name='email' type="email" placeholder='Email' required/>
-                            <input onChange={handleChangeLogin} name='password' type="password" placeholder='Senha' required/>
-                            
-                            {/* EXIBIÇÃO DE ERRO */}
-                            {error && <p style={{ color: 'red', margin: '10px 0' }}>{error}</p>}
+                        <form onSubmit={handleSubmit}>
 
-                            {/* O BOTÃO AGORA SÓ PRECISA SER type='submit' */}
-                            <button type='submit'>Entrar</button> 
-                            
+                            <input
+                                onChange={handleChangeLogin}
+                                type="email"
+                                placeholder='Email'
+                                name="email"
+                                required
+                            />
+
+                            <input
+                                onChange={handleChangeLogin}
+                                type="password"
+                                placeholder='Senha'
+                                name="password"
+                                required
+                            />
+
+                            {error && <p style={{ color: 'red', margin: '10px 0', fontSize: '14px' }}>{error}</p>}
+
+                            <button
+                                type='submit'
+                            >
+                                Entrar
+                            </button>
                             <a href="#">Esqueceu a senha?</a>
                         </form>
-                        </>
-                        }
-                        
-                            
+
                     </div>
 
                     <div className={styles.popupFooter}>
-                       <button onClick={() => navigate("/userRegistration")}>Não Tem Uma Conta? Cadastre-se</button>
+                        <button onClick={() => navigate("/userRegistration")}>Não Tem Uma Conta? Cadastre-se</button>
                     </div>
                 </div>
 
             </Dialog>
         </>
-    )  
+    )
 }

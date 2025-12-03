@@ -71,6 +71,7 @@
     padding: 20px;
     box-shadow: 0 0 5px rgba(0,0,0,0.1);
     margin-bottom: 25px;
+    position: relative;
 }
 
 .box h2 {
@@ -350,6 +351,26 @@ table th, table td {
     display: flex;
 }
 
+.imgEdit{
+    position: relative;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.iconEdit{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 25px;
+    color: var(--blue);
+    cursor: pointer;
+}
+
+.imgEdit svg{
+    position: absolute;
+    bottom: 0;
+    right: -4px;
+}
 @media screen and (max-width:800px) {
     .colum{
     flex-direction: column;
