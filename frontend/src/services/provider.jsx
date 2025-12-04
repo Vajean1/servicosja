@@ -7,15 +7,13 @@ export default function ProviderServices() {
     const [providerAccount, setProviderAccount] = useState([])
     const url = '/api';
 
-    // Nota: register e login não foram envolvidos em useCallback pois não são usados como dependências em outros useEffects aqui.
     const register = (formData) => {
         setLoading(true);
         return new Promise((resolve, reject) => { 
             fetch(`${url}/accounts/registro/prestador/`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(formData)
             })
@@ -72,8 +70,7 @@ export default function ProviderServices() {
         fetch(`${url}/accounts/prestadores/`, {
             method:'GET',
             headers:{
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin':'*'
+                'Content-Type': 'application/json'
             },
         })
         .then((response) => response.json()) 
@@ -96,8 +93,7 @@ export default function ProviderServices() {
         return fetch(`${url}/accounts/prestadores/${id}/`, {
             method:'GET',
             headers:{
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin':'*'
+                'Content-Type': 'application/json'
             },
         })
         .then((response) => response.json()) 
@@ -116,7 +112,7 @@ export default function ProviderServices() {
         })
     }, [url, setLoading, setProviderAccount])
 
-    const getFilteredProviders = useCallback(async ({ material, hours24, weekend, service, category, minRating, orderByDistance, latitude, longitude }) => {
+    const getFilteredProviders = useCallback(async ({ material, hours24, weekend, service, category, minRating, orderByDistance, orderByRating, latitude, longitude }) => {
         setLoading(true);
         const params = [];
         
@@ -138,6 +134,9 @@ export default function ProviderServices() {
         if (minRating) {
             params.push(`nota_minima=${minRating}`);
         }
+        if (orderByRating) {
+            params.push(`melhor_avaliado=true`);
+        }
         if (orderByDistance && latitude && longitude) {
             params.push(`ordenar_por_distancia=true`);
             params.push(`latitude=${latitude}`);
@@ -149,7 +148,7 @@ export default function ProviderServices() {
         try {
             const response = await fetch(`${url}/accounts/prestadores/${queryString}`, {
                 method:'GET',
-                headers:{ 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' },
+                headers:{ 'Content-Type': 'application/json' },
             });
             let result = await response.json(); 
 

@@ -1,10 +1,67 @@
 import React, { useState, useEffect } from 'react';
+import { Dialog } from '@mui/material';
 import styles from './userPerfil.module.css';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { FaSignOutAlt, FaEdit } from "react-icons/fa";
 import UserServices from '../../services/user';
 import EditUserModal from '../../components/editUserModal/EditUserModal';
+import { useProviderContext } from '../../context/providerSelected';
+import ProviderBox from '../../components/providerBox/providerBox';
+
+const ReviewModal = ({ open, close, onSubmit }) => {
+    const [rating, setRating] = useState(0);
+    const [comment, setComment] = useState("");
+
+    const handleSubmit = () => {
+        if (rating === 0) {
+            alert("Por favor, selecione uma nota de 1 a 5 estrelas.");
+            return;
+        }
+        onSubmit(rating, comment);
+        setRating(0);
+        setComment("");
+        close();
+    };
+
+    return (
+        <Dialog open={open} onClose={close}>
+            <div className={styles.modalContent}>
+                <h2>Avaliar Serviço</h2>
+                <div className={styles.starsContainer}>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                        <span 
+                            key={star}
+                            className={`${styles.star} ${star <= rating ? styles.starActive : ''}`}
+                            onClick={() => setRating(star)}
+                            style={{ cursor: 'pointer' }}
+                        >
+                            ★
+                        </span>
+                    ))}
+                </div>
+                <textarea 
+                    placeholder="Escreva um comentário (opcional)..."
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                />
+                <button className={styles.submitButton} onClick={handleSubmit}>Enviar Avaliação</button>
+            </div>
+        </Dialog>
+    );
+};
+
+const getImageUrl = (url) => {
+    if (!url) return '';
+    if (url.startsWith('http') || url.startsWith('blob:')) return url;
+    return `https://back-end-servicosja-api.onrender.com${url}`;
+};
+
+const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    const date = new Date(dateString);
+    return isNaN(date.getTime()) ? "Data Inválida" : date.toLocaleDateString('pt-BR');
+};
 
 const mockUserData = {
     nome: "Eduardo Jesen",
@@ -15,7 +72,7 @@ const mockUserData = {
     dataRegistro: "28/11/2025",
     email: "eduardojesen@example.com",
     linkedIn: "user2025",
-    perfilImg: "../assets/img/perfil.jpg",
+    perfilImg: "/img/logo/logoIcon.png",
     mensagens: [
         { nome: "João Victor", data: "28/11" },
         { nome: "Maria Silva", data: "27/11" },
@@ -43,13 +100,19 @@ const TABS = {
 
 export default function UserPerfil({ userData = mockUserData }) {
     const [activeTab, setActiveTab] = useState(TABS.DASHBOARD);
-    const { logout } = useAuth();
+    const { logout, user } = useAuth();
     const navigate = useNavigate();
     const [openEditModal, setOpenEditModal] = useState(false);
+    const [openReviewModal, setOpenReviewModal] = useState(false);
+    const [selectedSolicitacaoId, setSelectedSolicitacaoId] = useState(null);
 
     const [profileData, setProfileData] = useState(null);
     const [pendingReviews, setPendingReviews] = useState([]);
-    const { getMe, getClientSolicitations, createReview } = UserServices();
+    const [reviews, setReviews] = useState([]);
+    const [favorites, setFavorites] = useState([]);
+
+    const { setProviderSelected } = useProviderContext();
+    const { getMe, getClientSolicitations, createReview, getUserReviews, getFavorites } = UserServices();
 
     useEffect(() => {
         getMe()
@@ -59,6 +122,20 @@ export default function UserPerfil({ userData = mockUserData }) {
             .catch(err => {
                 console.error("Erro ao buscar dados do perfil:", err);
             });
+
+        getUserReviews()
+            .then(data => {
+                let reviewsList = [];
+                if (Array.isArray(data)) {
+                    reviewsList = data;
+                } else if (data?.results && Array.isArray(data.results)) {
+                    reviewsList = data.results;
+                } else if (data?.avaliacoes && Array.isArray(data.avaliacoes)) {
+                    reviewsList = data.avaliacoes;
+                }
+                setReviews(reviewsList);
+            })
+            .catch(err => console.error("Erro ao buscar avaliações:", err));
             
         getClientSolicitations()
             .then(data => {
@@ -69,27 +146,37 @@ export default function UserPerfil({ userData = mockUserData }) {
                 }
             })
             .catch(err => console.error("Erro ao buscar solicitações:", err));
-    }, []);
 
-    const handleCreateReview = async (solicitacaoId) => {
-        const notaStr = prompt("Dê uma nota de 1 a 5:");
-        if (!notaStr) return;
-        const nota = parseInt(notaStr);
-        if (isNaN(nota) || nota < 1 || nota > 5) {
-            alert("Nota inválida. Digite um número entre 1 e 5.");
-            return;
+        // Busca favoritos apenas se for cliente
+        if (user?.tipo_usuario === 'cliente') {
+            getFavorites()
+                .then(data => {
+                    let favsList = [];
+                    if (Array.isArray(data)) {
+                        favsList = data;
+                    } else if (data?.results && Array.isArray(data.results)) {
+                        favsList = data.results;
+                    }
+                    setFavorites(favsList);
+                })
+                .catch(err => console.error("Erro ao buscar favoritos:", err));
         }
-        
-        const comentario = prompt("Escreva um comentário (opcional):") || "";
-        
+    }, [user]);
+
+    const handleOpenReviewModal = (solicitacaoId) => {
+        setSelectedSolicitacaoId(solicitacaoId);
+        setOpenReviewModal(true);
+    };
+
+    const handleSubmitReview = async (rating, comment) => {
         try {
             await createReview({
-                solicitacao_contato_id: solicitacaoId,
-                nota: nota,
-                comentario: comentario
+                solicitacao_contato_id: selectedSolicitacaoId,
+                nota: rating,
+                comentario: comment
             });
             alert("Avaliação enviada com sucesso!");
-            setPendingReviews(prev => prev.filter(p => p.id !== solicitacaoId));
+            setPendingReviews(prev => prev.filter(p => p.id !== selectedSolicitacaoId));
         } catch (error) {
             console.error("Erro ao avaliar:", error);
             alert("Erro ao enviar avaliação.");
@@ -105,29 +192,23 @@ export default function UserPerfil({ userData = mockUserData }) {
         getMe().then(data => setProfileData(data));
     };
 
-    // Combine mock data structure with real data if available
     const displayData = profileData ? {
         nome: profileData.nome_completo || "Nome não informado",
         cargo: profileData.tipo_usuario === 'cliente' ? "Cliente" : "Prestador",
-        // Tenta pegar de perfil_cliente ou da raiz
         dataNasc: profileData.perfil_cliente?.dt_nascimento || profileData.dt_nascimento || "N/A",
         genero: profileData.perfil_cliente?.genero || profileData.genero || "N/A",
         telefone: profileData.perfil_cliente?.telefone_contato || profileData.telefone_contato || "N/A",
-        dataRegistro: profileData.data_joined ? new Date(profileData.data_joined).toLocaleDateString('pt-BR') : "N/A",
+        dataRegistro: profileData.perfil_cliente?.data_registro || (profileData.data_joined ? new Date(profileData.data_joined).toLocaleDateString('pt-BR') : "N/A"),
         email: profileData.email || "Email não informado",
-        linkedIn: "N/A", // Não existe no cadastro
-        perfilImg: userData.perfilImg, // Mantém imagem mockada por enquanto
-        mensagens: userData.mensagens, // Mantém mock
-        galeria: userData.galeria, // Mantém mock
-        avaliacoes: userData.avaliacoes // Mantém mock
+        linkedIn: "N/A",
+        perfilImg: getImageUrl(profileData.foto || profileData.foto_perfil || profileData.perfil_cliente?.foto || profileData.perfil_cliente?.foto_perfil) || userData.perfilImg,
+        mensagens: userData.mensagens,
+        galeria: userData.galeria, 
+        avaliacoes: userData.avaliacoes 
     } : userData;
 
 
-    // O objeto 'styles' agora contém todas as suas classes CSS
-
-    // Função auxiliar para combinar classes (útil para tabs)
     const getTabClassName = (tab) => {
-        // Combina a classe base (styles.tab) com a classe 'active' se for a aba ativa
         return `${styles.tab} ${activeTab === tab ? styles.active : ''}`;
     };
 
@@ -175,10 +256,10 @@ export default function UserPerfil({ userData = mockUserData }) {
                                 {pendingReviews.map((sol) => (
                                     <tr key={sol.id} style={{borderBottom: '1px solid #eee'}}>
                                         <td style={{padding: '10px'}}>{sol.prestador_nome || sol.prestador_id}</td>
-                                        <td style={{padding: '10px'}}>{new Date(sol.data_solicitacao).toLocaleDateString()}</td>
+                                        <td style={{padding: '10px'}}>{formatDate(sol.data_conclusao || sol.data_solicitacao)}</td>
                                         <td style={{padding: '10px'}}>
                                             <button 
-                                                onClick={() => handleCreateReview(sol.id)}
+                                                onClick={() => handleOpenReviewModal(sol.id)}
                                                 style={{
                                                     padding: '5px 10px',
                                                     backgroundColor: '#1a06c9',
@@ -216,25 +297,64 @@ export default function UserPerfil({ userData = mockUserData }) {
                     </div>
                 </div>
 
+                {/* --- Favoritos --- */}
+                {user?.tipo_usuario === 'cliente' && (
+                    <div className={styles.box}>
+                        <h2>Meus Prestadores Favoritos</h2>
+                        {favorites.length > 0 ? (
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
+                                {favorites.map((fav) => (
+                                    <div 
+                                        key={fav.id} 
+                                        onClick={() => { setProviderSelected(fav); navigate('/providerDatails'); }} 
+                                        style={{ cursor: 'pointer' }}
+                                    >
+                                        <ProviderBox 
+                                            name={fav.nome} 
+                                            location={`${fav.cidade || ''}, ${fav.bairro || ''}`} 
+                                            rating={fav.nota_media} 
+                                            resum={fav.biografia || "Sem descrição."} 
+                                            image={getImageUrl(fav.foto || fav.foto_perfil)}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p style={{textAlign: 'center', color: '#666'}}>Você ainda não favoritou nenhum prestador.</p>
+                        )}
+                    </div>
+                )}
+
                 {/* --- Mensagens e Calendário --- */}
                 <div className={styles.flex}>
 
-                    {/* Mensagens */}
+                    {/* Minhas Avaliações */}
                     <div className={`${styles.box} ${styles.mensagens}`}>
-                        <h2>Mensagens</h2>
-                        <table>
-                            <thead>
-                                <tr><th>Nome</th><th>Data</th></tr>
-                            </thead>
-                            <tbody>
-                                {displayData.mensagens.map((msg, index) => (
-                                    <tr key={index}>
-                                        <td>{msg.nome}</td>
-                                        <td>{msg.data}</td>
+                        <h2>Minhas Avaliações Enviadas</h2>
+                        {reviews.length === 0 ? (
+                            <p style={{textAlign: 'center', color: '#666'}}>Você ainda não enviou nenhuma avaliação.</p>
+                        ) : (
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style={{textAlign: 'left'}}>Prestador</th>
+                                        <th style={{textAlign: 'left'}}>Nota</th>
+                                        <th style={{textAlign: 'left'}}>Comentário</th>
+                                        <th style={{textAlign: 'left'}}>Data</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {reviews.map((rev, index) => (
+                                        <tr key={rev.id || index}>
+                                            <td>{rev.prestador_nome || rev.prestador?.nome || rev.prestador || "Nome indisponível"}</td>
+                                            <td style={{color: '#ffc107'}}>{rev.nota} ★</td>
+                                            <td>{rev.comentario}</td>
+                                            <td>{formatDate(rev.data_criacao || rev.created_at || rev.data)}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        )}
                     </div>
 
                   
@@ -248,6 +368,12 @@ export default function UserPerfil({ userData = mockUserData }) {
                 close={() => setOpenEditModal(false)} 
                 userData={profileData} 
                 onUpdate={handleUpdateProfile} 
+            />
+
+            <ReviewModal 
+                open={openReviewModal} 
+                close={() => setOpenReviewModal(false)} 
+                onSubmit={handleSubmitReview} 
             />
         </div>
     );

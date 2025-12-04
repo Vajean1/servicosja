@@ -34,7 +34,6 @@ export default function LoginProviderPopup({ open, close }) {
 
             const result = await login(providerLogin.email, providerLogin.password);
 
-            console.log('Login bem-sucedido:', result);
             close();
             
             // Redirect based on user type, though this popup implies Provider

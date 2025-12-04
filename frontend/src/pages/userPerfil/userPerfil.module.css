@@ -216,3 +216,60 @@ table th, table td {
 .bar3::after { width: 4%; }  /* bar-3 -> bar3 */
 .bar2::after { width: 2%; }  /* bar-2 -> bar2 */
 .bar1::after { width: 2%; }  /* bar-1 -> bar1 */
+
+/* --- Modal Avaliação --- */
+.modalContent {
+    padding: 25px;
+    width: 400px;
+    background: white;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    font-family: var(--font);
+}
+
+.modalContent h2 {
+    color: #1a06c9;
+    text-align: center;
+    margin: 0;
+}
+
+.starsContainer {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    font-size: 32px;
+}
+
+.star {
+    cursor: pointer;
+    color: #ddd;
+    transition: color 0.2s;
+}
+
+.starActive {
+    color: #ffc107;
+}
+
+.modalContent textarea {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    min-height: 100px;
+    resize: vertical;
+}
+
+.submitButton {
+    padding: 12px;
+    background-color: #1a06c9;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.submitButton:hover {
+    background-color: #110263;
+}

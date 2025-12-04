@@ -13,6 +13,9 @@ export default function EditUserModal({ open, close, userData, onUpdate }) {
         telefone_contato: ''
     });
 
+    const [selectedPhoto, setSelectedPhoto] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState(null);
+
     useEffect(() => {
         if (userData) {
             setFormData({
@@ -25,30 +28,59 @@ export default function EditUserModal({ open, close, userData, onUpdate }) {
             });
         }
     }, [userData]);
+
+    useEffect(() => {
+        return () => {
+            if (previewUrl) {
+                URL.revokeObjectURL(previewUrl);
+            }
+        };
+    }, [previewUrl]);
     
-    const { updateUser } = UserServices();
+    const { updateUser, updateClientProfile } = UserServices();
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const handlePhotoChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setSelectedPhoto(file);
+            setPreviewUrl(URL.createObjectURL(file));
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const payload = {
+            // 1. Atualiza dados de User (Nome e Nascimento) via JSON para /me
+            const userPayload = {
                 nome_completo: formData.nome_completo,
-                dt_nascimento: formData.dt_nascimento,
-                perfil_cliente: {
-                    telefone_contato: formData.telefone_contato,
-                    rua: formData.rua,
-                    numero_casa: formData.numero_casa,
-                    cep: formData.cep
-                }
+                dt_nascimento: formData.dt_nascimento
             };
+            await updateUser(userPayload);
 
-            await updateUser(payload);
+            // 2. Atualiza dados de Perfil (Endereço, Telefone, Foto) via FormData para /perfil/cliente/editar/
+            const profileFormData = new FormData();
+            
+            // Campos planos conforme nova documentação
+            profileFormData.append('telefone_contato', formData.telefone_contato || '');
+            profileFormData.append('rua', formData.rua || '');
+            profileFormData.append('numero_casa', formData.numero_casa || '');
+            profileFormData.append('cep', formData.cep || '');
+
+            if (selectedPhoto) {
+                profileFormData.append('foto_perfil', selectedPhoto);
+            }
+
+            await updateClientProfile(profileFormData);
+
             if (onUpdate) onUpdate();
             close();
+            // Limpa estado da foto
+            setSelectedPhoto(null);
+            setPreviewUrl(null);
         } catch (error) {
             console.error("Failed to update user profile", error);
             alert("Erro ao atualizar perfil. Tente novamente.");
@@ -60,6 +92,19 @@ export default function EditUserModal({ open, close, userData, onUpdate }) {
             <div className={styles.modalContent}>
                 <h2>Editar Perfil</h2>
                 <form onSubmit={handleSubmit}>
+                    <label>Foto de Perfil:</label>
+                    <input type="file" accept="image/*" onChange={handlePhotoChange} style={{marginBottom: '10px'}} />
+                    
+                    {previewUrl && (
+                        <div style={{ marginBottom: '15px', textAlign: 'center' }}>
+                            <img 
+                                src={previewUrl} 
+                                alt="Preview" 
+                                style={{ width: '100px', height: '100px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #ddd' }} 
+                            />
+                        </div>
+                    )}
+
                     <label>Nome Completo:</label>
                     <input name="nome_completo" value={formData.nome_completo} onChange={handleChange} placeholder="Nome Completo" />
                     

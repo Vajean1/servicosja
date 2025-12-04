@@ -11,8 +11,7 @@ export default function CategoryServices() {
             const response = await fetch(`${url}/servicos/categorias/?include_servicos=true`, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
+                    'Content-Type': 'application/json'
                 },
             });
             const result = await response.json();

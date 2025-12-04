@@ -115,13 +115,19 @@ export default function UserServices() {
             const token = storedAuth ? JSON.parse(storedAuth).access : null;
             if (!token) throw new Error("No token found");
 
+            const isFormData = data instanceof FormData;
+            const headers = {
+                'Authorization': `Bearer ${token}`
+            };
+            
+            if (!isFormData) {
+                headers['Content-Type'] = 'application/json';
+            }
+
             const response = await fetch(`${url}/accounts/me/`, {
                 method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(data)
+                headers: headers,
+                body: isFormData ? data : JSON.stringify(data)
             });
 
             const result = await response.json();
@@ -187,6 +193,111 @@ export default function UserServices() {
             setLoading(false);
         }
     };
+
+    const updateClientProfile = async (formData) => {
+        setLoading(true);
+        try {
+            const storedAuth = localStorage.getItem('auth');
+            const token = storedAuth ? JSON.parse(storedAuth).access : null;
+            if (!token) throw new Error("No token found");
+            
+            const response = await fetch(`${url}/accounts/perfil/cliente/editar/`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            const result = await response.json();
+            if (!response.ok) throw result;
+            return result;
+        } catch (error) {
+            console.error("Error updating client profile:", error);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const getUserReviews = async () => {
+        setLoading(true);
+        try {
+            const storedAuth = localStorage.getItem('auth');
+            const token = storedAuth ? JSON.parse(storedAuth).access : null;
+            if (!token) throw new Error("No token found");
+
+            const response = await fetch(`${url}/avaliacoes/listar/?minhas=true`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            const result = await response.json();
+            if (!response.ok) throw result;
+            return result;
+        } catch (error) {
+            console.error("Error getting user reviews:", error);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const toggleFavorite = async (providerId) => {
+        setLoading(true);
+        try {
+            const storedAuth = localStorage.getItem('auth');
+            const token = storedAuth ? JSON.parse(storedAuth).access : null;
+            if (!token) throw new Error("No token found");
+
+            const response = await fetch(`${url}/accounts/favoritos/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ prestador_id: providerId })
+            });
+
+            const result = await response.json();
+            if (!response.ok) throw result;
+            return result;
+        } catch (error) {
+            console.error("Error toggling favorite:", error);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const getFavorites = async () => {
+        setLoading(true);
+        try {
+            const storedAuth = localStorage.getItem('auth');
+            const token = storedAuth ? JSON.parse(storedAuth).access : null;
+            if (!token) throw new Error("No token found");
+
+            const response = await fetch(`${url}/accounts/favoritos/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            const result = await response.json();
+            if (!response.ok) throw result;
+            return result;
+        } catch (error) {
+            console.error("Error getting favorites:", error);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
     
     return { 
         register, 
@@ -195,6 +306,10 @@ export default function UserServices() {
         initiateContact, 
         updateUser, 
         getClientSolicitations, 
-        createReview 
+        createReview,
+        updateClientProfile,
+        getUserReviews,
+        toggleFavorite,
+        getFavorites
     };
 }
