@@ -11,8 +11,6 @@ const Maps = ({long , lat}) => {
 
     
   return (
-
-    
     
     <MapContainer 
       center={position} 

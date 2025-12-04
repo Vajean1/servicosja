@@ -242,7 +242,6 @@ export default function ProviderRegistration() {
 
         register(formDataProvider)
             .then((result) => {
-                console.log('Cadastro realizado com sucesso!', result);
                 setAuthData(result);
                 navigate('/providerPerfil')
             })

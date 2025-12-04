@@ -148,7 +148,6 @@ export default function ProviderPerfil({ userData = mockUserData }) {
                 formData.append('imagem', file);
                 
                 const result = await addPortfolioItem(formData);
-                console.log("Upload Result:", result);
                 
                 const finalUrl = getImageUrl(result.imagem || result.image || result.url);
 
@@ -233,8 +232,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
     
     useEffect(() => {
         if (providerAccount?.localizacao) {
-            const locationQuery = providerAccount.localizacao;
-            console.log(`Dados de localização carregados: ${locationQuery}. Nenhuma ação de mapa está sendo executada.`);
+            // const locationQuery = providerAccount.localizacao;
         }
         
         // Popula galeria com dados da API
@@ -306,7 +304,6 @@ export default function ProviderPerfil({ userData = mockUserData }) {
         if (window.confirm("Deseja marcar este serviço como concluído? Isso enviará uma mensagem para o cliente.")) {
             try {
                 const result = await completeService(id);
-                console.log("Resultado da conclusão:", result);
                 
                 // Check for whatsapp_url (used in other parts) or whatsapp_link (docs)
                 const link = result.whatsapp_url || result.whatsapp_link;

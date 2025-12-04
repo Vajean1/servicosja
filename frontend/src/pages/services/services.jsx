@@ -41,6 +41,7 @@ export default function Services () {
     
     // Proximity Filter States
     const [orderByDistance, setOrderByDistance] = useState(null);
+    const [orderByRating, setOrderByRating] = useState(null);
     const [userLocation, setUserLocation] = useState({ lat: null, lng: null });
 
 
@@ -97,6 +98,7 @@ export default function Services () {
         setSelectedService(null);
         setSelectedRating(null);
         setOrderByDistance(null);
+        setOrderByRating(null);
         setUserLocation({ lat: null, lng: null });
         // Força o getProviders (buscar todos sem filtro)
         setRefetchProviders(true); 
@@ -116,17 +118,17 @@ export default function Services () {
     useEffect (()=>{
         if(refetchProviders){
             getProviders()
-            console.log('Disparando chamada inicial de TODOS')
         }
     },[refetchProviders, getProviders]) 
 
     // Efeito UNIFICADO para FILTROS: Roda apenas quando um dos estados de filtro muda
+    // NOTA: selectedRating (estrelas) agora é apenas ordenação local, não dispara requisição.
     useEffect(() => {
         // Se refetchProviders for true, significa que estamos no carregamento inicial ou resetando para TODOS, então evitamos filtros concorrentes.
         if (refetchProviders) return; 
 
-        // Se pelo menos um filtro foi ativado (não é null), disparamos a busca combinada
-        if (findMat !== null || hora !== null || fds !== null || selectedService !== null || selectedRating !== null || orderByDistance !== null) {
+        // Se pelo menos um filtro (que exige API) foi ativado
+        if (findMat !== null || hora !== null || fds !== null || selectedService !== null || orderByDistance !== null || orderByRating !== null) {
             // Se for por distância, precisamos garantir que temos lat/lng
             if (orderByDistance && (!userLocation.lat || !userLocation.lng)) {
                 return; // Aguarda a geolocalização completar
@@ -137,25 +139,59 @@ export default function Services () {
                 hours24: hora,
                 weekend: fds,
                 service: selectedService,
-                minRating: selectedRating,
+                // minRating removido da API para permitir ordenação local de todos os resultados
                 orderByDistance: orderByDistance,
+                orderByRating: orderByRating,
                 latitude: userLocation.lat,
                 longitude: userLocation.lng
             });
-            console.log('Filtro(s) aplicado(s)')
         } else {
-             // Se todos os filtros estão null, mas refetchProviders é false, forçamos o getProviders
-             // para garantir que todos sejam exibidos após a remoção de um filtro.
+             // Se todos os filtros de API estão null
              getProviders();
-             console.log('Todos os filtros removidos. Buscando todos novamente.')
         }
 
-    }, [findMat, hora, fds, selectedService, selectedRating, orderByDistance, userLocation, getFilteredProviders, refetchProviders, getProviders]); 
+    }, [findMat, hora, fds, selectedService, orderByDistance, orderByRating, userLocation, getFilteredProviders, refetchProviders, getProviders]); 
 
-    // Filtragem local case-insensitive pelo nome
-    const displayedProviders = providers.filter(provider => 
-        provider.nome && provider.nome.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // Filtragem local (Nome) e Ordenação por Rating
+    const displayedProviders = providers
+        .filter(provider => {
+            if (!searchTerm) return true;
+            
+            const term = searchTerm.toLowerCase();
+            let serviceName = "";
+
+            if (provider.servico && typeof provider.servico === 'object' && provider.servico.nome) {
+                serviceName = provider.servico.nome;
+            } else if (typeof provider.servico === 'string') {
+                serviceName = provider.servico;
+            } else if (typeof provider.servico === 'number') {
+                for (const cat of categories) {
+                    if (cat.servicos) {
+                        const found = cat.servicos.find(s => s.id === provider.servico);
+                        if (found) {
+                            serviceName = found.nome;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return serviceName && serviceName.toLowerCase().includes(term);
+        })
+        .sort((a, b) => {
+            if (selectedRating !== null) {
+                // Ordena por proximidade da nota selecionada
+                const distA = Math.abs((a.nota_media || 0) - selectedRating);
+                const distB = Math.abs((b.nota_media || 0) - selectedRating);
+                
+                // Se a distância for a mesma, o de maior nota vem primeiro (ex: 4.0 empata com 4.0, depois 4.1 vs 3.9)
+                if (distA === distB) {
+                    return (b.nota_media || 0) - (a.nota_media || 0);
+                }
+                return distA - distB; // Menor distância primeiro
+            }
+            return 0; // Mantém ordem original se nenhuma estrela selecionada
+        });
 
     return(
         <div className={styles.services}>
@@ -191,7 +227,7 @@ export default function Services () {
                     <div className={styles.filterItem}>
                         <input 
                             type="text" 
-                            placeholder="Buscar por nome..." 
+                            placeholder="Buscar por serviço..." 
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
@@ -220,7 +256,7 @@ export default function Services () {
                             <input 
                                 onChange={handleChangeTodos} 
                                 type="checkbox" 
-                                checked={findMat === null && hora === null && fds === null && selectedService === null && selectedRating === null && orderByDistance === null}
+                                checked={findMat === null && hora === null && fds === null && selectedService === null && selectedRating === null && orderByDistance === null && orderByRating === null}
                             />
                             <span >Todos</span>
                         </div>
@@ -229,6 +265,10 @@ export default function Services () {
                         <div className={styles.serviceItem}>
                             <input checked={orderByDistance === true} onChange={handleChangeProximity} type="checkbox" />
                             <span>Mais Próximos</span>
+                        </div>
+                        <div className={styles.serviceItem}>
+                            <input checked={orderByRating === true} onChange={(e) => setOrderByRating(e.target.checked ? true : null)} type="checkbox" />
+                            <span>Melhores Avaliados</span>
                         </div>
 
                         <h3>Material Próprio</h3>

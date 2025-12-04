@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 
 import styles from './providerDatails.module.css';
-import {FaUserCircle} from 'react-icons/fa';
+import {FaUserCircle, FaHeart, FaRegHeart} from 'react-icons/fa';
 import ProviderBox from '../../components/providerBox/providerBox'; // Import não utilizado, mas mantido
 import { useProviderContext } from '../../context/providerSelected';
 import { FaArrowLeft } from "react-icons/fa6";
@@ -16,7 +16,6 @@ const getImageUrl = (url) => {
     if (!url) return '';
     if (url.startsWith('http') || url.startsWith('blob:')) return url;
     if (url.startsWith('/img') || url.startsWith('/assets')) return url;
-    // O backend-url deve ser revisado: 'https://back-end-servicosja-api.onrender.com'
     return `https://back-end-servicosja-api.onrender.com${url}`;
 };
 
@@ -70,12 +69,13 @@ export default function ProviderDatails () {
     const [currentMainImage, setCurrentMainImage] = useState(null);
     const [comments, setComments] = useState([]);
     const [fullProviderData, setFullProviderData] = useState(null);
+    const [isFavorite, setIsFavorite] = useState(false);
 
     // --- CONTEXTOS E HOOKS ---
     const { providerSelected } = useProviderContext();
     const navigate = useNavigate();
     const { isAuthenticated, user } = useAuth();
-    const { initiateContact, getClientSolicitations } = UserServices();
+    const { initiateContact, getClientSolicitations, toggleFavorite, getFavorites } = UserServices();
     const { getProviderPerfil } = ProviderServices();
 
     // --- FUNÇÕES DE AUXÍLIO À RENDERIZAÇÃO ---
@@ -93,6 +93,17 @@ export default function ProviderDatails () {
     // --- EFEITO DE BUSCA DE DADOS ---
     useEffect(() => {
         if (providerSelected?.id) {
+            // Check favorites if client
+            if (isAuthenticated && user?.tipo_usuario === 'cliente') {
+                getFavorites().then(favs => {
+                    if (Array.isArray(favs)) {
+                        // Verifica se o ID do prestador está na lista
+                        const found = favs.find(f => f.id === providerSelected.id);
+                        if (found) setIsFavorite(true);
+                    }
+                }).catch(err => console.error("Erro ao buscar favoritos:", err));
+            }
+
             getProviderPerfil(providerSelected.id)
                 .then(data => {
                     setFullProviderData(data);
@@ -143,8 +154,17 @@ export default function ProviderDatails () {
     // Utilizarei a forma padrão (latitude -> lat, longitude -> long) para esta correção,
     // mas se o problema persistir, use as linhas comentadas acima.
     
-    console.log(`Coordenadas do Mapa: Lat ${mapLatitude}, Long ${mapLongitude}`);
     // ------------------------------------------------------------------
+
+    const handleToggleFavorite = async () => {
+        try {
+            await toggleFavorite(providerSelected.id);
+            setIsFavorite(!isFavorite);
+        } catch (error) {
+            console.error(error);
+            alert("Erro ao atualizar favoritos.");
+        }
+    };
 
     const handleRequestService = async () => {
         if (!isAuthenticated) {
@@ -169,7 +189,6 @@ export default function ProviderDatails () {
             if (!providerUserId) {
                  // Esta lógica de fallback já estava no seu código, mantida por segurança.
                  // Na maioria dos casos, fullProviderData já terá o ID correto.
-                 console.log("user_id missing in context, fetching profile...");
                  const fullProfile = await getProviderPerfil(providerSelected.id);
                  if (fullProfile && fullProfile.user_id) {
                      providerUserId = fullProfile.user_id;
@@ -188,8 +207,6 @@ export default function ProviderDatails () {
                 alert("Erro: Não foi possível identificar o prestador ou o serviço.");
                 return;
             }
-
-            console.log("Handle Request Service - Final IDs:", { providerUserId, serviceId });
 
             // Check for pending evaluations
             const solicitations = await getClientSolicitations();
@@ -239,7 +256,18 @@ export default function ProviderDatails () {
                 </div>
 
                 <div className={styles.providerDatailsInfo}>
-                    <h2>{displayData.nome}</h2>
+                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+                        <h2>{displayData.nome}</h2>
+                        {isAuthenticated && user?.tipo_usuario === 'cliente' && (
+                            <button 
+                                onClick={handleToggleFavorite} 
+                                style={{background: 'none', border: 'none', cursor: 'pointer', fontSize: '24px', color: '#ff4081'}}
+                                title={isFavorite ? "Remover dos Favoritos" : "Adicionar aos Favoritos"}
+                            >
+                                {isFavorite ? <FaHeart /> : <FaRegHeart />}
+                            </button>
+                        )}
+                    </div>
                     <h5>{displayData.servico?.nome || displayData.categoria || "Serviço Indefinido"}</h5>
                     <div className={styles.line}></div>
                     <p>{displayData.biografia || "Descrição detalhada do prestador de serviço, suas qualificações, experiência e outras informações relevantes que possam ajudar o cliente a tomar uma decisão informada."}</p>

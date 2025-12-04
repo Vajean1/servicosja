@@ -90,8 +90,6 @@ export default function Home () {
 
                  <Swiper
                     modules={[Navigation, A11y]}
-                    onSlideChange={() => console.log('slide change')}
-                    onSwiper={(swiper) => console.log(swiper)}
                     slidesPerView={1}
                     breakpoints={{
                         
@@ -164,8 +162,6 @@ export default function Home () {
                    <div className={styles.commentsContent}>
                      <Swiper
                     modules={[Navigation, A11y]}
-                    onSlideChange={() => console.log('slide change')}
-                    onSwiper={(swiper) => console.log(swiper)}
                     slidesPerView={1}
                     breakpoints={{
                         
