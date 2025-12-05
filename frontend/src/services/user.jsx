@@ -4,7 +4,7 @@ import { useState } from "react";
 
 export default function UserServices() {
     const [loading, setLoading] = useState(false);
-    const url = '/api';
+    const url = 'https://back-end-servicosja-api.onrender.com/api';
 
     const register = (formData) => {
         setLoading(true);

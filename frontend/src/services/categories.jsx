@@ -3,7 +3,7 @@ import { useState, useCallback } from "react";
 export default function CategoryServices() {
     const [loadingCategories, setLoadingCategories] = useState(false);
     const [categories, setCategories] = useState([]);
-    const url = '/api';
+    const url = 'https://back-end-servicosja-api.onrender.com/api';
 
     const getCategories = useCallback(async () => {
         setLoadingCategories(true);

@@ -5,7 +5,7 @@ export default function ProviderServices() {
     const [providers, setPoviders] = useState([]);
     const [refetchProviders, setRefetchProviders] = useState(true);
     const [providerAccount, setProviderAccount] = useState([])
-    const url = '/api';
+    const url = 'https://back-end-servicosja-api.onrender.com/api';
 
     const register = (formData) => {
         setLoading(true);
@@ -36,7 +36,7 @@ export default function ProviderServices() {
         });
     };
 
-     const login = async (formData) => {
+    const login = async (formData) => {
         setLoading(true);
 
         try {
@@ -47,14 +47,23 @@ export default function ProviderServices() {
                 },
                 body: JSON.stringify(formData)
             });
+            
+            // --- AQUI É O PONTO CRÍTICO ---
+            if (!response.ok) {
+                 // Tenta ler o corpo como texto para inspecionar, se falhar ao ler como JSON
+                 const errorBody = await response.text();
+                 console.error(`Falha no Login, Status: ${response.status}. Corpo da resposta:`, errorBody);
+                 
+                 // Lança o erro com mais detalhes, ou tenta parsear se for JSON esperado
+                 // Se você sabe que o backend retorna JSON para erros, use .json() e lance.
+                 // Se você está recebendo HTML, lance o erro com o status.
+                 throw new Error(`Login failed with status ${response.status}. Server returned HTML/non-JSON.`);
+            }
+            // --------------------------------
 
-            const result = await response.json(); 
+            const result = await response.json(); // Isso só é executado se response.ok for true
             console.log("Resposta da API:", result);
-
-          
-
             return result; 
-
         } catch (error) {
             console.error(' Erro na requisição ou validação:', error);
             throw error; 
