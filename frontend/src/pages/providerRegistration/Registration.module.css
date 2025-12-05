@@ -6,6 +6,12 @@
     margin-top: 80px;
 }
 
+.load{
+    width: 100%;
+    padding-top: 180px;
+    min-height: 80vh;
+}
+
 .registrationForm{
     width: 50%;
     flex-direction: column;

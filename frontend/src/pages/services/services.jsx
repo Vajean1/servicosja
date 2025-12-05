@@ -6,7 +6,7 @@ import ProviderServices from '../../services/provider';
 import CategoryServices from '../../services/categories';
 import Loading from '../loading/loading';
 import { useProviderContext } from '../../context/providerSelected';
-import Loading2 from '../loading/loading2';
+import Loading3 from '../loading/loading3';
 import { ImMenu3 } from "react-icons/im";
 
 const getImageUrl = (url) => {
@@ -462,7 +462,7 @@ export default function Services () {
                 <section className={loading ? styles.providerContainerLogin : styles.providerContainer}>
 
                     {loading && (
-                    <Loading2/>
+                    <Loading3/>
                     )}
 
                     {displayedProviders.map((provider)=> (

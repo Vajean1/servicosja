@@ -1,10 +1,14 @@
+// components/ProviderRegistration.js (Atualizado)
+
 import { useState } from 'react';
 import { IMaskInput } from 'react-imask';
 import styles from './Registration.module.css';
 import ProviderServices from '../../services/provider';
 import Loading from '../loading/loading';
+import Loading2 from '../loading/loading2'; // 👈 NOVO: Importe o componente de loading mobile
 import { useNavigate } from 'react-router';
 import { useAuth } from '../../context/AuthContext';
+import { useIsMobile } from '../../hook/useIsMobile'; // 👈 NOVO: Importe o hook de detecção mobile
 
 // --- ARRAYS E FUNÇÕES AUXILIARES (PERMANECEM INALTERADOS) ---
 const allCategores = [
@@ -150,6 +154,8 @@ const formatDateToISO = (dateStr) => {
     if (!dateStr || dateStr.length !== 10) return dateStr;
     const [day, month, year] = dateStr.split('/');
     if (day && month && year) {
+        // Nota: A função original retorna 'DD/MM/YYYY', mantendo o formato.
+        // Se a API exige 'YYYY-MM-DD' ou outro, ajuste aqui.
         return `${day}/${month}/${year}`;
     }
     return dateStr;
@@ -166,6 +172,9 @@ export default function ProviderRegistration() {
 
     // ESTADO para erros da API
     const [formErrors, setFormErrors] = useState({}); 
+    
+    // 💡 NOVO: Hook para detecção de mobile
+    const isMobile = useIsMobile();
 
     const caseSensitiveFields = ['password', 'password2' ,'genero'];
     
@@ -207,11 +216,11 @@ export default function ProviderRegistration() {
             setFormDataProvider(prevData => ({
                 ...prevData,
                 [name]: selectedId !== undefined ? selectedId : null, 
-                'servico': null 
+                'servico': null // Reseta o serviço ao mudar a categoria
             }));
             setFormErrors(prevErrors => ({
                 ...prevErrors,
-                'servico': null
+                'servico': null // Limpa o erro do serviço também
             }));
             return;
 
@@ -255,10 +264,12 @@ export default function ProviderRegistration() {
         ? allServices.find(s => s.id === formDataProvider.servico)?.value || ''
         : '';
 
+    // 🚀 LÓGICA DE CARREGAMENTO CONDICIONAL
     if (loading) {
-        return (
-            <Loading />
-        )
+        if (isMobile) {
+            return <div className={styles.load}><Loading2 /></div>  // Carregamento para Mobile
+        }
+        return <Loading />; // Carregamento para Desktop (padrão)
     }
     
     return (
@@ -281,15 +292,16 @@ export default function ProviderRegistration() {
                         required
                     />
 
-                       {/* Campo: cpf */}
-                        {getErrorMessage('cpf') && (
-                            <p className={styles.errorMessage}>{getErrorMessage('cpf')}</p>
-                        )}  
-                     {getErrorMessage('dt_nascimento') && (
-                            <p className={styles.errorMessage}>{getErrorMessage('dt_nascimento')}</p>
-                        )}
+                    {/* CPF e Data de Nascimento */}
+                    {getErrorMessage('cpf') && (
+                        <p className={styles.errorMessage}>{getErrorMessage('cpf')}</p>
+                    )}  
+                    {getErrorMessage('dt_nascimento') && (
+                        <p className={styles.errorMessage}>{getErrorMessage('dt_nascimento')}</p>
+                    )}
                     <div className={styles.input50}>
-                       
+                        
+                        {/* Campo: cpf */}
                         <IMaskInput
                             mask="000.000.000-00"
                             name='cpf'
@@ -300,8 +312,7 @@ export default function ProviderRegistration() {
                             required
                         />
                         
-                       
-                       
+                        {/* Campo: dt_nascimento */}
                         <IMaskInput
                             mask="00/00/0000"
                             name='dt_nascimento'
@@ -324,7 +335,7 @@ export default function ProviderRegistration() {
                         onChange={handleChangeSetDataProvider}
                         required
                     >
-                        <option value="" disabled hidden>Genero</option>
+                        <option value="" disabled hidden>Gênero</option>
                         <option value="M">Masculino</option>
                         <option value="F">Feminino</option>
                         <option value="t">Transgênero</option>
@@ -332,6 +343,7 @@ export default function ProviderRegistration() {
                         <option value="nao-informado">Prefiro não informar</option>
                     </select>
 
+                    {/* Rua e Número */}
                     <div className={styles.input50}>
                         {/* Campo: rua */}
                         {getErrorMessage('rua') && (
@@ -347,7 +359,7 @@ export default function ProviderRegistration() {
                         />
                         
                         {/* Campo: numero_casa */}
-                         {getErrorMessage('numero_casa') && (
+                        {getErrorMessage('numero_casa') && (
                             <p className={styles.errorMessage}>{getErrorMessage('numero_casa')}</p>
                         )}
                         <input
@@ -388,6 +400,7 @@ export default function ProviderRegistration() {
                         required
                     />
 
+                    {/* Categoria e Serviço */}
                     <div className={styles.input50}>
                         {/* Campo: categoria */}
                         {getErrorMessage('categoria') && (
@@ -442,7 +455,7 @@ export default function ProviderRegistration() {
                         </select>
                     </div>
 
-                    
+                    {/* Disponibilidade e Final de Semana */}
                     <div className={styles.input50}>
                         {/* Campo: disponibilidade */}
                         {getErrorMessage('disponibilidade') && (
