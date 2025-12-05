@@ -5,7 +5,7 @@ export default function ProviderServices() {
     const [providers, setPoviders] = useState([]);
     const [refetchProviders, setRefetchProviders] = useState(true);
     const [providerAccount, setProviderAccount] = useState([])
-    const url = 'https://back-end-servicosja-api.onrender.com/api';
+    const url = import.meta.env.VITE_API_URL || '/api';
 
     const register = (formData) => {
         setLoading(true);

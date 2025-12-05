@@ -18,7 +18,6 @@ export const AuthProvider = ({ children }) => {
             if (storedAuth) {
                 try {
                     const parsedAuth = JSON.parse(storedAuth);
-                    // Check if token exists (accept 'access' or legacy 'token')
                     if (parsedAuth.access || parsedAuth.token) {
                         setUser(parsedAuth);
                         setIsAuthenticated(true);
@@ -35,7 +34,8 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            const response = await fetch('/api/auth/token/login/', {
+            const baseUrl = import.meta.env.VITE_API_URL || '/api';
+            const response = await fetch(`${baseUrl}/auth/token/login/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

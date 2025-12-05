@@ -4,7 +4,7 @@ import { useState } from "react";
 
 export default function UserServices() {
     const [loading, setLoading] = useState(false);
-    const url = 'https://back-end-servicosja-api.onrender.com/api';
+    const url = import.meta.env.VITE_API_URL || '/api';
 
     const register = (formData) => {
         setLoading(true);
