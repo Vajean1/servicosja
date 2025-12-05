@@ -3,6 +3,7 @@
     align-items: center;
     flex-wrap: wrap;
     border-top: 3px solid var(--orange);
+    margin-top: 80px;
 }
 
 .registrationForm{

@@ -20,6 +20,12 @@
     position: relative;
     font-family: var(--font); /* Usando a variável de fonte */
     padding:0 50px ;
+    position: relative;
+    top: -50px;
+}
+
+.box h2{
+    margin-bottom: 20px;
 }
 
 .perfil {
@@ -272,4 +278,49 @@ table th, table td {
 
 .submitButton:hover {
     background-color: #110263;
+}
+
+
+@media screen and (max-width:800px) {
+    .colum{
+    flex-direction: column;
+}
+
+.w_50{
+    width: 100%;
+}
+
+.perfil{
+    margin-top: 20px;
+}
+
+.perfil h2{
+    font-size: 16px;
+}
+
+.descricaoGrid { /* descricao-grid -> descricaoGrid */
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.solicitMain{
+    display: flex;
+    max-width: 100%;
+    margin: 20px 0;
+    color: var(--orange);
+    font-size: 15px;
+   
+}
+
+.solicit{
+    max-width: 100%;
+    font-size: 12px;
+}
+
+.header{
+    padding: 0 10px;
+}
+
 }

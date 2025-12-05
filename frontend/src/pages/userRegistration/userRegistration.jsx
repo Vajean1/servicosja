@@ -125,12 +125,18 @@ export default function UserRegistration() {
                         required 
                     />
                     
-                    <div className={styles.input50}>
-                        {/* Campo: cpf */}
-                        <div style={{ flex: 1 }}>
+                      
                             {getErrorMessage(formErrors, 'cpf') && (
                                 <p className={styles.errorMessage}>{getErrorMessage(formErrors, 'cpf')}</p>
                             )}
+                    
+                            {getErrorMessage(formErrors, 'dt_nascimento') && (
+                                <p className={styles.errorMessage}>{getErrorMessage(formErrors, 'dt_nascimento')}</p>
+                            )}
+                      
+                    <div className={styles.input50}>
+                        {/* Campo: cpf */}
+                        
                             <IMaskInput
                                 mask="000.000.000-00"
                                 name='cpf' 
@@ -140,13 +146,9 @@ export default function UserRegistration() {
                                 type="text" 
                                 required 
                             /> 
-                        </div>
+                       
                         
-                        {/* Campo: dt_nascimento */}
-                        <div style={{ flex: 1, marginLeft: '10px' }}>
-                            {getErrorMessage(formErrors, 'dt_nascimento') && (
-                                <p className={styles.errorMessage}>{getErrorMessage(formErrors, 'dt_nascimento')}</p>
-                            )}
+                        
                             <IMaskInput
                                 mask="00/00/0000"
                                 name='dt_nascimento'
@@ -156,7 +158,7 @@ export default function UserRegistration() {
                                 type="text"
                                 required 
                             /> 
-                        </div>
+                        
                     </div>
                     
                     {/* Campo: genero */}
@@ -176,12 +178,21 @@ export default function UserRegistration() {
                         <option value="nao-informado">Prefiro não informar</option>
                     </select>
 
-                    <div className={styles.input50}>
-                         {/* Campo: rua */}
-                        <div style={{ flex: 1 }}>
-                            {getErrorMessage(formErrors, 'rua') && (
+
+                         {getErrorMessage(formErrors, 'rua') && (
                                 <p className={styles.errorMessage}>{getErrorMessage(formErrors, 'rua')}</p>
                             )}
+
+                             {getErrorMessage(formErrors, 'numero_casa') && (
+                                <p className={styles.errorMessage}>{getErrorMessage(formErrors, 'numero_casa')}</p>
+                            )}
+                           
+
+
+                    <div className={styles.input50}>
+                       
+
+                            
                             <input 
                                 type="text" 
                                 placeholder='Rua' 
@@ -190,13 +201,8 @@ export default function UserRegistration() {
                                 onChange={handleChangeSetDataUser} 
                                 required
                             /> 
-                        </div>
-
-                        {/* Campo: numero_casa */}
-                        <div style={{ flex: 1, marginLeft: '10px' }}>
-                            {getErrorMessage(formErrors, 'numero_casa') && (
-                                <p className={styles.errorMessage}>{getErrorMessage(formErrors, 'numero_casa')}</p>
-                            )}
+                       
+                           
                             <input 
                                 type="number" 
                                 placeholder='Numero' 
@@ -205,7 +211,7 @@ export default function UserRegistration() {
                                 onChange={handleChangeSetDataUser} 
                                 required
                             /> 
-                        </div>
+                        
                     </div>
 
                     {/* Campo: cep */}

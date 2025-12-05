@@ -27,6 +27,7 @@
     
 }
 
+
 .perfil img {
     width: 85px;
     height: 85px;
@@ -418,12 +419,37 @@ table th, table td {
     width: 100%;
 }
 
+.perfil{
+    margin-top: 20px;
+}
+
+.perfil h2{
+    font-size: 16px;
+}
+
 .descricaoGrid { /* descricao-grid -> descricaoGrid */
     display: grid;
     grid-template-columns: repeat(1, 1fr);
     gap: 10px;
     margin-top: 10px;
 }
+
+.solicitMain{
+    display: flex;
+    max-width: 100%;
+    margin: 20px 0;
+    color: var(--orange);
+    font-size: 15px;
+   
+}
+
+.solicit{
+    max-width: 100%;
+    font-size: 12px;
+}
+
+
+
 }
 
 .deleteButton {

@@ -251,7 +251,7 @@ export default function ProviderDatails () {
 
             <div className={styles.providerDatailsHome}>
                 <div className={styles.providerDatailsImage}>
-                    {/* Usa foto do fullProviderData ou perfilImg do providerSelected */}
+                    
                     <img src={getImageUrl(displayData.foto || displayData.perfilImg) || "/img/exemples/Group 8.png"} alt="Imagem do Prestador" />
                 </div>
 
@@ -305,9 +305,9 @@ export default function ProviderDatails () {
                         {comments.length > 0 ? (
                             comments.map((comment, index) => (
                                 <div key={index} className={styles.commentUser} style={{alignItems: 'flex-start', flexDirection: 'column', gap: '5px'}}>
-                                    <div style={{display: 'flex', alignItems: 'center', gap: '10px', width: '100%'}}>
-                                        <h5 style={{margin: 0}}> <FaUserCircle/> {comment.cliente_nome || "Cliente"}</h5>
-                                        <div className={styles.starFull} style={{marginLeft: 'auto'}}>
+                                    <div style={{display: 'flex' , flexDirection:'column', alignItems: 'center', justifyContent:'center', gap: '10px', width: '100%'}}>
+                                        <h5 style={{margin: 0 }}> <FaUserCircle/> {comment.cliente_nome || "Cliente"}</h5>
+                                        <div className={styles.starFull} style={{display:'flex' , alignItems:'center'}}>
                                             {renderStars(comment.nota)}
                                         </div>
                                     </div>

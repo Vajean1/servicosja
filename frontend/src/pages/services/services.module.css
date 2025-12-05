@@ -1,229 +1,358 @@
 .services{
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    margin-top: 80px    ;
+  display: flex;
+  flex-direction: column;
+  /* CORREÇÃO: Usar min-height e height: auto para que o conteúdo defina o tamanho */
+  height: auto; 
+  min-height: 100vh;
+  margin-top: 80px  ;
 }
 
 .servicesMenu{
-    background-color: var(--blue);
-    padding: 20px 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    overflow: hidden;
+  background-color: var(--blue);
+  padding: 20px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  overflow: hidden;
 }
 
 
 .menuFilter{
-    width: 100%;
-    background-color: #fcfcfc;
-    color: #767474;
-    position: absolute;
-    top:142px;
-    border-top: 2px solid var(--orange);
-    z-index: 5;
-    font-family: var(--font);
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-   
-    padding: 25px;
-     align-items: left;
-    justify-content: space-around;
+  width: 100%;
+  background-color: #fcfcfc;
+  color: #767474;
+  position: absolute;
+  top:142px;
+  border-top: 2px solid var(--orange);
+  z-index: 5;
+  font-family: var(--font);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+ 
+  padding: 25px;
+  align-items: left;
+  justify-content: space-around;
 }
 
 .menuFilter a{
-    width: 50%;
-    margin-bottom: 15px;
-    text-decoration: none;
-    text-align: left;
-    color: var(--blue);
-    font-size: 0.8em;
-    padding: 0;
+  width: 50%;
+  margin-bottom: 15px;
+  text-decoration: none;
+  text-align: left;
+  color: var(--blue);
+  font-size: 0.8em;
+  padding: 0;
 }
 
 .servicesMenu a{
-    color: var(--white);
-    text-decoration: none;
-    font-family: var(--font);
-    font-size: 14px;
+  color: var(--white);
+  text-decoration: none;
+  font-family: var(--font);
+  font-size: 14px;
 }
 
 .servicesBody{
-    display: flex;
-    flex-wrap: wrap;
-    background-color: #ebebeb;
-    width: 100%;
-    height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  background-color: #ebebeb;
+  width: 100%;
+  /* CORREÇÃO: usa flex-grow para ocupar o espaço vertical restante */
+  height: auto;
+  flex-grow: 1;
 }
 
 
 
 
 .servicesFilter{
-    display: flex;
-    flex-direction: column;
-    width: 30%;
-    padding: 40px;
-    gap: 30px;
-    padding-bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  width: 30%;
+  padding: 40px;
+  gap: 30px;
+  padding-bottom: 00px;
+  /* CORREÇÃO: Removido height: 100% para evitar altura forçada */
+  
 }
 
+
+
 .filterItem{
-    display: flex;
-    align-items: center;
-    margin-top: 25px;
-    position: relative;
-    max-width: 300px;
-    
+  display: flex;
+  align-items: center;
+  position: relative;
+  max-width: 300px;
+  
+}
+
+.filterItemMenu{
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 80%;
+  
+}
+
+
+.filterItemMenu input{
+  width: 100%;
+  padding: 5px;
+  border: none;
+  border-radius: 5px;
+  margin-right: 10px;
+  font-family: var(--font);
+  font-size: 14px;
+  border: 2px solid var(--blue);
+  box-shadow: 4px 4px 8px #767474;
+}
+
+.filterItemMenu button{
+  position:absolute;
+  right: 0;
+  top: 0;
+  padding: 10.5px 8px ;
+  line-height: 5px;
+  border-radius: 5px;
+  font-size: 15px;
+  background-color: var(--blue);
+  color: var(--white);
+  cursor: pointer;
+  border: none;
 }
 
 
 
 .filterItem input{
-    width: 100%;
-    padding: 5px;
-    border: none;
-    border-radius: 5px;
-    margin-right: 10px;
-    font-family: var(--font);
-    font-size: 14px;
-    border: 2px solid var(--blue);
-    box-shadow: 4px 4px 8px #767474;
+  width: 100%;
+  padding: 5px;
+  border: none;
+  border-radius: 5px;
+  margin-right: 10px;
+  font-family: var(--font);
+  font-size: 14px;
+  border: 2px solid var(--blue);
+  box-shadow: 4px 4px 8px #767474;
+  
 }
 
 .box{
-    width: 100%;
-    display: flex;
+  width: 100%;
+  display: flex;
+  margin: 0;
+  
 }
 
 .filterItem button{
-    position:absolute;
-    right: 0;
-    top: 0;
-    padding: 10.5px 8px ;
-    line-height: 5px;
-    border-radius: 5px;
-    font-size: 15px;
-    background-color: var(--blue);
-    color: var(--white);
-    cursor: pointer;
-    border: none;
+  position:absolute;
+  right: 0;
+  top: 0;
+  padding: 10.5px 8px ;
+  line-height: 5px;
+  border-radius: 5px;
+  font-size: 15px;
+  background-color: var(--blue);
+  color: var(--white);
+  cursor: pointer;
+  border: none;
 }
 
 .servicesList{
-    font-family: var(--font);
+  font-family: var(--font);
 }
 .serviceItem{
-    margin-top: 5px;
-    display: flex;
-    gap: 10px;
-    font-size: 14px;
-    align-items: center;
-    font-family: var(--font);
+  margin-top: 5px;
+  display: flex;
+  gap: 10px;
+  font-size: 14px;
+  align-items: center;
+  font-family: var(--font);
 }
 
 .serviceClassific h4{
-    font-family: var(--font);
-    font-size: 14px;
+  font-family: var(--font);
+  font-size: 14px;
 }
 
 .serviceClassific h2{
-    font-family: var(--font);
-    font-size: 18px;
+  font-family: var(--font);
+  font-size: 18px;
 }
 
 
 .starSponsored{
-    display: flex;
-    gap: 8px;
-    padding-top:8px ;
-    color: #ffcd29;
-    font-size: 1.5em;
+  display: flex;
+  gap: 8px;
+  padding-top:8px ;
+  color: #ffcd29;
+  font-size: 1.5em;
 }
 
 .starSponsored svg{
-    cursor: pointer;
+  cursor: pointer;
 }
 
 
+.menuMobile{
+  display: none;
+  background-color: var(--orange);
+  align-items: center;
+  padding: 0 20px;  
+  gap: 20px;
+  min-height: 80px;
+
+}
+
+.iconT{
+  color: var(--blue);
+  
+ 
+}
+
+.icon{
+  color: var(--blue);
+  font-size: 25px;
+ 
+}
+
+
+.servicesMenuMobile{
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+  font-family: var(--font);
+  color: var(--blue);
+  padding: 20px;
+  position: absolute;
+  background-color: #fff;
+  width: 100%;
+ z-index: 2000;
+  top: 160px;
+}
+
+.servicesMenuMobileHidden {
+  display: none;
+}
+
+.servicesMenuMobile a{
+  text-decoration: none;
+  color: var(--blue);
+}
 
 
 
 .providerContainer{
-    width: 70%;
-    height: 100%;
-    overflow-y: auto;
-    display: grid;
-    grid-template-columns: repeat(3 , 1fr);
-    flex-wrap: wrap;
-    gap: 30px;
-    cursor: pointer;
-    padding-top: 60px;
-    margin-bottom: 50px;
-    padding-bottom: 120px;
+  width: 70%;
+  flex-grow: 1;
+  height: 100vh;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(3 , 1fr);
+  flex-wrap: wrap;
+  gap: 30px;
+  cursor: pointer;
+  padding-top: 60px;
+  margin-bottom: 50px;
+  padding-bottom: 120px;
+  align-items: flex-start;
+  
 }
 
 .providerContainerLogin {
-      width: 70%;
-    height: 100%;
-    overflow-y: auto;
-    display: grid;
-    grid-template-columns: repeat(1 , 1fr);
-    flex-wrap: wrap;
-    gap: 30px;
-    cursor: pointer;
-    padding-top: 60px;
-    margin-bottom: 50px;
-    padding-bottom: 120px;
+   width: 70%;
+  
+   flex-grow: 1;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(1 , 1fr);
+  flex-wrap: wrap;
+  gap: 30px;
+  cursor: pointer;
+  padding-top: 60px;
+  margin-bottom: 50px;
+  padding-bottom: 120px;
+  
 }
 
 
 @media screen and (max-width:1549px) {
 
-
-
- .providerContainer{
-    display: flex;
-   margin: auto auto;           
-   margin-bottom: 50px;
- }
-
- .box{
-    width: 40%;
- }
-
+.providerContainer{
+  display: flex;
+ margin: auto auto;      
+ margin-bottom: 50px;
 }
 
+.box{
+  width: 40%;
+}
 
-
+}
 
 
 @media screen and (max-width:830px) {
 
-    .servicesMenu{
-        display: none;
-
-    }
-
- .servicesFilter{
+  .servicesMenu{
     display: none;
- }
 
- .providerContainer{
-    width: 90%;
-   display: grid;
-   grid-template-columns: repeat(1,1fr);
-   margin:  auto;
- }
+  }
 
- .box{
-    width: 100%;
- }
+.servicesFilter{
+  /* Oculta o filtro desktop */
+  display: none;
+}
 
- .services{
-    margin-top: 80px;
- }
+.providerContainer{
+  /* CORREÇÃO: Garante que o providerContainer se estique e tenha scroll no mobile */
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(1,1fr);
+  padding: 50px 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
 
 }
 
+.box{
+  width: 100%;
+}
+
+.services{
+  margin-top: 80px;
+}
+
+
+.providerContainer{
+  width: 100%;
+  padding:30px 10px;
+  display: block;
+  flex-wrap: wrap;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.box{
+  margin-top: 20px;
+}
+
+.providerContainerLogin {
+   width: 100%; 
+}
+
+.menuMobile{
+  display: flex;
+}
+
+.menuFilter{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.servicesMenu{
+display: none;
+
+}
+
+}
