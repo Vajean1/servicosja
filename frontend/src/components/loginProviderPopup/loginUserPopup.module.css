@@ -36,7 +36,7 @@
 
 .popupBody{
     height: 350px;
-    background-color: white;
+    background-color: #fdfcff;
     display: flex;
     flex-direction: column;
     justify-content: center;
