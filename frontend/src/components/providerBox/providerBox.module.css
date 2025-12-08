@@ -18,6 +18,8 @@
     position: absolute;
     top: 7%;
     left: 6%;
+    object-fit: cover;
+    object-position: center;
 }
 
 .providerInfos{

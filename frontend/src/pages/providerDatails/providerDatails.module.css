@@ -28,6 +28,7 @@
     height: 250px;
     border: 3px solid var(--orange);
     border-radius: 50%;
+    object-fit: cover;
 }
 
 .providerDatailsInfo{
@@ -206,6 +207,7 @@
     padding-top: 5px;
     border-top: 1px solid #f0f0f0;
     justify-content: flex-start;
+    object-fit: contain;
 }
 
 .thumbnailsContainer::-webkit-scrollbar {
@@ -344,6 +346,7 @@
 
 .providerDatailsImage img{
     margin:0;
+    
 }
 
 .arrow{

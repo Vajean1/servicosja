@@ -11,34 +11,34 @@ export default function About () {
                  <div className={styles.lineSearched}></div>
                 <h3>A Jornada que nos<br/>Trouxe Até Aqui.</h3>
 
-                <p data-aos="fade-right">Loren ipsun dolor sit anet, consectetur adipisci elit, sed eiusnod tenpor incidunt ut labore et dolore nagna aliqua. Ut enin ad ninin venian, quis nostrun exercitationen ullan corporis suscipit laboriosan, nisi ut aliquid ex ea connodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillun dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt nollit anin id est laborun.</p>
-                <p data-aos="fade-right">Loren ipsun dolor sit anet, consectetur adipisci elit, sed eiusnod tenpor incidunt ut labore et dolore nagna aliqua. Ut enin ad ninin venian, quis nostrun exercitationen ullan corporis suscipit laboriosan, nisi ut aliquid ex ea connodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillun dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt nollit anin id est laborun.</p>
+                <p data-aos="fade-right">A Serviços JA nasceu de uma frustração comum e universal: a busca por um profissional de confiança. Em 2025, nossa equipe se deparou com a lentidão e a insegurança das formas tradicionais de contratação, percebendo que o mercado carecia de uma solução que fosse verdadeiramente rápida e segura.</p>
+                <p data-aos="fade-right">O momento de virada foi a percepção de que não bastava listar profissionais; era preciso garantir a conexão e a qualidade. Por que o cliente não pode ter um serviço resolvido agora e por que o profissional local não pode ter uma rede que lhe garanta renda estável e sem burocracia?</p>
                 <p data-aos="fade-right">Nossa missão é simplificar a vida das pessoas e valorizar o trabalho profissional, criando conexões confiáveis e ágeis que transformam necessidades em soluções. Para isso, somos guiados por pilares inegociáveis:</p>
             </section >
 
             <div className={styles.modalContainer}>
                 <div data-aos="flip-left" className={styles.modalContent}>
                     <img src="/img/buttons/Rectangle1.png" alt="modal" />
-                    <h4>Lorem Ips</h4>
-                    <p>Lorem ips dolor sit amet, consecte</p>
+                    <h4>Agilidade Inovadora</h4>
+                    
                 </div>
 
                  <div data-aos="flip-left" className={styles.modalContent}>
                     <img src="/img/buttons/Rectangle2.png" alt="modal" />
-                    <h4>Lorem Ips</h4>
-                    <p>Lorem ips dolor sit amet, consecte</p>
+                    <h4>Confiança e Transparência</h4>
+                    
                 </div>
 
                  <div data-aos="flip-left" className={styles.modalContent}>
                     <img src="/img/buttons/Rectangle3.png" alt="modal" />
-                    <h4>Lorem Ips</h4>
-                    <p>Lorem ips dolor sit amet, consecte</p>
+                    <h4>Qualidade e Expertise</h4>
+                    
                 </div>
 
                  <div data-aos="flip-left" className={styles.modalContent}>
                     <img src="/img/buttons/Rectangle4.png" alt="modal" />
-                    <h4>Lorem Ips</h4>
-                    <p>Lorem ips dolor sit amet, consecte</p>
+                    <h4>Impacto Local</h4>
+                    
                 </div>
             </div>
 
