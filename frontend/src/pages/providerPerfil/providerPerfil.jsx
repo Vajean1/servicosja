@@ -16,6 +16,14 @@ const getImageUrl = (url) => {
     return `https://back-end-servicosja-api.onrender.com${url}`;
 };
 
+const mockUserData = {
+    // ... (restante do mockUserData)
+};
+
+const TABS = {
+    DASHBOARD: 'Dashboard',
+    MESSAGES: 'Mensagens'
+};
 
 const Gallery = ({ images, onImageSelect, onImageUpload, onImageDelete, selectedImage }) => {
     return (
