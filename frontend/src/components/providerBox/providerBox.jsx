@@ -5,7 +5,7 @@ import {useNavigate} from 'react-router-dom';
 export default function ProviderBox ({name , location, resum, rating, image}) {
 
     const naviagtion = useNavigate();
-    const MAX_RESUM_LENGTH = 95; // Define o limite máximo de caracteres
+    const MAX_RESUM_LENGTH = 65; // Define o limite máximo de caracteres
 
     const extrairNomeSobrenome = (nome) => {
         // Safety check to handle non-string or empty input
