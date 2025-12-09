@@ -1,6 +1,6 @@
 // components/ProviderRegistration.js (Atualizado)
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { IMaskInput } from 'react-imask';
 import styles from './Registration.module.css';
 import ProviderServices from '../../services/provider';
@@ -164,6 +164,9 @@ const formatDateToISO = (dateStr) => {
 const getServicesByCategory = (category) => {
     return allServices.filter(service => service.categoria === category);
 };
+
+const caseSensitiveFields = ['password', 'password2' ,'genero']; // Movi para cá
+
 // --- FIM ARRAYS E FUNÇÕES AUXILIARES ---
 
 export default function ProviderRegistration() {
@@ -175,8 +178,6 @@ export default function ProviderRegistration() {
     
     // 💡 NOVO: Hook para detecção de mobile
     const isMobile = useIsMobile();
-
-    const caseSensitiveFields = ['password', 'password2' ,'genero'];
     
     // Função auxiliar para obter a mensagem de erro (o primeiro item do array)
     const getErrorMessage = (fieldName) => {
@@ -186,7 +187,7 @@ export default function ProviderRegistration() {
         return null;
     };
 
-    const handleChangeSetDataProvider = (e) => {
+    const handleChangeSetDataProvider = useCallback((e) => {
         const { name, value } = e.target;
 
         // Limpa o erro para o campo atual ao iniciar a edição
@@ -238,7 +239,7 @@ export default function ProviderRegistration() {
             ...prevData,
             [name]: finalValueToSave
         }));
-    };
+    }, []);
 
     const { register, loading } = ProviderServices();
     const { setAuthData } = useAuth();

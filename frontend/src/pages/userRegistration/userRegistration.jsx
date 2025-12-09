@@ -1,6 +1,6 @@
 // components/UserRegistration.js
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { IMaskInput } from 'react-imask';
 import { useNavigate } from 'react-router-dom';
 import styles from './Registration.module.css';
@@ -21,6 +21,9 @@ const getErrorMessage = (formErrors, fieldName) => {
     }
     return null;
 };
+
+const caseSensitiveFields = ['password', 'password2', 'genero']; // MOVIDO PARA FORA
+
 // ----------------------------------------
 
 
@@ -35,10 +38,10 @@ export default function UserRegistration() {
 
     const {register , loading} = UserServices();
     
-    const caseSensitiveFields = ['password', 'password2', 'genero'];
+    // const caseSensitiveFields = ['password', 'password2', 'genero']; // MOVIDO PARA FORA
 
     // --- Handlers ---
-    const handleChangeSetDataUser = (e) => {
+    const handleChangeSetDataUser = useCallback((e) => {
         const { name, value } = e.target;
         
         setFormErrors(prevErrors => ({
@@ -54,9 +57,9 @@ export default function UserRegistration() {
             ...prevData,
             [name]: newValue
         }));
-    };
+    }, []);
     
-    const handleMaskedInputChange = (value, masked, e) => {
+    const handleMaskedInputChange = useCallback((value, masked, e) => {
         const name = e.target.name; 
         
         setFormErrors(prevErrors => ({
@@ -76,7 +79,12 @@ export default function UserRegistration() {
             ...prevData,
             [name]: valueToSave
         }));
-    };
+    }, []);
+
+    const onCPFChange = useCallback((value, mask) => handleMaskedInputChange(value, mask, { target: { name: 'cpf' } }), [handleMaskedInputChange]);
+    const onDtNascimentoChange = useCallback((value, mask) => handleMaskedInputChange(value, mask, { target: { name: 'dt_nascimento' } }), [handleMaskedInputChange]);
+    const onCEPChange = useCallback((value, mask) => handleMaskedInputChange(value, mask, { target: { name: 'cep' } }), [handleMaskedInputChange]);
+    const onTelefoneChange = useCallback((value, mask) => handleMaskedInputChange(value, mask, { target: { name: 'telefone_contato' } }), [handleMaskedInputChange]);
     // ----------------------------------------
     
     // FUNÇÃO PRINCIPAL: Trata o envio do formulário e a navegação
@@ -142,7 +150,7 @@ export default function UserRegistration() {
                         <IMaskInput
                             mask="000.000.000-00"
                             name='cpf' 
-                            onAccept={(value, mask, e) => handleMaskedInputChange(value, mask, { target: { name: 'cpf' } })}
+                            onAccept={onCPFChange}
                             value={formDataUser.cpf || ''}
                             placeholder='Cpf'
                             type="text" 
@@ -153,7 +161,7 @@ export default function UserRegistration() {
                         <IMaskInput
                             mask="00/00/0000"
                             name='dt_nascimento'
-                            onAccept={(value, mask, e) => handleMaskedInputChange(value, mask, { target: { name: 'dt_nascimento' } })} 
+                            onAccept={onDtNascimentoChange}
                             value={formDataUser.dt_nascimento || ''}
                             placeholder='Data de nascimento'
                             type="text"
@@ -176,7 +184,9 @@ export default function UserRegistration() {
                         <option value="" disabled hidden>Sexo</option>
                         <option value="M">Masculino</option>
                         <option value="F">Feminino</option>
-                        <option value="nao-informado">Prefiro não informar</option>
+                        <option value="T">Transgênero</option>
+                        <option value="N">Não-binário</option>
+                        <option value="P">Prefiro não informar</option>
                     </select>
 
 
@@ -219,7 +229,7 @@ export default function UserRegistration() {
                     <IMaskInput
                         mask="00000-000"
                         name='cep' 
-                        onAccept={(value, mask, e) => handleMaskedInputChange(value, mask, { target: { name: 'cep' } })}
+                        onAccept={onCEPChange}
                         value={formDataUser.cep || ''} 
                         placeholder='Cep'
                         type="text" 
@@ -233,7 +243,7 @@ export default function UserRegistration() {
                     <IMaskInput
                         mask={['(00) 0000-0000', '(00) 00000-0000']}
                         name='telefone_contato' 
-                        onAccept={(value, mask, e) => handleMaskedInputChange(value, mask, { target: { name: 'telefone_contato' } })}
+                        onAccept={onTelefoneChange}
                         value={formDataUser.telefone_contato || ''} 
                         placeholder='Telefone'
                         type="tel" 
