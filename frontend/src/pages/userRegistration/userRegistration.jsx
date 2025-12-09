@@ -22,7 +22,7 @@ const getErrorMessage = (formErrors, fieldName) => {
     return null;
 };
 
-const caseSensitiveFields = ['password', 'password2', 'genero']; // MOVIDO PARA FORA
+const caseSensitiveFields = ['password', 'password2', 'genero' , 'nome_completo']; // MOVIDO PARA FORA
 
 // ----------------------------------------
 

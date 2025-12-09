@@ -13,6 +13,7 @@
     font-size: 20px;
     margin: 10vh 15vw;
     color: var(--blue);
+    
 }
 .enfase{
     color: var(--orange);
@@ -24,10 +25,12 @@
 .planoGrid{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+   
     gap: 20px;
     margin: 10vh 10vw;
     align-items: stretch;
     overflow-x: hidden;
+    transition: 1s;
 }
 
 .cardPlano{
@@ -35,6 +38,7 @@
     flex-direction: column;
     padding: 15px;
     transition: all 0.5s ease;
+    
 }
 
 .cardPrincipal{
@@ -85,9 +89,12 @@
     background-color: var(--blue);
 }
 
-.pOculto, .spanOculto{
-    display: none;
+.buttonPlano:hover{
+    transition: 1s;
+    background-color: var(--orange);
 }
+
+
 
 
 
@@ -97,20 +104,32 @@
     padding: 15px;
     box-shadow: 0px 6px 30px rgba(0, 0, 0, 0.3);
     background-color: var(--orange);
+    transition: 1.5s;
 }
 
 .cardPlano:hover .cardPrincipal{
     border: none;
     background-color: white;
+    transition: 1s;
 }
 
-.cardPlano:hover .pOculto{
+ .pOculto{
     font-family: var(--font);
     display: flex;
     justify-content: center;
     padding-bottom: 5px;
     text-transform: uppercase;
     color: white;
+    transition: 1s;
+}
+
+.spanOculto{
+    display: flex;
+    justify-content: center;
+    margin-top: 5px;
+    cursor: pointer;
+    transition: 1s;
+    color: var(--white);
 }
 
 .cardPlano:hover .spanOculto{
@@ -118,6 +137,7 @@
     justify-content: center;
     margin-top: 5px;
     cursor: pointer;
+    transition: 1s;
     color: var(--orange);
 }
 
@@ -130,7 +150,8 @@
     border: none;
     cursor: pointer;
     color: white;
-    background-color: var(--blue);
+    background-color: var(--orange);
+    transition: 1.5s;
 }
  
 @media(max-width: 1200px){

@@ -313,6 +313,11 @@
     margin-bottom: 50px;
 }
 
+.requestService button:hover{
+    transition: 1s;
+    background-color: var(--blue);
+}
+
 .arrow{
     position:absolute;
     left: 250px;

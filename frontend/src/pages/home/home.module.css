@@ -25,6 +25,13 @@
     font-family: var(--font-bold);
     text-decoration: none;
     box-shadow: 0px 4px 4px #4a4a4a;
+    transition: 1.5s;
+    cursor: pointer;
+}
+
+.bannerRota button:hover{
+    background-color: var(--orange);
+    transition: 1.5s;
 }
 .bannerRota img{
     width: 100%;
@@ -379,6 +386,12 @@ form button{
     font-size: 16px;
     cursor: pointer;
     margin-top: 10px;
+}
+
+form button:hover{
+    box-shadow: 8px 8px 8px #ccc;
+    transition: 1s;
+    background-color: var(--orange);
 }
 
 .contactSocial{

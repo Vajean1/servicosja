@@ -165,7 +165,7 @@ const getServicesByCategory = (category) => {
     return allServices.filter(service => service.categoria === category);
 };
 
-const caseSensitiveFields = ['password', 'password2' ,'genero']; // Movi para cá
+const caseSensitiveFields = ['password', 'password2' ,'genero' ,'nome_completo']; // Movi para cá
 
 // --- FIM ARRAYS E FUNÇÕES AUXILIARES ---
 

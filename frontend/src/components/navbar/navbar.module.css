@@ -98,6 +98,9 @@
     padding: 8px 12px;
 }
 
+.navLink:hover{
+    color: var(--orange);
+}
 
 /* Responsive Design */
 @media (max-width: 768px) {

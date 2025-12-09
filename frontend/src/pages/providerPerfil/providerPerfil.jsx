@@ -7,7 +7,6 @@ import { FaEdit, FaSignOutAlt, FaTrash } from "react-icons/fa";
 import { FaCheckDouble , FaX } from "react-icons/fa6";
 import { useAuth } from '../../context/AuthContext';
 import EditProviderModal from '../../components/editProviderModal/EditProviderModal';
-import { green } from '@mui/material/colors';
 import ImageCropModal from '../../utils/ImageCropModal';
 import Loading2 from '../loading/loading2';
 
@@ -404,7 +403,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
                 <div className={styles.perfil}>
                     <div className={styles.imgEdit} onClick={handlePhotoEditClick}> 
                         <img 
-                            src={previewUrl || getImageUrl(providerAccount?.foto || providerAccount?.foto_perfil) || userData.perfilImg} 
+                            src={getImageUrl(providerAccount?.foto || providerAccount?.foto_perfil) || userData.perfilImg || 'img/exemples/Group 8.png' }
                             alt="perfil" 
                         />
                         <FaEdit />
