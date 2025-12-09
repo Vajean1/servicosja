@@ -52,9 +52,18 @@ const ReviewModal = ({ open, close, onSubmit }) => {
 };
 
 const getImageUrl = (url) => {
-    if (!url) return '';
-    if (url.startsWith('http') || url.startsWith('blob:')) return url;
-    return `https://back-end-servicosja-api.onrender.com${url}`;
+    if (!url) return '';
+
+    // Corrigir URLs locais legadas para apontar para produção
+    if (url.startsWith('http://127.0.0.1:8000')) {
+        return url.replace('http://127.0.0.1:8000', 'https://back-end-servicosja-api.onrender.com');
+    }
+    if (url.startsWith('http://localhost:8000')) {
+         return url.replace('http://localhost:8000', 'https://back-end-servicosja-api.onrender.com');
+    }
+
+    if (url.startsWith('http') || url.startsWith('blob:')) return url;
+    return `https://back-end-servicosja-api.onrender.com${url}`;
 };
 
 const formatDate = (dateString) => {

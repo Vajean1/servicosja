@@ -17,6 +17,21 @@ import { useEffect, useState } from 'react';
 import ProviderServices from '../../services/provider';
 import { useProviderContext } from '../../context/providerSelected';
 
+const getImageUrl = (url) => {
+    if (!url) return '';
+    
+    if (url.startsWith('http://127.0.0.1:8000')) {
+        return url.replace('http://127.0.0.1:8000', 'https://back-end-servicosja-api.onrender.com');
+    }
+    if (url.startsWith('http://localhost:8000')) {
+         return url.replace('http://localhost:8000', 'https://back-end-servicosja-api.onrender.com');
+    }
+
+    if (url.startsWith('http') || url.startsWith('blob:')) return url;
+    if (url.startsWith('/img') || url.startsWith('/assets')) return url;
+    return `https://back-end-servicosja-api.onrender.com${url}`;
+};
+
 export default function Home () {
 
     const navigate = useNavigate();
@@ -121,7 +136,7 @@ export default function Home () {
                                 style={{ cursor: 'pointer' }}
                             >
                                 <img 
-                                    src={provider.foto || "img/exemples/Group 8.png"} 
+                                    src={getImageUrl(provider.foto) || "img/exemples/Group 8.png"} 
                                     alt={provider.nome} 
                                     style={{ objectFit: 'cover' }} 
                                 />

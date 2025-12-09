@@ -9,9 +9,19 @@ import { useAuth } from '../../context/AuthContext';
 import EditProviderModal from '../../components/editProviderModal/EditProviderModal';
 import { green } from '@mui/material/colors';
 import ImageCropModal from '../../utils/ImageCropModal';
+import Loading2 from '../loading/loading2';
 
 const getImageUrl = (url) => {
     if (!url) return '';
+
+    // Corrigir URLs locais legadas para apontar para produção
+    if (url.startsWith('http://127.0.0.1:8000')) {
+        return url.replace('http://127.0.0.1:8000', 'https://back-end-servicosja-api.onrender.com');
+    }
+    if (url.startsWith('http://localhost:8000')) {
+         return url.replace('http://localhost:8000', 'https://back-end-servicosja-api.onrender.com');
+    }
+
     if (url.startsWith('http') || url.startsWith('blob:')) return url;
     return `https://back-end-servicosja-api.onrender.com${url}`;
 };
@@ -94,12 +104,12 @@ export default function ProviderPerfil({ userData = mockUserData }) {
     const [openEditModal, setOpenEditModal] = useState(false);
     const [solicitations, setSolicitations] = useState([]);
     
-    // --- ESTADOS PARA O CORTE DA FOTO DE PERFIL ---
     const [selectedPhoto, setSelectedPhoto] = useState(null);
     const [previewUrl, setPreviewUrl] = useState(null);
     const [imageToCrop, setImageToCrop] = useState(null);
     const [openCropModal, setOpenCropModal] = useState(false);
-    // ---------------------------------------------
+    const [actionLoading, setActionLoading] = useState(false);
+
 
     const getTabClassName = (tab) => {
         return `${styles.tab} ${activeTab === tab ? styles.active : ''}`;
@@ -187,10 +197,10 @@ export default function ProviderPerfil({ userData = mockUserData }) {
         }
     };
     
-    // --- NOVO: Recebe o Blob cortado e faz o upload ---
     const onCropComplete = async (croppedImageBlob) => {
         setOpenCropModal(false);
         setImageToCrop(null);
+        setActionLoading(true);
         
         if (previewUrl) {
              URL.revokeObjectURL(previewUrl);
@@ -205,7 +215,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
             photoFormData.append('foto_perfil', croppedImageBlob, 'profile_cropped.jpg'); 
             
             await updateProviderProfile(photoFormData);
-            handleUpdateProfile(); // Recarrega o perfil para buscar a nova URL permanente
+            handleUpdateProfile(); 
             setSelectedPhoto(null);
             alert("Foto de perfil atualizada com sucesso!");
         } catch (error) {
@@ -213,6 +223,8 @@ export default function ProviderPerfil({ userData = mockUserData }) {
             alert("Erro ao atualizar a foto de perfil.");
             setPreviewUrl(null);
             setSelectedPhoto(null);
+        } finally {
+            setActionLoading(false); 
         }
     }
     
@@ -231,6 +243,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
 
              setUserGalleryImages(prevImages => [...prevImages, tempItem]);
              setCurrentMainImage(tempUrl);
+             setActionLoading(true);
 
              try {
                  const formData = new FormData();
@@ -257,6 +270,8 @@ export default function ProviderPerfil({ userData = mockUserData }) {
                      setCurrentMainImage(null);
                  }
                  URL.revokeObjectURL(tempUrl);
+             } finally {
+                 setActionLoading(false);
              }
         }
          event.target.value = null;
@@ -267,6 +282,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
     };
     
     const handleDeleteImage = async (id) => {
+         setActionLoading(true);
          try {
              await deletePortfolioItem(id);
              setUserGalleryImages(prev => prev.filter(item => item.id !== id));
@@ -283,6 +299,8 @@ export default function ProviderPerfil({ userData = mockUserData }) {
          } catch (error) {
              console.error("Erro ao deletar imagem:", error);
              alert("Erro ao remover imagem. Tente novamente.");
+         } finally {
+             setActionLoading(false);
          }
     };
     
@@ -356,6 +374,23 @@ export default function ProviderPerfil({ userData = mockUserData }) {
     return (
         <div className={styles.dashboardPage}>
             
+            {actionLoading && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                    zIndex: 9999,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}>
+                    <Loading2 />
+                </div>
+            )}
+
             {/* Input de arquivo escondido para a foto de perfil */}
             <input 
                 id="profile-photo-upload"

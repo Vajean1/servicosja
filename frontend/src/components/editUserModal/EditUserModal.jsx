@@ -4,6 +4,7 @@ import styles from './EditUserModal.module.css';
 import UserServices from '../../services/user';
 // Importa o componente do modal de corte (presumindo que está no mesmo diretório ou acessível)
 import ImageCropModal from '../../utils/ImageCropModal'; 
+import Loading2 from '../../pages/loading/loading2';
 
 export default function EditUserModal({ open, close, userData, onUpdate }) {
     const [formData, setFormData] = useState({
@@ -24,6 +25,7 @@ export default function EditUserModal({ open, close, userData, onUpdate }) {
     const [isCropModalOpen, setIsCropModalOpen] = useState(false);
     // URL da imagem **original** selecionada antes do corte
     const [imageToCrop, setImageToCrop] = useState(null); 
+    const [loading, setLoading] = useState(false);
 
     // Efeito para preencher o formulário com dados do usuário
     useEffect(() => {
@@ -135,18 +137,16 @@ export default function EditUserModal({ open, close, userData, onUpdate }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
-            // 1. Atualiza dados de User (Nome e Nascimento) via JSON para /me
             const userPayload = {
                 nome_completo: formData.nome_completo,
                 dt_nascimento: formData.dt_nascimento
             };
             await updateUser(userPayload);
 
-            // 2. Atualiza dados de Perfil (Endereço, Telefone, Foto) via FormData para /perfil/cliente/editar/
             const profileFormData = new FormData();
             
-            // Campos planos conforme nova documentação
             profileFormData.append('telefone_contato', formData.telefone_contato || '');
             profileFormData.append('rua', formData.rua || '');
             profileFormData.append('numero_casa', formData.numero_casa || '');
@@ -169,6 +169,8 @@ export default function EditUserModal({ open, close, userData, onUpdate }) {
         } catch (error) {
             console.error("Failed to update user profile", error);
             alert("Erro ao atualizar perfil. Tente novamente.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -177,6 +179,8 @@ export default function EditUserModal({ open, close, userData, onUpdate }) {
             {/* Modal Principal de Edição */}
             <Dialog open={open} onClose={close}>
                 <div className={styles.modalContent}>
+                    {loading ? <Loading2 /> : (
+                    <>
                     <h2>Editar Perfil</h2>
                     <form onSubmit={handleSubmit}>
                         <label>Foto de Perfil:</label>
@@ -218,6 +222,8 @@ export default function EditUserModal({ open, close, userData, onUpdate }) {
 
                         <button type="submit">Salvar</button>
                     </form>
+                    </>
+                    )}
                 </div>
             </Dialog>
 
