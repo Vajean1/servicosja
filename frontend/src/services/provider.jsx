@@ -87,7 +87,7 @@ export default function ProviderServices() {
             setPoviders(result)
         })
         .catch((error)=> {
-            console.log(error)
+            console.error(error)
         })
         .finally(() => {
             setLoading(false)
@@ -107,11 +107,10 @@ export default function ProviderServices() {
         .then((response) => response.json()) 
         .then((result) => {
             setProviderAccount(result)
-            console.log(result)
             return result;
         })
         .catch((error)=> {
-            console.log(error)
+            console.error(error)
             throw error;
         })
         .finally(() => {
@@ -166,9 +165,8 @@ export default function ProviderServices() {
             }
 
             setPoviders(result);
-            console.log(`Filtro(s) aplicado(s) na URL: ${queryString}`);
         } catch(error) {
-            console.log(error);
+            console.error(error);
         } finally {
             setLoading(false);
         }
@@ -261,6 +259,32 @@ export default function ProviderServices() {
         }
     };
 
+    const markServiceAsNotRealized = async (id) => {
+        setLoading(true);
+        try {
+            const storedAuth = localStorage.getItem('auth');
+            const token = storedAuth ? JSON.parse(storedAuth).access : null;
+            if (!token) throw new Error("No token found");
+
+            const response = await fetch(`${url}/contratacoes/solicitacoes/${id}/nao-realizado/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            const result = await response.json();
+            if (!response.ok) throw result;
+            return result;
+        } catch (error) {
+            console.error("Error marking service as not realized:", error);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const addPortfolioItem = async (formData) => {
         setLoading(true);
         try {
@@ -346,6 +370,44 @@ export default function ProviderServices() {
         }
     };
 
+    const getProviderByUserId = async (userId) => {
+        setLoading(true);
+        try {
+            // Primeiro tentamos filtrar diretamente se a API suportar
+            const response = await fetch(`${url}/accounts/prestadores/`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            const providers = await response.json();
+            
+            // Client-side filtering to find the provider with the matching user_id
+            const found = providers.find(p => p.user_id == userId || p.user == userId);
+            
+            if (found) {
+                return found;
+            } else {
+                // Fallback: talvez o userId já seja o profile ID?
+                // Vamos tentar buscar diretamente pelo ID para confirmar
+                try {
+                    const profileCheck = await fetch(`${url}/accounts/prestadores/${userId}/`);
+                    if (profileCheck.ok) {
+                        return await profileCheck.json();
+                    }
+                } catch (e) {
+                    // Ignore error
+                }
+                
+                console.warn(`Provider with user_id ${userId} not found.`);
+                return null;
+            }
+        } catch (error) {
+            console.error("Error searching provider by user ID:", error);
+            return null;
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return { 
         register,
         loading,
@@ -362,8 +424,10 @@ export default function ProviderServices() {
         getReviews,
         getProviderSolicitations,
         completeService,
+        markServiceAsNotRealized,
         addPortfolioItem,
         deletePortfolioItem,
-        updateProviderProfile
+        updateProviderProfile,
+        getProviderByUserId
     };
 }
