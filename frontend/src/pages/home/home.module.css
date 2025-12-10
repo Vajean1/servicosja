@@ -250,7 +250,13 @@
 
 
 
-
+.SponsoredTitle{
+    color: var(--orange);
+    text-align: center;
+    font-size: 30px;
+    font-family: var(--font);
+    margin-bottom: 20px;
+}
 
 
 /* Section Comments */
