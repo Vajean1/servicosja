@@ -98,6 +98,11 @@
     padding: 8px 12px;
 }
 
+.loginButton:hover{
+    box-shadow: 4px 4px 4px #777575;
+    transition: 1s;
+}
+
 .navLink:hover{
     color: var(--orange);
 }

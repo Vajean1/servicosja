@@ -1,16 +1,15 @@
-// components/ProviderRegistration.js (Atualizado)
-
 import { useState, useEffect, useCallback } from 'react';
 import { IMaskInput } from 'react-imask';
 import styles from './Registration.module.css';
 import ProviderServices from '../../services/provider';
 import Loading from '../loading/loading';
-import Loading2 from '../loading/loading2'; // 👈 NOVO: Importe o componente de loading mobile
+import Loading2 from '../loading/loading2'; 
 import { useNavigate } from 'react-router';
 import { useAuth } from '../../context/AuthContext';
-import { useIsMobile } from '../../hook/useIsMobile'; // 👈 NOVO: Importe o hook de detecção mobile
+import { useIsMobile } from '../../hook/useIsMobile'; 
 
-// --- ARRAYS E FUNÇÕES AUXILIARES (PERMANECEM INALTERADOS) ---
+// --- ARRAYS E FUNÇÕES AUXILIARES ---
+
 const allCategores = [
     { "id": 1, "nome": "Beleza e Bem-estar", "descricao": "Serviços relacionados a Beleza e Bem-estar", "icone": null },
     { "id": 2, "nome": "Cuidado Pessoal", "descricao": "Serviços relacionados a Cuidado Pessoal", "icone": null },
@@ -20,7 +19,7 @@ const allCategores = [
     { "id": 6, "nome": "Reforma e Construção", "descricao": "Serviços relacionados a Reforma e Construção", "icone": null },
     { "id": 7, "nome": "Soluções Profissionais", "descricao": "Serviços relacionados a Soluções Profissionais", "icone": null },
     { "id": 8, "nome": "Transporte", "descricao": "Serviços relacionados a Transporte", "icone": null }
-]
+];
 
 const allServices = [
     { "id": 1, "nome": "Alongamento de unha", "value": "alongamento-unha", "categoria": "beleza-bem-estar" },
@@ -154,8 +153,6 @@ const formatDateToISO = (dateStr) => {
     if (!dateStr || dateStr.length !== 10) return dateStr;
     const [day, month, year] = dateStr.split('/');
     if (day && month && year) {
-        // Nota: A função original retorna 'DD/MM/YYYY', mantendo o formato.
-        // Se a API exige 'YYYY-MM-DD' ou outro, ajuste aqui.
         return `${day}/${month}/${year}`;
     }
     return dateStr;
@@ -165,7 +162,7 @@ const getServicesByCategory = (category) => {
     return allServices.filter(service => service.categoria === category);
 };
 
-const caseSensitiveFields = ['password', 'password2' ,'genero' ,'nome_completo']; // Movi para cá
+const caseSensitiveFields = ['password', 'password2' ,'genero' ,'nome_completo']; 
 
 // --- FIM ARRAYS E FUNÇÕES AUXILIARES ---
 
@@ -176,7 +173,7 @@ export default function ProviderRegistration() {
     // ESTADO para erros da API
     const [formErrors, setFormErrors] = useState({}); 
     
-    // 💡 NOVO: Hook para detecção de mobile
+    // Hook para detecção de mobile
     const isMobile = useIsMobile();
     
     // Função auxiliar para obter a mensagem de erro (o primeiro item do array)
@@ -265,12 +262,12 @@ export default function ProviderRegistration() {
         ? allServices.find(s => s.id === formDataProvider.servico)?.value || ''
         : '';
 
-    // 🚀 LÓGICA DE CARREGAMENTO CONDICIONAL
+    // LÓGICA DE CARREGAMENTO CONDICIONAL
     if (loading) {
         if (isMobile) {
-            return <div className={styles.load}><Loading2 /></div>  // Carregamento para Mobile
+            return <div className={styles.load}><Loading2 /></div> 
         }
-        return <Loading />; // Carregamento para Desktop (padrão)
+        return <Loading />; 
     }
     
     return (
@@ -403,7 +400,7 @@ export default function ProviderRegistration() {
 
                     {/* Categoria e Serviço */}
                     <div className={styles.input50}>
-                        {/* Campo: categoria */}
+                        {/* Campo: categoria (AGORA ORDENADO) */}
                         {getErrorMessage('categoria') && (
                             <p className={styles.errorMessage}>{getErrorMessage('categoria')}</p>
                         )}
@@ -415,20 +412,24 @@ export default function ProviderRegistration() {
                             required
                         >
                             <option value="" disabled hidden>Categoria do serviço</option>
-                            {allCategores.map(cat => {
-                                const categoryValue = formatCategoryToKey(cat.nome);
-                                return (
-                                    <option
-                                        key={cat.id}
-                                        value={categoryValue} 
-                                    >
-                                        {cat.nome}
-                                    </option>
-                                );
-                            })}
+                            {/* Ordenação Alfabética das Categorias */}
+                            {allCategores
+                                .slice()
+                                .sort((a, b) => a.nome.localeCompare(b.nome))
+                                .map(cat => {
+                                    const categoryValue = formatCategoryToKey(cat.nome);
+                                    return (
+                                        <option
+                                            key={cat.id}
+                                            value={categoryValue} 
+                                        >
+                                            {cat.nome}
+                                        </option>
+                                    );
+                                })}
                         </select>
 
-                        {/* Campo: servico */}
+                        {/* Campo: servico (AGORA ORDENADO) */}
                         {getErrorMessage('servico') && (
                             <p className={styles.errorMessage}>{getErrorMessage('servico')}</p>
                         )}
@@ -445,14 +446,17 @@ export default function ProviderRegistration() {
                                 <option value="" disabled>Selecione uma categoria</option>
                             )}
 
-                            {getServicesByCategory(categoria).map(service => (
-                                <option
-                                    key={service.id}
-                                    value={service.value} 
-                                >
-                                    {service.nome}
-                                </option>
-                            ))}
+                            {/* Ordenação Alfabética dos Serviços */}
+                            {getServicesByCategory(categoria)
+                                .sort((a, b) => a.nome.localeCompare(b.nome))
+                                .map(service => (
+                                    <option
+                                        key={service.id}
+                                        value={service.value} 
+                                    >
+                                        {service.nome}
+                                    </option>
+                                ))}
                         </select>
                     </div>
 

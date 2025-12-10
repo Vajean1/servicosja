@@ -274,13 +274,30 @@ export default function Services () {
 
                 
                 {activeMenuItem && (
-                    <div className={styles.menuFilter} >
-                             {activeMenuItem.servicos.map((service) => (
-                                <a  key={service.id} href="#" onClick={(e) => handleServiceClick(e, service.id)}>
-                                    {service.nome}
-                                </a>
-                        ))}
-                    </div>
+                   <div className={styles.menuFilter} >
+  {/* 1. Cria uma cópia do array 'servicos' com [...activeMenuItem.servicos] */}
+  {/* 2. Ordena essa cópia usando .sort() com uma função de comparação (a, b) */}
+  {activeMenuItem.servicos
+    .slice() // Cria uma cópia superficial para evitar mutação do estado original
+    .sort((a, b) => {
+      // Compara as strings 'nome' em minúsculo para uma ordenação case-insensitive (ignorando maiúsculas/minúsculas)
+      const nomeA = a.nome.toLowerCase();
+      const nomeB = b.nome.toLowerCase();
+
+      if (nomeA < nomeB) {
+        return -1; // 'a' vem antes de 'b'
+      }
+      if (nomeA > nomeB) {
+        return 1; // 'b' vem antes de 'a'
+      }
+      return 0; // Se forem iguais
+    })
+    .map((service) => (
+      <a key={service.id} href="#" onClick={(e) => handleServiceClick(e, service.id)}>
+        {service.nome}
+      </a>
+    ))}
+</div>
                 )}
             </div>
 
