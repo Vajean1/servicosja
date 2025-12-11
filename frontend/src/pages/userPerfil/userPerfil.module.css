@@ -42,6 +42,39 @@
     object-fit: cover;
 }
 
+.perfilImgWrapper {
+    position: relative;
+}
+
+.editIconProfile {
+    cursor: pointer;
+    font-size: 18px;
+    position: absolute;
+    bottom: 0;
+    right: 0px;
+}
+
+.nameContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logoutButton {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 1rem;
+    margin-left: auto;
+    padding: 0 20px;
+    position: absolute;
+    top: 30px;
+    right: 5px;
+}
 
 /* --- Tabs --- */
 .tabs {
@@ -91,6 +124,18 @@
     color: var(--orange);
 }
 
+.titleDanger {
+    color: #d9534f !important;
+}
+
+.titlePrimary {
+    color: #1a06c9 !important;
+}
+
+.titleSuccess {
+    color: #28a745 !important;
+}
+
 .iconEdit{
     position: absolute;
     top: 20px;
@@ -124,9 +169,55 @@ table {
 }
 
 table th, table td {
-    padding: 8px;
+    padding: 8px 10px;
     border-bottom: 1px solid #ddd;
     font-size: 14px;
+    text-align: left;
+}
+
+table tr {
+    border-bottom: 1px solid #eee;
+}
+
+.clickableRow {
+    cursor: pointer;
+}
+
+.clickableRow:hover {
+    background-color: #f9f9f9;
+}
+
+.textDangerBold {
+    color: #d9534f;
+    font-weight: bold;
+}
+
+.textPrimaryBold {
+    color: #1a06c9;
+    font-weight: bold;
+}
+
+.textSuccessBold {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.actionButton {
+    padding: 5px 10px;
+    background-color: #1a06c9;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.reviewStar {
+    color: #ffc107;
+}
+
+.emptyStateText {
+    text-align: center;
+    color: #666;
 }
 
 /* --- Calendário simples --- */
@@ -147,7 +238,17 @@ table th, table td {
     border-radius: 8px;
 }
 
-/* --- Fotos --- */
+/* --- Favoritos e Fotos --- */
+.favoritesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.favoriteItem {
+    cursor: pointer;
+}
+
 .fotosGrid { /* fotos-grid -> fotosGrid */
     display: grid;
     grid-template-columns: repeat(4, 1fr);

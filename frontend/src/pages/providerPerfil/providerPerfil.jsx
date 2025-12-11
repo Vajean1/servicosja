@@ -119,6 +119,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
         providerAccount,
         getProviderSolicitations,
         completeService,
+        markServiceAsNotRealized,
         addPortfolioItem,
         deletePortfolioItem,
         updateProviderProfile
@@ -315,7 +316,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
 
                  const link = result.whatsapp_url || result.whatsapp_link;
 
-                 setSolicitations(prev => prev.map(s => s.id === id ? { ...s, servico_realizado: true } : s));
+                 setSolicitations(prev => prev.map(s => s.id === id ? { ...s, servico_realizado: true, data_conclusao: new Date().toISOString() } : s));
 
                  if (link) {
                      window.open(link, '_blank');
@@ -327,6 +328,21 @@ export default function ProviderPerfil({ userData = mockUserData }) {
                  console.error("Erro ao concluir serviço:", error);
                  alert("Erro ao concluir serviço.");
              }
+        }
+    };
+
+    const handleMarkNotRealized = async (id) => {
+        if (window.confirm("Tem certeza que deseja marcar este serviço como NÃO realizado? O cliente não poderá avaliar.")) {
+            try {
+                await markServiceAsNotRealized(id);
+                setSolicitations(prev => prev.map(s => s.id === id ? { ...s, servico_realizado: false, data_conclusao: new Date().toISOString() } : s));
+                alert("Serviço marcado como não realizado.");
+                // Atualizar o perfil para pegar o novo contador, se necessário
+                handleUpdateProfile();
+            } catch (error) {
+                console.error("Erro ao marcar serviço como não realizado:", error);
+                alert("Erro ao marcar serviço como não realizado.");
+            }
         }
     };
     
@@ -437,6 +453,11 @@ export default function ProviderPerfil({ userData = mockUserData }) {
                         <span>Disponibilidade: {providerAccount?.disponibilidade === true ? "Disponivel 24h" : "Indisponivel 24h"}</span>
                         <span>Cidade: {providerAccount?.cidade}</span>
                         <span>Bairro: {providerAccount?.bairro}</span>
+                        {providerAccount?.servicos_nao_realizados_cache > 0 && (
+                            <span style={{ color: 'red', fontWeight: 'bold' }}>
+                                Serviços não entregues: {providerAccount.servicos_nao_realizados_cache}
+                            </span>
+                        )}
 
                         <div className={styles.box2}>
                             <h2>Descrição</h2>
@@ -466,14 +487,30 @@ export default function ProviderPerfil({ userData = mockUserData }) {
                                 <h5>{sol.cliente_nome || sol.cliente || "Cliente"}</h5>
                                 <h5>{sol.data_solicitacao ? new Date(sol.data_solicitacao).toLocaleDateString('pt-BR') : new Date().toLocaleDateString('pt-BR')}</h5>
                                 <div>
-                                    {sol.servico_realizado ? (
-                                        <FaCheckDouble style={{color:'green' , fontSize:'22px'}} title="Serviço Realizado" />
+                                    {/* Lógica de Status:
+                                        1. Concluído (Realizado): data_conclusao != null && servico_realizado == true
+                                        2. Não Realizado (Cancelado): data_conclusao != null && servico_realizado == false
+                                        3. Pendente: data_conclusao == null
+                                    */}
+                                    {sol.data_conclusao ? (
+                                        sol.servico_realizado ? (
+                                            <FaCheckDouble style={{color:'green' , fontSize:'22px'}} title="Serviço Realizado" />
+                                        ) : (
+                                            <FaX style={{color:'red' , fontSize:'22px'}} title="Serviço Não Realizado" />
+                                        )
                                     ) : (
-                                        <FaCheckDouble 
-                                            style={{color:'gray', fontSize:'22px', cursor:'pointer'}} 
-                                            onClick={() => handleCompleteService(sol.id)}
-                                            title="Marcar como realizado"
-                                        />
+                                        <div style={{ display: 'flex', gap: '15px' }}>
+                                            <FaCheckDouble 
+                                                style={{color:'gray', fontSize:'22px', cursor:'pointer'}} 
+                                                onClick={() => handleCompleteService(sol.id)}
+                                                title="Marcar como realizado"
+                                            />
+                                            <FaX 
+                                                style={{color:'gray', fontSize:'20px', cursor:'pointer'}} 
+                                                onClick={() => handleMarkNotRealized(sol.id)}
+                                                title="Não realizou o serviço"
+                                            />
+                                        </div>
                                     )}
                                 </div>
                             </div>

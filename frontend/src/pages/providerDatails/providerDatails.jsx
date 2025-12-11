@@ -219,9 +219,10 @@ export default function ProviderDatails () {
 
             // Check for pending evaluations
             const solicitations = await getClientSolicitations();
-            // Filtra: mesmo prestador E não avaliado
+            // Filtra: mesmo prestador E realizado E não avaliado
             const pending = solicitations.find(s => 
                 (s.prestador === providerUserId || s.prestador_id === providerUserId) && 
+                s.servico_realizado && 
                 !s.avaliacao_realizada
             );
 
