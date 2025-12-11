@@ -230,8 +230,8 @@ table th, table td {
 
 .solicitMain{
     display: flex;
-    max-width: 40%;
-    justify-content: space-between;
+    max-width: 100%;
+    justify-content: space-around;
     margin: 20px 0;
     color: var(--orange);
     font-size: 20px;
@@ -239,10 +239,22 @@ table th, table td {
 
 .solicit{
     display: flex;
-    max-width: 40%;
-    justify-content: space-between;
+    max-width: 100%;
+    flex-wrap: wrap;
     margin: 20px 0;
     padding: 0 20px;
+}
+
+.sol{
+     display: 'flex'; 
+        gap: '15px'; 
+}
+
+.soli{
+    width: 33%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .mainImage {
@@ -360,7 +372,6 @@ table th, table td {
     justify-content: center;
     overflow-x: auto;
     border: 2px solid var(--orange);
-    padding: 0 20px ;
     border-radius: 12px;
     margin-top: 15px;
 
@@ -371,6 +382,22 @@ table th, table td {
     align-items: center;
     justify-content: space-around;
     display: flex;
+}
+
+.commentHeader{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-around;
+    background-color: var(--orange);
+    padding: 15px;
+    color: white;
+    font-weight: bold;
+}
+
+.line{
+    padding: 20px;
+    background-color: white;
 }
 
 .imgEdit{

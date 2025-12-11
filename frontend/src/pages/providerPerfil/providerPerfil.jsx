@@ -484,9 +484,9 @@ export default function ProviderPerfil({ userData = mockUserData }) {
                     ) : (
                         solicitations.map((sol) => (
                             <div key={sol.id} className={styles.solicit}>
-                                <h5>{sol.cliente_nome || sol.cliente || "Cliente"}</h5>
-                                <h5>{sol.data_solicitacao ? new Date(sol.data_solicitacao).toLocaleDateString('pt-BR') : new Date().toLocaleDateString('pt-BR')}</h5>
-                                <div>
+                                <h5 className={styles.soli}>{sol.cliente_nome || sol.cliente || "Cliente"}</h5>
+                                <h5 className={styles.soli}>{sol.data_solicitacao ? new Date(sol.data_solicitacao).toLocaleDateString('pt-BR') : new Date().toLocaleDateString('pt-BR')}</h5>
+                                <div className={styles.soli}>
                                     {/* Lógica de Status:
                                         1. Concluído (Realizado): data_conclusao != null && servico_realizado == true
                                         2. Não Realizado (Cancelado): data_conclusao != null && servico_realizado == false
@@ -527,8 +527,10 @@ export default function ProviderPerfil({ userData = mockUserData }) {
                         </div>
                             {comentarios?.map((msg, index) => (
                                <div className={styles.commentsBox} key={index}>
-                                    <div className={styles.w_50}>{msg.cliente_nome}</div>
-                                    <div className={styles.w_50}>{msg.data}</div>
+                                    <div className={styles.commentHeader}>
+                                        <div >{msg.cliente_nome}</div>
+                                        <div >{msg.data}</div>
+                                    </div>
                                     <div className={styles.line}>{msg.comentario}</div>
                                </div>
                             ))}
