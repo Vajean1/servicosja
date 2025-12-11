@@ -123,7 +123,8 @@ const allServices = [
     { "id": 99, "nome": "Frete", "value": "frete", "categoria": "transporte" },
     { "id": 100, "nome": "Mudança residencial", "value": "mudanca-residencia", "categoria": "transporte" },
     { "id": 101, "nome": "Guincho", "value": "guincho", "categoria": "transporte" },
-    { "id": 102, "nome": "Transporte de animais", "value": "animais", "categoria": "transporte" }
+    { "id": 102, "nome": "Transporte de animais", "value": "animais", "categoria": "transporte" },
+    {"id": 103,"nome": "Programador", "value": "programador" ,"categoria": "solucoes-profissionais"}
 ];
 
 const serviceIdMap = allServices.reduce((acc, service) => {
