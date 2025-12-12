@@ -373,28 +373,23 @@ export default function ProviderServices() {
     const getProviderByUserId = async (userId) => {
         setLoading(true);
         try {
-            // Primeiro tentamos filtrar diretamente se a API suportar
             const response = await fetch(`${url}/accounts/prestadores/`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
             });
             const providers = await response.json();
             
-            // Client-side filtering to find the provider with the matching user_id
             const found = providers.find(p => p.user_id == userId || p.user == userId);
             
             if (found) {
                 return found;
             } else {
-                // Fallback: talvez o userId já seja o profile ID?
-                // Vamos tentar buscar diretamente pelo ID para confirmar
                 try {
                     const profileCheck = await fetch(`${url}/accounts/prestadores/${userId}/`);
                     if (profileCheck.ok) {
                         return await profileCheck.json();
                     }
                 } catch (e) {
-                    // Ignore error
                 }
                 
                 console.warn(`Provider with user_id ${userId} not found.`);
@@ -418,7 +413,6 @@ export default function ProviderServices() {
         login,
         getProviderPerfil,
         providerAccount,
-        // Novo método unificado de filtro:
         getFilteredProviders,
         getBestRatedProviders,
         getReviews,
