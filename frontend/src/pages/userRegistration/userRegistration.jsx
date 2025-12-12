@@ -241,7 +241,7 @@ export default function UserRegistration() {
                         <p className={styles.errorMessage}>{getErrorMessage(formErrors, 'telefone_contato')}</p>
                     )}
                     <IMaskInput
-                        mask={['(00) 0000-0000', '(00) 00000-0000']}
+                        mask={['(00) 00000-0000', '(00) 00000-0000']}
                         name='telefone_contato' 
                         onAccept={onTelefoneChange}
                         value={formDataUser.telefone_contato || ''} 

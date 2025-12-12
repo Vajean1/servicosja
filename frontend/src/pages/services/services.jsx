@@ -154,12 +154,13 @@ export default function Services () {
         if (isFilterMenuOpen) setIsFilterMenuOpen(false);
     };
 
-    // Efeito para Carregamento Inicial (Mantido)
-    useEffect (()=>{
-        if(refetchProviders){
-            getProviders()
-        }
-    },[refetchProviders, getProviders]) 
+    // Efeito para Carregamento Inicial (Mantido)
+    useEffect (()=>{
+        if(refetchProviders){
+            getProviders()
+        }
+    },[refetchProviders, getProviders]) 
+
 
     // Efeito UNIFICADO para FILTROS
     useEffect(() => {

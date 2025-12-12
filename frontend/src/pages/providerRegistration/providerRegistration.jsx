@@ -337,9 +337,9 @@ export default function ProviderRegistration() {
                         <option value="" disabled hidden>Gênero</option>
                         <option value="M">Masculino</option>
                         <option value="F">Feminino</option>
-                        <option value="t">Transgênero</option>
-                        <option value="nao-binario">Não-binário</option>
-                        <option value="nao-informado">Prefiro não informar</option>
+                        <option value="T">Transgênero</option>
+                        <option value="N">Não-binário</option>
+                        <option value="P">Prefiro não informar</option>
                     </select>
 
                     {/* Rua e Número */}

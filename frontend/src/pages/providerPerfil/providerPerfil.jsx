@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import styles from './providerPerfil.module.css';
 import ProviderServices from '../../services/provider';
+import UserServices from '../../services/user';
 import { useNavigate } from 'react-router';
 import RatingChart from './RatingChart';
 import { FaEdit, FaSignOutAlt, FaTrash } from "react-icons/fa";
@@ -102,6 +103,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
     const [currentMainImage, setCurrentMainImage] = useState(null);
     const [openEditModal, setOpenEditModal] = useState(false);
     const [solicitations, setSolicitations] = useState([]);
+    const [providerAccount, setProviderAccount] = useState({});
     
     const [selectedPhoto, setSelectedPhoto] = useState(null);
     const [previewUrl, setPreviewUrl] = useState(null);
@@ -114,9 +116,10 @@ export default function ProviderPerfil({ userData = mockUserData }) {
         return `${styles.tab} ${activeTab === tab ? styles.active : ''}`;
     };
 
+    const { getMe } = UserServices();
+
     const {
         getProviderPerfil,
-        providerAccount,
         getProviderSolicitations,
         completeService,
         markServiceAsNotRealized,
@@ -150,9 +153,36 @@ export default function ProviderPerfil({ userData = mockUserData }) {
     }, [profileId, loading, navigate]); 
 
     // 2. Função de Recarregar Perfil (Memorizada com useCallback)
-    const handleUpdateProfile = useCallback(() => {
+    const handleUpdateProfile = useCallback(async () => {
         if (profileId) {
-            getProviderPerfil(profileId); // Refresh data
+            try {
+                const [meData, providerData] = await Promise.all([
+                    getMe(),
+                    getProviderPerfil(profileId)
+                ]);
+
+                // Extrai dados aninhados do perfil (prestador ou cliente)
+                const nestedProfile = meData.perfil_prestador || meData.perfil_cliente || {};
+                
+                // Remove campos que não queremos sobrescrever (IDs) para manter os objetos completos do providerData
+                const { servico, categoria, ...nestedProfileFiltered } = nestedProfile;
+
+                // Mapeamento de campos do /me para o formato esperado
+                const mappedMeData = {
+                    ...meData,
+                    ...nestedProfileFiltered, // Achata os dados aninhados, exceto servico/categoria
+                    data_nascimento: meData.dt_nascimento || meData.data_nascimento,
+                    // Garante prioridade para campos da raiz se existirem
+                    genero: meData.genero,
+                    email: meData.email,
+                };
+
+                const finalData = { ...providerData, ...mappedMeData };
+                setProviderAccount(finalData);
+            } catch (error) {
+                console.error(error);
+            }
+
             getProviderSolicitations()
                 .then(data => setSolicitations(data))
                 .catch(err => console.error(err));
@@ -346,8 +376,8 @@ export default function ProviderPerfil({ userData = mockUserData }) {
         }
     };
     
-    const comentarios = providerAccount.ultimas_avaliacoes
-    const estatisticas = providerAccount.estatisticas
+    const comentarios = providerAccount?.ultimas_avaliacoes
+    const estatisticas = providerAccount?.estatisticas
     
     const transformedRatings = useMemo(() => {
          if (!estatisticas || !estatisticas.distribuicao) {
