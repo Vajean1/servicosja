@@ -219,7 +219,7 @@ export default function ProviderRegistration() {
             }));
             setFormErrors(prevErrors => ({
                 ...prevErrors,
-                'servico': null // Limpa o erro do serviço também
+                'servico': null
             }));
             return;
 
@@ -390,7 +390,7 @@ export default function ProviderRegistration() {
                         <p className={styles.errorMessage}>{getErrorMessage('telefone_publico')}</p>
                     )}
                     <IMaskInput
-                        mask={['(00) 0000-0000', '(00) 00000-0000']}
+                        mask={['(00) 00000-0000', '(00) 00000-0000']}
                         name='telefone_publico'
                         value={formDataProvider.telefone_publico || ''}
                         onChange={handleChangeSetDataProvider}
