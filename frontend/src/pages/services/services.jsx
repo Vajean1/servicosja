@@ -487,11 +487,11 @@ export default function Services () {
 
                 <section className={loading ? styles.providerContainerLogin : styles.providerContainer}>
 
-                    {loading && (
+                    {loading ?(
                     <Loading3/>
-                    )}
-
-                    {displayedProviders.map((provider)=> (
+                    ):
+                    <>
+                       {displayedProviders.map((provider)=> (
                         <div className={styles.box} onClick={() => {handleProviderSelected(provider)}} key={provider.id}>
                             <ProviderBox 
                                 name={provider.nome} 
@@ -504,6 +504,10 @@ export default function Services () {
                         </div>
                     ))}
                     
+                    </>
+        }
+
+                   
                 </section>
             </div>
         </div>
