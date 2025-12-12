@@ -69,7 +69,7 @@ export default function Home () {
 
         
            
-            <h4 className={styles.SponsoredTitle}>Melhoes avaliados</h4>
+            <h4 className={styles.SponsoredTitle}>Melhores avaliados</h4>
            <section className={styles.Sponsored}>
             <img className={styles.SponsoredBg} src="img/banner/bannerSponsored.png" alt='banner'/>
 
@@ -241,26 +241,7 @@ export default function Home () {
                             </div>
                         </div>
 
-            <section className={styles.tipsContainer}>
-                <h4>Dicas antes de contratar</h4> 
-                <div className={styles.tipsContent}>
-                    <div className={styles.tipsBox}>
-                        <img src="/img/boxs/boxHome1.png" alt="icone dica 1" />
-                        <p>Como garantir a segurança na hora da contratação?</p>
-                    </div>
-
-
-                    <div className={styles.tipsBox}>
-                        <img src="/img/boxs/boxHome2.png" alt="icone dica 1" />
-                        <p>Como contratrar o primeiro serviço</p>
-                    </div>
-
-                    <div className={styles.tipsBox}>
-                        <img src="/img/boxs/boxHome3.png" alt="icone dica 1" />
-                        <p>O Negócio Mais Popular do Ano</p>
-                    </div>
-                </div>       
-            </section>                
+            
             
         </main>
     )
