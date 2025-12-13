@@ -15,8 +15,9 @@ export default function CategoryServices() {
                 },
             });
             const result = await response.json();
-            setCategories(result);
-            return result;
+            const categoriesList = result.results || result;
+            setCategories(categoriesList);
+            return categoriesList;
         } catch (error) {
             console.error("Erro ao buscar categorias:", error);
         } finally {

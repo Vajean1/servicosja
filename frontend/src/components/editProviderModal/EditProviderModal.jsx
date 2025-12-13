@@ -6,6 +6,13 @@ import UserServices from '../../services/user';
 import ProviderServices from '../../services/provider';
 import Loading2 from '../../pages/loading/loading2';
 
+const getErrorMessage = (formErrors, fieldName) => {
+    if (formErrors && formErrors[fieldName] && Array.isArray(formErrors[fieldName]) && formErrors[fieldName].length > 0) {
+        return formErrors[fieldName][0];
+    }
+    return null;
+};
+
 export default function EditProviderModal({ open, close, providerData, onUpdate }) {
     const [formData, setFormData] = useState({
         nome_completo: '',
@@ -19,6 +26,7 @@ export default function EditProviderModal({ open, close, providerData, onUpdate 
         numero_casa: ''
     });
 
+    const [formErrors, setFormErrors] = useState({});
     const [loading, setLoading] = useState(false);
     const [selectedPhoto, setSelectedPhoto] = useState(null);
     const [previewUrl, setPreviewUrl] = useState(null);
@@ -67,7 +75,16 @@ export default function EditProviderModal({ open, close, providerData, onUpdate 
     const { updateProviderProfile } = ProviderServices();
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+
+        if (formErrors[name]) {
+            setFormErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors[name];
+                return newErrors;
+            });
+        }
     };
 
     const handlePhotoChange = (e) => {
@@ -81,6 +98,8 @@ export default function EditProviderModal({ open, close, providerData, onUpdate 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
+        setFormErrors({});
+
         try {
             // 1. Atualiza campos de texto e booleanos
             const payload = {
@@ -118,7 +137,11 @@ export default function EditProviderModal({ open, close, providerData, onUpdate 
             close();
         } catch (error) {
             console.error("Failed to update profile", error);
-            alert("Erro ao atualizar perfil. Verifique os dados.");
+            if (error && typeof error === 'object') {
+                setFormErrors(error);
+            } else {
+                alert("Erro ao atualizar perfil. Verifique os dados.");
+            }
         } finally {
             setLoading(false);
         }
@@ -143,40 +166,67 @@ export default function EditProviderModal({ open, close, providerData, onUpdate 
 
                             {/* --- Campos de Texto Controlados --- */}
                             <label>Nome:</label>
+                            {getErrorMessage(formErrors, 'nome_completo') && (
+                                <p className={styles.errorMessage}>{getErrorMessage(formErrors, 'nome_completo')}</p>
+                            )}
                             <input name="nome_completo" value={formData.nome_completo} onChange={handleChange} placeholder="Nome" required />
                             
                             <label>Telefone Público:</label>
+                            {getErrorMessage(formErrors, 'telefone_publico') && (
+                                <p className={styles.errorMessage}>{getErrorMessage(formErrors, 'telefone_publico')}</p>
+                            )}
                             <input name="telefone_publico" value={formData.telefone_publico} onChange={handleChange} placeholder="Telefone" />
                             
                             {/* --- Campos de Seleção Controlados --- */}
                             <label>Disponibilidade 24h:</label>
+                            {getErrorMessage(formErrors, 'disponibilidade') && (
+                                <p className={styles.errorMessage}>{getErrorMessage(formErrors, 'disponibilidade')}</p>
+                            )}
                             <select name="disponibilidade" value={formData.disponibilidade} onChange={handleChange} required>
                                 <option value="true">Sim</option>
                                 <option value="false">Não</option>
                             </select>
 
                             <label>Atende Final de Semana:</label>
+                            {getErrorMessage(formErrors, 'atende_fim_de_semana') && (
+                                <p className={styles.errorMessage}>{getErrorMessage(formErrors, 'atende_fim_de_semana')}</p>
+                            )}
                             <select name="atende_fim_de_semana" value={formData.atende_fim_de_semana} onChange={handleChange} required>
                                 <option value="true">Sim</option>
                                 <option value="false">Não</option>
                             </select>
 
                             <label>Possui Material Próprio:</label>
+                            {getErrorMessage(formErrors, 'possui_material_proprio') && (
+                                <p className={styles.errorMessage}>{getErrorMessage(formErrors, 'possui_material_proprio')}</p>
+                            )}
                             <select name="possui_material_proprio" value={formData.possui_material_proprio} onChange={handleChange} required>
                                 <option value="true">Sim</option>
                                 <option value="false">Não</option>
                             </select>
 
                             <label>CEP:</label>
+                            {getErrorMessage(formErrors, 'cep') && (
+                                <p className={styles.errorMessage}>{getErrorMessage(formErrors, 'cep')}</p>
+                            )}
                             <input name="cep" value={formData.cep} onChange={handleChange} placeholder="CEP" />
 
                             <label>Rua:</label>
+                            {getErrorMessage(formErrors, 'rua') && (
+                                <p className={styles.errorMessage}>{getErrorMessage(formErrors, 'rua')}</p>
+                            )}
                             <input name="rua" value={formData.rua} onChange={handleChange} placeholder="Rua" />
 
                             <label>Número:</label>
+                            {getErrorMessage(formErrors, 'numero_casa') && (
+                                <p className={styles.errorMessage}>{getErrorMessage(formErrors, 'numero_casa')}</p>
+                            )}
                             <input name="numero_casa" value={formData.numero_casa} onChange={handleChange} placeholder="Número" />
 
                             <label>Biografia:</label>
+                            {getErrorMessage(formErrors, 'biografia') && (
+                                <p className={styles.errorMessage}>{getErrorMessage(formErrors, 'biografia')}</p>
+                            )}
                             <textarea name="biografia" value={formData.biografia} onChange={handleChange} placeholder="Biografia" />
                             
                             <button type="submit">Salvar</button>

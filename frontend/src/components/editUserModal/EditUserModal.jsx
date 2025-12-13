@@ -6,6 +6,13 @@ import UserServices from '../../services/user';
 import ImageCropModal from '../../utils/ImageCropModal'; 
 import Loading2 from '../../pages/loading/loading2';
 
+const getErrorMessage = (formErrors, fieldName) => {
+    if (formErrors && formErrors[fieldName] && Array.isArray(formErrors[fieldName]) && formErrors[fieldName].length > 0) {
+        return formErrors[fieldName][0];
+    }
+    return null;
+};
+
 export default function EditUserModal({ open, close, userData, onUpdate }) {
     const [formData, setFormData] = useState({
         nome_completo: '',
@@ -15,6 +22,8 @@ export default function EditUserModal({ open, close, userData, onUpdate }) {
         cep: '',
         telefone_contato: ''
     });
+
+    const [formErrors, setFormErrors] = useState({});
 
     // Estado para a foto de perfil **selecionada e CORTADA** (File/Blob)
     const [selectedPhoto, setSelectedPhoto] = useState(null);
@@ -63,7 +72,16 @@ export default function EditUserModal({ open, close, userData, onUpdate }) {
     const { updateUser, updateClientProfile } = UserServices();
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+        
+        if (formErrors[name]) {
+            setFormErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors[name];
+                return newErrors;
+            });
+        }
     };
 
     /**
@@ -138,6 +156,8 @@ export default function EditUserModal({ open, close, userData, onUpdate }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
+        setFormErrors({});
+        
         try {
             const userPayload = {
                 nome_completo: formData.nome_completo,
@@ -168,7 +188,11 @@ export default function EditUserModal({ open, close, userData, onUpdate }) {
             
         } catch (error) {
             console.error("Failed to update user profile", error);
-            alert("Erro ao atualizar perfil. Tente novamente.");
+            if (error && typeof error === 'object') {
+                setFormErrors(error);
+            } else {
+                alert("Erro ao atualizar perfil. Tente novamente.");
+            }
         } finally {
             setLoading(false);
         }
@@ -203,21 +227,39 @@ export default function EditUserModal({ open, close, userData, onUpdate }) {
                         )}
 
                         <label>Nome Completo:</label>
+                        {getErrorMessage(formErrors, 'nome_completo') && (
+                            <p className={styles.errorMessage}>{getErrorMessage(formErrors, 'nome_completo')}</p>
+                        )}
                         <input name="nome_completo" value={formData.nome_completo} onChange={handleChange} placeholder="Nome Completo" />
                         
                         <label>Data de Nascimento:</label>
+                        {getErrorMessage(formErrors, 'dt_nascimento') && (
+                            <p className={styles.errorMessage}>{getErrorMessage(formErrors, 'dt_nascimento')}</p>
+                        )}
                         <input name="dt_nascimento" value={formData.dt_nascimento} onChange={handleChange} placeholder="AAAA-MM-DD" /> {/* Dica: use type="date" ou mask/validação */}
 
                         <label>Rua:</label>
+                        {getErrorMessage(formErrors, 'rua') && (
+                            <p className={styles.errorMessage}>{getErrorMessage(formErrors, 'rua')}</p>
+                        )}
                         <input name="rua" value={formData.rua} onChange={handleChange} placeholder="Rua" />
 
                         <label>Número:</label>
+                        {getErrorMessage(formErrors, 'numero_casa') && (
+                            <p className={styles.errorMessage}>{getErrorMessage(formErrors, 'numero_casa')}</p>
+                        )}
                         <input name="numero_casa" value={formData.numero_casa} onChange={handleChange} placeholder="Número" />
 
                         <label>CEP:</label>
+                        {getErrorMessage(formErrors, 'cep') && (
+                            <p className={styles.errorMessage}>{getErrorMessage(formErrors, 'cep')}</p>
+                        )}
                         <input name="cep" value={formData.cep} onChange={handleChange} placeholder="CEP" />
 
                         <label>Telefone de Contato:</label>
+                        {getErrorMessage(formErrors, 'telefone_contato') && (
+                            <p className={styles.errorMessage}>{getErrorMessage(formErrors, 'telefone_contato')}</p>
+                        )}
                         <input name="telefone_contato" value={formData.telefone_contato} onChange={handleChange} placeholder="Telefone" />
 
                         <button type="submit">Salvar</button>
