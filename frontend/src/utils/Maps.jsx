@@ -1,12 +1,18 @@
 // MapaSimples.js
-import React from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import React, { useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-// Importa o objeto 'Icon' de Leaflet
 import L from 'leaflet'; 
 
-// 1. Importe sua imagem SVG (ajuste o caminho se necessário)
 import CustomIconSvg from '/img/logo/mapa.svg'; 
+
+const RecenterMap = ({ lat, long }) => {
+    const map = useMap();
+    useEffect(() => {
+        map.setView([lat, long]);
+    }, [lat, long, map]);
+    return null;
+};
 
 const Maps = ({ long, lat }) => {
     const position = [lat, long];
@@ -33,6 +39,8 @@ const Maps = ({ long, lat }) => {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
+            
+            <RecenterMap lat={lat} long={long} />
 
             {/* 3. Passa a propriedade 'icon' para o componente Marker */}
             <Marker position={position} icon={customIcon}>
