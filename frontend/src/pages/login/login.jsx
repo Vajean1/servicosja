@@ -54,7 +54,7 @@ export default function Login() {
             </div>
 
             <div onClick={handleOpenUser} className={styles.loginBoxUser}>
-                <h3> <FaUserAlt />Usuario</h3>
+                <h3> <FaUserAlt />Cliente</h3>
             </div>
 
             {/* Popups renderizados no final */}

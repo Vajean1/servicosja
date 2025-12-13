@@ -158,7 +158,7 @@ export default function UserServices() {
 
             const result = await response.json();
             if (!response.ok) throw result;
-            return result;
+            return result.results || result;
         } catch (error) {
             console.error("Error getting client solicitations:", error);
             throw error;
@@ -237,7 +237,7 @@ export default function UserServices() {
 
             const result = await response.json();
             if (!response.ok) throw result;
-            return result;
+            return result.results || result;
         } catch (error) {
             console.error("Error getting user reviews:", error);
             throw error;
@@ -290,7 +290,7 @@ export default function UserServices() {
 
             const result = await response.json();
             if (!response.ok) throw result;
-            return result;
+            return result.results || result;
         } catch (error) {
             console.error("Error getting favorites:", error);
             throw error;

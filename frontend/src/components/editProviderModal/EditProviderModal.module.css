@@ -53,6 +53,18 @@
     background-color: #110263;
 }
 
+.errorMessage {
+    color: #cc0000;
+    font-size: 0.85rem;
+    width: 80%;
+    padding: 0;
+    text-align: left;
+    margin-top: -5px;
+    margin-bottom: 5px;
+    display: block;
+    font-weight: 500;
+}
+
 
 @media screen and (max-width: 800px) {
     .modalContent {

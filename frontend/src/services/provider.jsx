@@ -84,7 +84,9 @@ export default function ProviderServices() {
         })
         .then((response) => response.json()) 
         .then((result) => {
-            setPoviders(result)
+            // Suporte para paginação: extrai 'results' se existir, caso contrário usa o resultado direto
+            const providersList = result.results || result;
+            setPoviders(providersList)
         })
         .catch((error)=> {
             console.error(error)
@@ -158,13 +160,16 @@ export default function ProviderServices() {
                 headers:{ 'Content-Type': 'application/json' },
             });
             let result = await response.json(); 
+            
+            // Extrai a lista de resultados da paginação
+            let providersList = result.results || result;
 
             // Client-side filtering for minRating if backend returns unfiltered list
             if (minRating) {
-                 result = result.filter(p => (p.nota_media || 0) >= minRating);
+                 providersList = providersList.filter(p => (p.nota_media || 0) >= minRating);
             }
 
-            setPoviders(result);
+            setPoviders(providersList);
         } catch(error) {
             console.error(error);
         } finally {
@@ -180,7 +185,7 @@ export default function ProviderServices() {
                 headers: { 'Content-Type': 'application/json' },
             });
             const result = await response.json();
-            return result;
+            return result.results || result;
         } catch (error) {
             console.error("Erro ao buscar prestadores:", error);
             return [];
@@ -198,7 +203,7 @@ export default function ProviderServices() {
             });
             const result = await response.json();
             
-            return result.avaliacoes || [];
+            return result.results || result.avaliacoes || [];
         } catch (error) {
             console.error("Erro ao buscar avaliações:", error);
             return [];
@@ -224,7 +229,7 @@ export default function ProviderServices() {
 
             const result = await response.json();
             if (!response.ok) throw result;
-            return result;
+            return result.results || result;
         } catch (error) {
             console.error("Error getting provider solicitations:", error);
             throw error;
@@ -377,7 +382,8 @@ export default function ProviderServices() {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
             });
-            const providers = await response.json();
+            const data = await response.json();
+            const providers = data.results || data;
             
             const found = providers.find(p => p.user_id == userId || p.user == userId);
             
