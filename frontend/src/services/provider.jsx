@@ -2,7 +2,9 @@ import { useState, useCallback } from "react";
 
 export default function ProviderServices() {
     const [loading, setLoading] = useState(false);
+    const [loadingMore, setLoadingMore] = useState(false); // Novo estado para carregar mais
     const [providers, setPoviders] = useState([]);
+    const [nextPage, setNextPage] = useState(null);
     const [refetchProviders, setRefetchProviders] = useState(true);
     const [providerAccount, setProviderAccount] = useState([])
     const url = import.meta.env.VITE_API_URL || '/api';
@@ -87,6 +89,7 @@ export default function ProviderServices() {
             // Suporte para paginação: extrai 'results' se existir, caso contrário usa o resultado direto
             const providersList = result.results || result;
             setPoviders(providersList)
+            setNextPage(result.next || null)
         })
         .catch((error)=> {
             console.error(error)
@@ -170,6 +173,7 @@ export default function ProviderServices() {
             }
 
             setPoviders(providersList);
+            setNextPage(result.next || null);
         } catch(error) {
             console.error(error);
         } finally {
@@ -375,6 +379,34 @@ export default function ProviderServices() {
         }
     };
 
+    const loadMoreProviders = useCallback(async () => {
+        if (!nextPage) return;
+        setLoadingMore(true);
+        try {
+            // Fix URL if needed (similar to getImageUrl logic might be needed here if backend returns mixed content)
+            let fetchUrl = nextPage;
+            if (fetchUrl.startsWith('http://127.0.0.1:8000')) {
+                fetchUrl = fetchUrl.replace('http://127.0.0.1:8000', 'https://back-end-servicosja-api.onrender.com');
+            } else if (fetchUrl.startsWith('http://localhost:8000')) {
+                fetchUrl = fetchUrl.replace('http://localhost:8000', 'https://back-end-servicosja-api.onrender.com');
+            }
+
+            const response = await fetch(fetchUrl, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            const result = await response.json();
+            const newProviders = result.results || result;
+            
+            setPoviders(prev => [...prev, ...newProviders]);
+            setNextPage(result.next || null);
+        } catch(error) {
+            console.error("Error loading more providers:", error);
+        } finally {
+            setLoadingMore(false);
+        }
+    }, [nextPage, setLoadingMore, setPoviders, setNextPage]);
+
     const getProviderByUserId = async (userId) => {
         setLoading(true);
         try {
@@ -428,6 +460,9 @@ export default function ProviderServices() {
         addPortfolioItem,
         deletePortfolioItem,
         updateProviderProfile,
-        getProviderByUserId
+        getProviderByUserId,
+        nextPage,
+        loadMoreProviders,
+        loadingMore
     };
 }
