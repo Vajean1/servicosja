@@ -56,9 +56,9 @@ export default function Services () {
 
     const activeMenuItem = categories.find(item => item.id === activeMenuId);
 
-    // Agora usa getFilteredProviders
-    const { getProviders, providers, refetchProviders, loading, setRefetchProviders, getFilteredProviders } = ProviderServices()
-    const { setProviderSelected } = useProviderContext();
+    // Agora usa getFilteredProviders
+    const { getProviders, providers, refetchProviders, loading, setRefetchProviders, getFilteredProviders, loadMoreProviders, nextPage, loadingMore } = ProviderServices()
+    const { setProviderSelected } = useProviderContext();
 
 
     // Inicia com 'null' para indicar que o filtro não está aplicado
@@ -503,6 +503,18 @@ export default function Services () {
                             />
                         </div>
                     ))}
+                    
+                    {nextPage && (
+                        <div className={styles.loadMoreContainer}>
+                            <button 
+                                className={styles.loadMoreButton} 
+                                onClick={loadMoreProviders} 
+                                disabled={loadingMore}
+                            >
+                                {loadingMore ? 'Carregando...' : 'Carregar Mais'}
+                            </button>
+                        </div>
+                    )}
                     
                     </>
         }
