@@ -119,7 +119,7 @@ const getFirstTwoNames = (fullName) => {
 
 export default function UserPerfil({ userData = mockUserData }) {
     const [activeTab, setActiveTab] = useState(TABS.DASHBOARD);
-    const { logout, user } = useAuth();
+    const { logout, user, isAuthenticated } = useAuth();
     const navigate = useNavigate();
     const [openEditModal, setOpenEditModal] = useState(false);
     const [openReviewModal, setOpenReviewModal] = useState(false);
@@ -138,6 +138,8 @@ export default function UserPerfil({ userData = mockUserData }) {
     const { getProviderByUserId } = ProviderServices();
 
     useEffect(() => {
+        if (!isAuthenticated) return;
+
         getMe()
             .then(data => {
                 setProfileData(data);
@@ -196,7 +198,7 @@ export default function UserPerfil({ userData = mockUserData }) {
                 })
                 .catch(err => console.error("Erro ao buscar favoritos:", err));
         }
-    }, [user]);
+    }, [user, isAuthenticated]);
 
     const handleOpenReviewModal = (solicitacaoId) => {
         setSelectedSolicitacaoId(solicitacaoId);
