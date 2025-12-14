@@ -9,10 +9,8 @@ export default function ProviderServices() {
     const [refetchProviders, setRefetchProviders] = useState(true);
     const [providerAccount, setProviderAccount] = useState([]);
 
-    const register = (formData) => {
+    const register = useCallback((formData) => {
         setLoading(true);
-        // Retaining Promise wrapper to match existing signature if expected, or simplifying to async/await
-        // Existing code returns a Promise. apiRequest returns a Promise.
         return apiRequest('/accounts/registro/prestador/', {
             method: 'POST',
             body: JSON.stringify(formData)
@@ -20,9 +18,9 @@ export default function ProviderServices() {
         .finally(() => {
             setLoading(false);
         });
-    };
+    }, []);
 
-    const login = async (formData) => {
+    const login = useCallback(async (formData) => {
         setLoading(true);
         try {
             const result = await apiRequest('/auth/token/login/', {
@@ -36,7 +34,7 @@ export default function ProviderServices() {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
     const getProviders = useCallback(() => {
         setLoading(true);
@@ -75,7 +73,7 @@ export default function ProviderServices() {
         });
     }, [setLoading, setProviderAccount]);
 
-    const getFilteredProviders = useCallback(async ({ material, hours24, weekend, service, category, minRating, orderByDistance, orderByRating, latitude, longitude }) => {
+    const getFilteredProviders = useCallback(async ({ material, hours24, weekend, service, category, minRating, orderByDistance, orderByRating, latitude, longitude, searchTerm }) => {
         setLoading(true);
         const params = [];
 
@@ -86,6 +84,7 @@ export default function ProviderServices() {
         if (category) params.push(`categoria=${category}`);
         if (minRating) params.push(`nota_minima=${minRating}`);
         if (orderByRating) params.push(`melhor_avaliado=true`);
+        if (searchTerm) params.push(`nome_servico=${searchTerm}`);
         if (orderByDistance && latitude && longitude) {
             params.push(`ordenar_por_distancia=true`);
             params.push(`latitude=${latitude}`);
@@ -144,7 +143,7 @@ export default function ProviderServices() {
         }
     }, []);
 
-    const getProviderSolicitations = async () => {
+    const getProviderSolicitations = useCallback(async () => {
         setLoading(true);
         try {
             const result = await apiRequest('/contratacoes/prestador/solicitacoes/', {
@@ -157,9 +156,9 @@ export default function ProviderServices() {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
-    const completeService = async (id) => {
+    const completeService = useCallback(async (id) => {
         setLoading(true);
         try {
             const result = await apiRequest(`/contratacoes/solicitacoes/${id}/concluir/`, {
@@ -172,9 +171,9 @@ export default function ProviderServices() {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
-    const markServiceAsNotRealized = async (id) => {
+    const markServiceAsNotRealized = useCallback(async (id) => {
         setLoading(true);
         try {
             const result = await apiRequest(`/contratacoes/solicitacoes/${id}/nao-realizado/`, {
@@ -187,12 +186,11 @@ export default function ProviderServices() {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
-    const addPortfolioItem = async (formData) => {
+    const addPortfolioItem = useCallback(async (formData) => {
         setLoading(true);
         try {
-            // apiRequest handles Content-Type for FormData automatically (removes it so browser sets boundary)
             const result = await apiRequest('/portfolio/itens/', {
                 method: 'POST',
                 body: formData
@@ -204,12 +202,11 @@ export default function ProviderServices() {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
-    const deletePortfolioItem = async (id) => {
+    const deletePortfolioItem = useCallback(async (id) => {
         setLoading(true);
         try {
-            // apiRequest handles 204/empty response by returning null
             await apiRequest(`/portfolio/itens/${id}/`, {
                 method: 'DELETE'
             });
@@ -220,9 +217,9 @@ export default function ProviderServices() {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
-    const updateProviderProfile = async (formData) => {
+    const updateProviderProfile = useCallback(async (formData) => {
         setLoading(true);
         try {
             const result = await apiRequest('/accounts/perfil/prestador/editar/', {
@@ -236,7 +233,7 @@ export default function ProviderServices() {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
     const loadMoreProviders = useCallback(async () => {
         if (!nextPage) return;
@@ -249,7 +246,6 @@ export default function ProviderServices() {
                 fetchUrl = fetchUrl.replace('http://localhost:8000', 'https://back-end-servicosja-api.onrender.com');
             }
 
-            // Using apiRequest with full URL
             const result = await apiRequest(fetchUrl, {
                 method: 'GET'
             });
@@ -265,7 +261,7 @@ export default function ProviderServices() {
         }
     }, [nextPage, setLoadingMore, setPoviders, setNextPage]);
 
-    const getProviderByUserId = async (userId) => {
+    const getProviderByUserId = useCallback(async (userId) => {
         setLoading(true);
         try {
             const data = await apiRequest('/accounts/prestadores/', {
@@ -295,7 +291,7 @@ export default function ProviderServices() {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
     return {
         register,

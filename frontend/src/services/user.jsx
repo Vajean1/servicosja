@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { apiRequest } from "./api";
 
 export default function UserServices() {
     const [loading, setLoading] = useState(false);
 
-    const register = async (formData) => {
+    const register = useCallback(async (formData) => {
         setLoading(true);
         try {
             const result = await apiRequest('/accounts/registro/cliente/', {
@@ -19,9 +19,9 @@ export default function UserServices() {
             setLoading(false);
             console.log('finalizado');
         }
-    };
+    }, []);
 
-    const getMe = async () => {
+    const getMe = useCallback(async () => {
         setLoading(true);
         try {
             const result = await apiRequest('/accounts/me/', {
@@ -34,9 +34,9 @@ export default function UserServices() {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
-    const initiateContact = async (providerUserId, serviceId) => {
+    const initiateContact = useCallback(async (providerUserId, serviceId) => {
         setLoading(true);
         try {
             const payload = {
@@ -56,9 +56,9 @@ export default function UserServices() {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
-    const updateUser = async (data) => {
+    const updateUser = useCallback(async (data) => {
         setLoading(true);
         try {
             const isFormData = data instanceof FormData;
@@ -73,9 +73,9 @@ export default function UserServices() {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
-    const getClientSolicitations = async () => {
+    const getClientSolicitations = useCallback(async () => {
         setLoading(true);
         try {
             const result = await apiRequest('/contratacoes/cliente/solicitacoes/', {
@@ -88,9 +88,9 @@ export default function UserServices() {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
-    const createReview = async (data) => {
+    const createReview = useCallback(async (data) => {
         setLoading(true);
         try {
             const result = await apiRequest('/avaliacoes/', {
@@ -104,9 +104,9 @@ export default function UserServices() {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
-    const updateClientProfile = async (formData) => {
+    const updateClientProfile = useCallback(async (formData) => {
         setLoading(true);
         try {
             const result = await apiRequest('/accounts/perfil/cliente/editar/', {
@@ -120,9 +120,9 @@ export default function UserServices() {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
-    const getUserReviews = async () => {
+    const getUserReviews = useCallback(async () => {
         setLoading(true);
         try {
             const result = await apiRequest('/avaliacoes/listar/?minhas=true', {
@@ -135,9 +135,9 @@ export default function UserServices() {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
-    const toggleFavorite = async (providerId) => {
+    const toggleFavorite = useCallback(async (providerId) => {
         setLoading(true);
         try {
             const result = await apiRequest('/accounts/favoritos/', {
@@ -151,9 +151,9 @@ export default function UserServices() {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
-    const getFavorites = async () => {
+    const getFavorites = useCallback(async () => {
         setLoading(true);
         try {
             const result = await apiRequest('/accounts/favoritos/', {
@@ -166,7 +166,7 @@ export default function UserServices() {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
     return {
         register,

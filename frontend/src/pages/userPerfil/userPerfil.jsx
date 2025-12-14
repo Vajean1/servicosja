@@ -112,14 +112,10 @@ const TABS = {
     MESSAGES: 'Mensagens'
 };
 
-// --- FUNÇÃO ADICIONADA: Filtra apenas as duas primeiras palavras do nome ---
 const getFirstTwoNames = (fullName) => {
     if (!fullName) return '';
-    // Divide o nome em palavras, pega as duas primeiras e as une novamente com espaço.
     return fullName.split(' ').slice(0, 2).join(' ');
 };
-// -------------------------------------------------------------------------
-
 
 export default function UserPerfil({ userData = mockUserData }) {
     const [activeTab, setActiveTab] = useState(TABS.DASHBOARD);
@@ -344,7 +340,6 @@ export default function UserPerfil({ userData = mockUserData }) {
                         <span>Data de Nasc: {displayData.dataNasc}</span>
                         <span>Gênero: {displayData.genero}</span>
                         <span>Telefone: {displayData.telefone}</span>
-                        <span>Cargo: {displayData.cargo}</span>
                         <span>Data de Registro: {displayData.dataRegistro}</span>
                         <span>Email: {displayData.email}</span>
                         <span>Cidade: {displayData.cidade}</span>
