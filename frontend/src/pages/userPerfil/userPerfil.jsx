@@ -31,7 +31,7 @@ const ReviewModal = ({ open, close, onSubmit }) => {
                 <h2>Avaliar Serviço</h2>
                 <div className={styles.starsContainer}>
                     {[1, 2, 3, 4, 5].map((star) => (
-                        <span 
+                        <span
                             key={star}
                             className={`${styles.star} ${star <= rating ? styles.starActive : ''}`}
                             onClick={() => setRating(star)}
@@ -41,7 +41,7 @@ const ReviewModal = ({ open, close, onSubmit }) => {
                         </span>
                     ))}
                 </div>
-                <textarea 
+                <textarea
                     placeholder="Escreva um comentário (opcional)..."
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
@@ -69,6 +69,10 @@ const getImageUrl = (url) => {
 
 const formatDate = (dateString) => {
     if (!dateString) return "N/A";
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateString)) {
+        return dateString;
+    }
+
     const date = new Date(dateString);
     return isNaN(date.getTime()) ? "Data Inválida" : date.toLocaleDateString('pt-BR');
 };
@@ -161,30 +165,25 @@ export default function UserPerfil({ userData = mockUserData }) {
                 setReviews(reviewsList);
             })
             .catch(err => console.error("Erro ao buscar avaliações:", err));
-            
+
         getClientSolicitations()
             .then(data => {
-                // Filter: completed service but NOT evaluated
                 if (Array.isArray(data)) {
                     const pending = data.filter(s => s.servico_realizado && !s.avaliacao_realizada);
                     setPendingReviews(pending);
 
-                    // Filter: Canceled / Not Realized
                     const canceled = data.filter(s => s.data_conclusao && !s.servico_realizado);
                     setCanceledServices(canceled);
 
-                    // Filter: Ongoing (Em andamento) - No Conclusion Date
                     const ongoing = data.filter(s => !s.data_conclusao);
                     setOngoingServices(ongoing);
 
-                    // Filter: Completed History (Already Evaluated)
                     const completed = data.filter(s => s.servico_realizado && s.avaliacao_realizada);
                     setCompletedServices(completed);
                 }
             })
             .catch(err => console.error("Erro ao buscar solicitações:", err));
 
-        // Busca favoritos apenas se for cliente
         if (user?.tipo_usuario === 'cliente') {
             getFavorites()
                 .then(data => {
@@ -214,7 +213,6 @@ export default function UserPerfil({ userData = mockUserData }) {
             });
             alert("Avaliação enviada com sucesso!");
             setPendingReviews(prev => prev.filter(p => p.id !== selectedSolicitacaoId));
-            // Opcional: Atualizar completedServices se quisermos mover imediatamente
         } catch (error) {
             console.error("Erro ao avaliar:", error);
             alert("Erro ao enviar avaliação.");
@@ -231,20 +229,15 @@ export default function UserPerfil({ userData = mockUserData }) {
     };
 
     const handleNavigateToProvider = async (review) => {
-        // Tenta extrair o ID de várias formas possíveis
         const initialId = review.prestador_id || review.prestador?.id || (typeof review.prestador === 'number' ? review.prestador : null);
-        
+
         if (initialId) {
-            // Tenta encontrar o perfil correto usando o ID (assumindo que pode ser um user_id)
             const providerProfile = await getProviderByUserId(initialId);
-            
+
             if (providerProfile && providerProfile.id) {
-                // Se encontrou o perfil, usa o ID do perfil
                 setProviderSelected(providerProfile);
                 navigate('/providerDatails');
             } else {
-                // Fallback: Se não encontrou (ou falhou), tenta usar o ID original
-                // Pode ser que o ID original já fosse o ID do perfil
                 console.warn("Perfil não encontrado via user_id, tentando ID original:", initialId);
                 setProviderSelected({ id: initialId });
                 navigate('/providerDatails');
@@ -262,11 +255,13 @@ export default function UserPerfil({ userData = mockUserData }) {
         telefone: profileData.perfil_cliente?.telefone_contato || profileData.telefone_contato || "N/A",
         dataRegistro: profileData.perfil_cliente?.data_registro || (profileData.data_joined ? new Date(profileData.data_joined).toLocaleDateString('pt-BR') : "N/A"),
         email: profileData.email || "Email não informado",
-        linkedIn: "N/A",
+        cidade: profileData.perfil_cliente?.cidade || "N/A",
+        bairro: profileData.perfil_cliente?.bairro || "N/A",
+        linkedIn: "N/A", //Adicionar depois
         perfilImg: getImageUrl(profileData.foto || profileData.foto_perfil || profileData.perfil_cliente?.foto || profileData.perfil_cliente?.foto_perfil) || userData.perfilImg,
         mensagens: userData.mensagens,
-        galeria: userData.galeria, 
-        avaliacoes: userData.avaliacoes 
+        galeria: userData.galeria,
+        avaliacoes: userData.avaliacoes
     } : userData;
 
 
@@ -279,19 +274,19 @@ export default function UserPerfil({ userData = mockUserData }) {
             {/* --- Cabeçalho (Header) --- */}
             <header className={styles.header}>
                 <div className={styles.perfil}>
-                    
+
                     <div className={styles.perfilImgWrapper}>
                             <img src={displayData.perfilImg} alt="perfil" />
-                        <FaEdit 
+                        <FaEdit
                                 className={styles.editIconProfile}
-                                onClick={() => setOpenEditModal(true)} 
+                                onClick={() => setOpenEditModal(true)}
                                 title="Editar Perfil"
                             />
                     </div>
                     <div >
                         <h2 className={styles.nameContainer}>
-                            {getFirstTwoNames(displayData?.nome)?.toUpperCase()} 
-                            
+                            {getFirstTwoNames(displayData?.nome)?.toUpperCase()}
+
                         </h2>
                         <p>{displayData.cargo}</p>
                     </div>
@@ -301,7 +296,7 @@ export default function UserPerfil({ userData = mockUserData }) {
                 </button>
             </header>
 
-           
+
 
             {/* --- Conteúdo Principal (Container) --- */}
             <div className={styles.container}>
@@ -324,7 +319,7 @@ export default function UserPerfil({ userData = mockUserData }) {
                                         <td>{sol.prestador_nome || sol.prestador_id}</td>
                                         <td>{formatDate(sol.data_conclusao || sol.data_solicitacao)}</td>
                                         <td>
-                                            <button 
+                                            <button
                                                 onClick={() => handleOpenReviewModal(sol.id)}
                                                 className={styles.actionButton}
                                             >
@@ -337,8 +332,8 @@ export default function UserPerfil({ userData = mockUserData }) {
                         </table>
                     </div>
                 )}
-                
-                {/* --- Informações Pessoais (Descrição) --- */}
+
+                {/* --- Informações Pessoais --- */}
                 <div className={styles.box}>
                     <h2>Informações Pessoais</h2>
                     <div className={styles.iconEdit} onClick={() => setOpenEditModal(true)}>
@@ -352,6 +347,8 @@ export default function UserPerfil({ userData = mockUserData }) {
                         <span>Cargo: {displayData.cargo}</span>
                         <span>Data de Registro: {displayData.dataRegistro}</span>
                         <span>Email: {displayData.email}</span>
+                        <span>Cidade: {displayData.cidade}</span>
+                        <span>Bairro: {displayData.bairro}</span>
                         <span>LinkedIn: {displayData.linkedIn}</span>
                     </div>
                 </div>
@@ -363,16 +360,16 @@ export default function UserPerfil({ userData = mockUserData }) {
                         {favorites.length > 0 ? (
                             <div className={styles.favoritesGrid}>
                                 {favorites.map((fav) => (
-                                    <div 
-                                        key={fav.id} 
-                                        onClick={() => { setProviderSelected(fav); navigate('/providerDatails'); }} 
+                                    <div
+                                        key={fav.id}
+                                        onClick={() => { setProviderSelected(fav); navigate('/providerDatails'); }}
                                         className={styles.favoriteItem}
                                     >
-                                        <ProviderBox 
-                                            name={fav.nome} 
-                                            location={`${fav.cidade || ''}, ${fav.bairro || ''}`} 
-                                            rating={fav.nota_media} 
-                                            resum={fav.biografia || "Sem descrição."} 
+                                        <ProviderBox
+                                            name={fav.nome}
+                                            location={`${fav.cidade || ''}, ${fav.bairro || ''}`}
+                                            rating={fav.nota_media}
+                                            resum={fav.biografia || "Sem descrição."}
                                             image={getImageUrl(fav.foto || fav.foto_perfil)}
                                         />
                                     </div>
@@ -404,8 +401,8 @@ export default function UserPerfil({ userData = mockUserData }) {
                                 </thead>
                                 <tbody>
                                     {reviews.map((rev, index) => (
-                                        <tr 
-                                            key={rev.id || index} 
+                                        <tr
+                                            key={rev.id || index}
                                             onClick={() => handleNavigateToProvider(rev)}
                                             className={styles.clickableRow}
                                             title="Ver perfil do prestador"
@@ -413,19 +410,19 @@ export default function UserPerfil({ userData = mockUserData }) {
                                             <td>{rev.prestador_nome || rev.prestador?.nome || rev.prestador || "Nome indisponível"}</td>
                                             <td className={styles.reviewStar}>{rev.nota} ★</td>
                                             <td>{rev.comentario}</td>
-                                            <td>{formatDate(rev.data_criacao || rev.created_at || rev.data)}</td>
+                                            <td>{formatDate(rev.data)}</td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                         )}
 
-                        
+
                     </div>
 
-                  
+
                 </div>
-                    
+
                 {/* --- Serviços Em Andamento --- */}
                 {ongoingServices.length > 0 && (
                     <div className={styles.box} style={{ marginBottom: '20px' }}>
@@ -504,20 +501,20 @@ export default function UserPerfil({ userData = mockUserData }) {
                         </table>
                     </div>
                 )}
-            
+
             </div>
-            
-            <EditUserModal 
-                open={openEditModal} 
-                close={() => setOpenEditModal(false)} 
-                userData={profileData} 
-                onUpdate={handleUpdateProfile} 
+
+            <EditUserModal
+                open={openEditModal}
+                close={() => setOpenEditModal(false)}
+                userData={profileData}
+                onUpdate={handleUpdateProfile}
             />
 
-            <ReviewModal 
-                open={openReviewModal} 
-                close={() => setOpenReviewModal(false)} 
-                onSubmit={handleSubmitReview} 
+            <ReviewModal
+                open={openReviewModal}
+                close={() => setOpenReviewModal(false)}
+                onSubmit={handleSubmitReview}
             />
         </div>
     );

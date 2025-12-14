@@ -1,154 +1,91 @@
 import { useState, useCallback } from "react";
+import { apiRequest } from "./api";
 
 export default function ProviderServices() {
     const [loading, setLoading] = useState(false);
-    const [loadingMore, setLoadingMore] = useState(false); // Novo estado para carregar mais
+    const [loadingMore, setLoadingMore] = useState(false);
     const [providers, setPoviders] = useState([]);
     const [nextPage, setNextPage] = useState(null);
     const [refetchProviders, setRefetchProviders] = useState(true);
-    const [providerAccount, setProviderAccount] = useState([])
-    const url = import.meta.env.VITE_API_URL || '/api';
+    const [providerAccount, setProviderAccount] = useState([]);
 
     const register = (formData) => {
         setLoading(true);
-        return new Promise((resolve, reject) => { 
-            fetch(`${url}/accounts/registro/prestador/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            })
-            .then(async (response) => {
-                const result = await response.json(); 
-                if (!response.ok) {
-                    reject(result); 
-                } else {
-                    resolve(result); 
-                }
-            })
-            .catch((error) => {
-                console.log('Erro na requisição ou validação:', error);
-                throw error;
-            })
-            .finally(() => {
-                setLoading(false);
-         
-            });
+        // Retaining Promise wrapper to match existing signature if expected, or simplifying to async/await
+        // Existing code returns a Promise. apiRequest returns a Promise.
+        return apiRequest('/accounts/registro/prestador/', {
+            method: 'POST',
+            body: JSON.stringify(formData)
+        })
+        .finally(() => {
+            setLoading(false);
         });
     };
 
     const login = async (formData) => {
         setLoading(true);
-
         try {
-            const response = await fetch(`${url}/auth/token/login/`, {
+            const result = await apiRequest('/auth/token/login/', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
                 body: JSON.stringify(formData)
             });
-            
-            // --- AQUI É O PONTO CRÍTICO ---
-            if (!response.ok) {
-                 // Tenta ler o corpo como texto para inspecionar, se falhar ao ler como JSON
-                 const errorBody = await response.text();
-                 console.error(`Falha no Login, Status: ${response.status}. Corpo da resposta:`, errorBody);
-                 
-                 // Lança o erro com mais detalhes, ou tenta parsear se for JSON esperado
-                 // Se você sabe que o backend retorna JSON para erros, use .json() e lance.
-                 // Se você está recebendo HTML, lance o erro com o status.
-                 throw new Error(`Login failed with status ${response.status}. Server returned HTML/non-JSON.`);
-            }
-            // --------------------------------
-
-            const result = await response.json(); // Isso só é executado se response.ok for true
-            
-            return result; 
+            return result;
         } catch (error) {
-            console.error(' Erro na requisição ou validação:', error);
-            throw error; 
+            console.error('Erro na requisição ou validação:', error);
+            throw error;
         } finally {
             setLoading(false);
-  
         }
     };
 
-    // Função para buscar TODOS os provedores (usada no carregamento inicial e reset)
     const getProviders = useCallback(() => {
-        setLoading(true)
-        fetch(`${url}/accounts/prestadores/`, {
-            method:'GET',
-            headers:{
-                'Content-Type': 'application/json'
-            },
+        setLoading(true);
+        apiRequest('/accounts/prestadores/', {
+            method: 'GET'
         })
-        .then((response) => response.json()) 
         .then((result) => {
-            // Suporte para paginação: extrai 'results' se existir, caso contrário usa o resultado direto
             const providersList = result.results || result;
-            setPoviders(providersList)
-            setNextPage(result.next || null)
+            setPoviders(providersList);
+            setNextPage(result.next || null);
         })
-        .catch((error)=> {
-            console.error(error)
+        .catch((error) => {
+            console.error(error);
         })
         .finally(() => {
-            setLoading(false)
-            setRefetchProviders(false) // Desativa o flag após a busca
-        })
-    }, [url, setLoading, setPoviders, setRefetchProviders])
+            setLoading(false);
+            setRefetchProviders(false);
+        });
+    }, [setLoading, setPoviders, setRefetchProviders]);
 
-    // Função para buscar um único perfil
-    const getProviderPerfil = useCallback(( id) => {
-        setLoading(true)
-        return fetch(`${url}/accounts/prestadores/${id}/`, {
-            method:'GET',
-            headers:{
-                'Content-Type': 'application/json'
-            },
+    const getProviderPerfil = useCallback((id) => {
+        setLoading(true);
+        return apiRequest(`/accounts/prestadores/${id}/`, {
+            method: 'GET'
         })
-        .then((response) => response.json()) 
         .then((result) => {
-            setProviderAccount(result)
+            setProviderAccount(result);
             return result;
         })
-        .catch((error)=> {
-            console.error(error)
+        .catch((error) => {
+            console.error(error);
             throw error;
         })
         .finally(() => {
-            setLoading(false)
-            
-        })
-    }, [url, setLoading, setProviderAccount])
+            setLoading(false);
+        });
+    }, [setLoading, setProviderAccount]);
 
     const getFilteredProviders = useCallback(async ({ material, hours24, weekend, service, category, minRating, orderByDistance, orderByRating, latitude, longitude }) => {
         setLoading(true);
         const params = [];
-        
-        if (material !== null) {
-            params.push(`possui_material_proprio=${material}`);
-        }
-        if (hours24 !== null) {
-            params.push(`disponibilidade=${hours24}`);
-        }
-        if (weekend !== null) {
-            params.push(`atende_fim_de_semana=${weekend}`);
-        }
-        if (service) {
-            params.push(`servico=${service}`);
-        }
-        if (category) {
-            params.push(`categoria=${category}`);
-        }
-        if (minRating) {
-            params.push(`nota_minima=${minRating}`);
-        }
-        if (orderByRating) {
-            params.push(`melhor_avaliado=true`);
-        }
+
+        if (material !== null) params.push(`possui_material_proprio=${material}`);
+        if (hours24 !== null) params.push(`disponibilidade=${hours24}`);
+        if (weekend !== null) params.push(`atende_fim_de_semana=${weekend}`);
+        if (service) params.push(`servico=${service}`);
+        if (category) params.push(`categoria=${category}`);
+        if (minRating) params.push(`nota_minima=${minRating}`);
+        if (orderByRating) params.push(`melhor_avaliado=true`);
         if (orderByDistance && latitude && longitude) {
             params.push(`ordenar_por_distancia=true`);
             params.push(`latitude=${latitude}`);
@@ -156,18 +93,14 @@ export default function ProviderServices() {
         }
 
         const queryString = params.length > 0 ? '?' + params.join('&') : '';
-        
+
         try {
-            const response = await fetch(`${url}/accounts/prestadores/${queryString}`, {
-                method:'GET',
-                headers:{ 'Content-Type': 'application/json' },
+            const result = await apiRequest(`/accounts/prestadores/${queryString}`, {
+                method: 'GET'
             });
-            let result = await response.json(); 
-            
-            // Extrai a lista de resultados da paginação
+
             let providersList = result.results || result;
 
-            // Client-side filtering for minRating if backend returns unfiltered list
             if (minRating) {
                  providersList = providersList.filter(p => (p.nota_media || 0) >= minRating);
             }
@@ -179,16 +112,14 @@ export default function ProviderServices() {
         } finally {
             setLoading(false);
         }
-    }, [url, setLoading, setPoviders]);
+    }, [setLoading, setPoviders]);
 
     const getBestRatedProviders = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await fetch(`${url}/accounts/prestadores/?melhor_avaliado=true`, {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
+            const result = await apiRequest('/accounts/prestadores/?melhor_avaliado=true', {
+                method: 'GET'
             });
-            const result = await response.json();
             return result.results || result;
         } catch (error) {
             console.error("Erro ao buscar prestadores:", error);
@@ -196,17 +127,14 @@ export default function ProviderServices() {
         } finally {
             setLoading(false);
         }
-    }, [url]);
+    }, []);
 
     const getReviews = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await fetch(`${url}/avaliacoes/listar/`, {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
+            const result = await apiRequest('/avaliacoes/listar/', {
+                method: 'GET'
             });
-            const result = await response.json();
-            
             return result.results || result.avaliacoes || [];
         } catch (error) {
             console.error("Erro ao buscar avaliações:", error);
@@ -214,25 +142,14 @@ export default function ProviderServices() {
         } finally {
             setLoading(false);
         }
-    }, [url]);
+    }, []);
 
     const getProviderSolicitations = async () => {
         setLoading(true);
         try {
-            const storedAuth = localStorage.getItem('auth');
-            const token = storedAuth ? JSON.parse(storedAuth).access : null;
-            if (!token) throw new Error("No token found");
-
-            const response = await fetch(`${url}/contratacoes/prestador/solicitacoes/`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
+            const result = await apiRequest('/contratacoes/prestador/solicitacoes/', {
+                method: 'GET'
             });
-
-            const result = await response.json();
-            if (!response.ok) throw result;
             return result.results || result;
         } catch (error) {
             console.error("Error getting provider solicitations:", error);
@@ -245,20 +162,9 @@ export default function ProviderServices() {
     const completeService = async (id) => {
         setLoading(true);
         try {
-            const storedAuth = localStorage.getItem('auth');
-            const token = storedAuth ? JSON.parse(storedAuth).access : null;
-            if (!token) throw new Error("No token found");
-
-            const response = await fetch(`${url}/contratacoes/solicitacoes/${id}/concluir/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
+            const result = await apiRequest(`/contratacoes/solicitacoes/${id}/concluir/`, {
+                method: 'POST'
             });
-
-            const result = await response.json();
-            if (!response.ok) throw result;
             return result;
         } catch (error) {
             console.error("Error completing service:", error);
@@ -271,20 +177,9 @@ export default function ProviderServices() {
     const markServiceAsNotRealized = async (id) => {
         setLoading(true);
         try {
-            const storedAuth = localStorage.getItem('auth');
-            const token = storedAuth ? JSON.parse(storedAuth).access : null;
-            if (!token) throw new Error("No token found");
-
-            const response = await fetch(`${url}/contratacoes/solicitacoes/${id}/nao-realizado/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
+            const result = await apiRequest(`/contratacoes/solicitacoes/${id}/nao-realizado/`, {
+                method: 'POST'
             });
-
-            const result = await response.json();
-            if (!response.ok) throw result;
             return result;
         } catch (error) {
             console.error("Error marking service as not realized:", error);
@@ -297,21 +192,11 @@ export default function ProviderServices() {
     const addPortfolioItem = async (formData) => {
         setLoading(true);
         try {
-            const storedAuth = localStorage.getItem('auth');
-            const token = storedAuth ? JSON.parse(storedAuth).access : null;
-            if (!token) throw new Error("No token found");
-
-            // No Content-Type header for FormData, browser sets it with boundary
-            const response = await fetch(`${url}/portfolio/itens/`, {
+            // apiRequest handles Content-Type for FormData automatically (removes it so browser sets boundary)
+            const result = await apiRequest('/portfolio/itens/', {
                 method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
                 body: formData
             });
-
-            const result = await response.json();
-            if (!response.ok) throw result;
             return result;
         } catch (error) {
             console.error("Error adding portfolio item:", error);
@@ -324,26 +209,10 @@ export default function ProviderServices() {
     const deletePortfolioItem = async (id) => {
         setLoading(true);
         try {
-            const storedAuth = localStorage.getItem('auth');
-            const token = storedAuth ? JSON.parse(storedAuth).access : null;
-            if (!token) throw new Error("No token found");
-
-            const response = await fetch(`${url}/portfolio/itens/${id}/`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+            // apiRequest handles 204/empty response by returning null
+            await apiRequest(`/portfolio/itens/${id}/`, {
+                method: 'DELETE'
             });
-
-            if (!response.ok) {
-                 // Try to parse error if content exists, otherwise throw status
-                 try {
-                    const result = await response.json();
-                    throw result;
-                 } catch (e) {
-                    throw new Error(`Delete failed with status: ${response.status}`);
-                 }
-            }
             return true;
         } catch (error) {
             console.error("Error deleting portfolio item:", error);
@@ -356,20 +225,10 @@ export default function ProviderServices() {
     const updateProviderProfile = async (formData) => {
         setLoading(true);
         try {
-            const storedAuth = localStorage.getItem('auth');
-            const token = storedAuth ? JSON.parse(storedAuth).access : null;
-            if (!token) throw new Error("No token found");
-
-            const response = await fetch(`${url}/accounts/perfil/prestador/editar/`, {
+            const result = await apiRequest('/accounts/perfil/prestador/editar/', {
                 method: 'PATCH',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
                 body: formData
             });
-
-            const result = await response.json();
-            if (!response.ok) throw result;
             return result;
         } catch (error) {
             console.error("Error updating provider profile:", error);
@@ -383,7 +242,6 @@ export default function ProviderServices() {
         if (!nextPage) return;
         setLoadingMore(true);
         try {
-            // Fix URL if needed (similar to getImageUrl logic might be needed here if backend returns mixed content)
             let fetchUrl = nextPage;
             if (fetchUrl.startsWith('http://127.0.0.1:8000')) {
                 fetchUrl = fetchUrl.replace('http://127.0.0.1:8000', 'https://back-end-servicosja-api.onrender.com');
@@ -391,13 +249,13 @@ export default function ProviderServices() {
                 fetchUrl = fetchUrl.replace('http://localhost:8000', 'https://back-end-servicosja-api.onrender.com');
             }
 
-            const response = await fetch(fetchUrl, {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
+            // Using apiRequest with full URL
+            const result = await apiRequest(fetchUrl, {
+                method: 'GET'
             });
-            const result = await response.json();
+
             const newProviders = result.results || result;
-            
+
             setPoviders(prev => [...prev, ...newProviders]);
             setNextPage(result.next || null);
         } catch(error) {
@@ -410,26 +268,24 @@ export default function ProviderServices() {
     const getProviderByUserId = async (userId) => {
         setLoading(true);
         try {
-            const response = await fetch(`${url}/accounts/prestadores/`, {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
+            const data = await apiRequest('/accounts/prestadores/', {
+                method: 'GET'
             });
-            const data = await response.json();
             const providers = data.results || data;
-            
+
             const found = providers.find(p => p.user_id == userId || p.user == userId);
-            
+
             if (found) {
                 return found;
             } else {
                 try {
-                    const profileCheck = await fetch(`${url}/accounts/prestadores/${userId}/`);
-                    if (profileCheck.ok) {
-                        return await profileCheck.json();
+                    const profileCheck = await apiRequest(`/accounts/prestadores/${userId}/`, { method: 'GET' });
+                    if (profileCheck) {
+                        return profileCheck;
                     }
                 } catch (e) {
                 }
-                
+
                 console.warn(`Provider with user_id ${userId} not found.`);
                 return null;
             }
@@ -441,11 +297,11 @@ export default function ProviderServices() {
         }
     };
 
-    return { 
+    return {
         register,
         loading,
         getProviders,
-        providers, 
+        providers,
         refetchProviders,
         setRefetchProviders,
         login,

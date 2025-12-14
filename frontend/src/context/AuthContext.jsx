@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { apiRequest } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -36,21 +37,11 @@ export const AuthProvider = ({ children }) => {
     const login = async (email, password) => {
         setLoading2(true)
         try {
-            const baseUrl = import.meta.env.VITE_API_URL || '/api';
-            const response = await fetch(`${baseUrl}/auth/token/login/`, {
+            const data = await apiRequest('/auth/token/login/', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
                 body: JSON.stringify({ email, password }),
             });
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw data;
-            }
-            
             localStorage.setItem('auth', JSON.stringify(data));
             setUser(data);
             setIsAuthenticated(true);
