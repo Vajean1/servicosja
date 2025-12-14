@@ -6,7 +6,7 @@
     background-position: top;
     background-size: cover;
     position: relative;
-    border-radius: 16px;
+    border-radius: 25px;
     box-shadow: 4px 4px 8px #767474;
     cursor: pointer;
 }
@@ -96,8 +96,7 @@
       .providerBox img{
     top: 8%;
     left: 5%;
-    width: 30%;
-    
+ 
 }
  
 }
@@ -108,7 +107,7 @@
       .providerBox img{
     top: 8%;
     left: 5%;
-    width: 35%;
+    
     
 }
  
@@ -119,7 +118,7 @@
       .providerBox img{
     top: 8%;
     left: 5%;
-    width: 40%;
+    
     
 }
  
@@ -130,7 +129,7 @@
       .providerBox img{
     top: 10%;
     left: 5%;
-    width: 33%;
+  
     
 }
  
@@ -142,7 +141,7 @@
       .providerBox img{
     top: 8%;
     left: 5%;
-    width: 40%;
+  
     
 }
 
