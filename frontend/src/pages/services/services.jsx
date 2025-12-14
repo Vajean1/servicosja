@@ -11,7 +11,7 @@ import { ImMenu3 } from "react-icons/im";
 
 const getImageUrl = (url) => {
     if (!url) return '';
-    
+
     if (url.startsWith('http://127.0.0.1:8000')) {
         return url.replace('http://127.0.0.1:8000', 'https://back-end-servicosja-api.onrender.com');
     }
@@ -26,18 +26,18 @@ const getImageUrl = (url) => {
 
 export default function Services () {
     const [activeMenuId, setActiveMenuId] = useState(null);
-    
+   
     // ESTADOS ADICIONADOS
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false); // NOVO ESTADO PARA O FILTRO MÓVEL
-    
+   
     // REF: Para detectar cliques fora do componente
-    const servicesRef = useRef(null); 
-    
+    const servicesRef = useRef(null);
+   
     // HANDLERS ATUALIZADOS/NOVOS
     const handleToggleMobileMenu = () => {
         setIsMobileMenuOpen(prev => !prev);
-        setActiveMenuId(null); 
+        setActiveMenuId(null);
         setIsFilterMenuOpen(false); // Garante que o menu de Filtro feche
     };
 
@@ -46,7 +46,7 @@ export default function Services () {
         setIsMobileMenuOpen(false); // Garante que o menu de Serviços feche
         setActiveMenuId(null); // Fecha o submenu desktop
     };
-    
+   
 
     const { getCategories, categories } = CategoryServices();
 
@@ -68,7 +68,7 @@ export default function Services () {
     const [selectedService, setSelectedService] = useState(null);
     const [selectedRating, setSelectedRating] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
-    
+   
     // Proximity Filter States
     const [orderByDistance, setOrderByDistance] = useState(null);
     const [orderByRating, setOrderByRating] = useState(null);
@@ -77,23 +77,23 @@ export default function Services () {
 
     const handleProviderSelected = useCallback((provider) =>{
         setProviderSelected(provider)
-    }, [setProviderSelected]) 
-    
+    }, [setProviderSelected])
+   
     // Handlers que mudam o estado para true/false, disparando o useEffect unificado
     const handleChangeMaterial = (event) => {
         // Se marcado, é true. Se desmarcado, é null (filtro removido).
-        setFindMat(event.target.checked ? true : null); 
+        setFindMat(event.target.checked ? true : null);
         // Fecha o menu de filtro móvel após selecionar (opcional, mas melhora UX)
         if (isFilterMenuOpen) setIsFilterMenuOpen(false);
     };
 
     const handleChangehora = (event) => {
-        setHora(event.target.checked ? true : null); 
+        setHora(event.target.checked ? true : null);
         if (isFilterMenuOpen) setIsFilterMenuOpen(false);
     };
 
     const handleChangeWeekend = (event) => {
-        setFds(event.target.checked ? true : null); 
+        setFds(event.target.checked ? true : null);
         if (isFilterMenuOpen) setIsFilterMenuOpen(false);
     };
 
@@ -136,8 +136,9 @@ export default function Services () {
         setOrderByDistance(null);
         setOrderByRating(null);
         setUserLocation({ lat: null, lng: null });
+        setSearchTerm("");
         // Força o getProviders (buscar todos sem filtro)
-        setRefetchProviders(true); 
+        setRefetchProviders(true);
         if (isFilterMenuOpen) setIsFilterMenuOpen(false);
     }
 
@@ -159,14 +160,14 @@ export default function Services () {
         if(refetchProviders){
             getProviders()
         }
-    },[refetchProviders, getProviders]) 
+    },[refetchProviders, getProviders])
 
 
     // Efeito UNIFICADO para FILTROS
     useEffect(() => {
-        if (refetchProviders) return; 
+        if (refetchProviders) return;
 
-        if (findMat !== null || hora !== null || fds !== null || selectedService !== null || orderByDistance !== null || orderByRating !== null) {
+        if (searchTerm || findMat !== null || hora !== null || fds !== null || selectedService !== null || orderByDistance !== null || orderByRating !== null) {
             if (orderByDistance && (!userLocation.lat || !userLocation.lng)) {
                 return; // Aguarda a geolocalização completar
             }
@@ -179,13 +180,14 @@ export default function Services () {
                 orderByDistance: orderByDistance,
                 orderByRating: orderByRating,
                 latitude: userLocation.lat,
-                longitude: userLocation.lng
+                longitude: userLocation.lng,
+                searchTerm: searchTerm
             });
         } else {
              getProviders();
         }
 
-    }, [findMat, hora, fds, selectedService, orderByDistance, orderByRating, userLocation, getFilteredProviders, refetchProviders, getProviders]); 
+    }, [searchTerm, findMat, hora, fds, selectedService, orderByDistance, orderByRating, userLocation, getFilteredProviders, refetchProviders, getProviders]);
 
     // EFEITO: Fecha os menus (mobile e desktop) ao clicar fora
     useEffect(() => {
@@ -206,47 +208,24 @@ export default function Services () {
                 }
             }
         };
-        
+       
         document.addEventListener("mousedown", handleClickOutside);
-        
+       
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [isMobileMenuOpen, activeMenuId, isFilterMenuOpen]); 
+    }, [isMobileMenuOpen, activeMenuId, isFilterMenuOpen]);
 
 
     // Filtragem local (Nome) e Ordenação por Rating
+    // A filtragem por nome agora é enviada ao backend
     const displayedProviders = providers
-        .filter(provider => {
-            if (!searchTerm) return true;
-            
-            const term = searchTerm.toLowerCase();
-            let serviceName = "";
-
-            if (provider.servico && typeof provider.servico === 'object' && provider.servico.nome) {
-                serviceName = provider.servico.nome;
-            } else if (typeof provider.servico === 'string') {
-                serviceName = provider.servico;
-            } else if (typeof provider.servico === 'number') {
-                for (const cat of categories) {
-                    if (cat.servicos) {
-                        const found = cat.servicos.find(s => s.id === provider.servico);
-                        if (found) {
-                            serviceName = found.nome;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            return serviceName && serviceName.toLowerCase().includes(term);
-        })
         .sort((a, b) => {
             if (selectedRating !== null) {
                 // Ordena por proximidade da nota selecionada
                 const distA = Math.abs((a.nota_media || 0) - selectedRating);
                 const distB = Math.abs((b.nota_media || 0) - selectedRating);
-                
+               
                 // Se a distância for a mesma, o de maior nota vem primeiro (ex: 4.0 empata com 4.0, depois 4.1 vs 3.9)
                 if (distA === distB) {
                     return (b.nota_media || 0) - (a.nota_media || 0);
@@ -259,21 +238,21 @@ export default function Services () {
     return(
         // Adicionado o REF na div principal
         <div className={styles.services} ref={servicesRef}>
-            
-            <div 
-                className={styles.menuWrapper} 
-                onMouseLeave={() => setActiveMenuId(null)} 
+           
+            <div
+                className={styles.menuWrapper}
+                onMouseLeave={() => setActiveMenuId(null)}
             >
-                
+               
                 <div className={styles.servicesMenu}>
                     {categories.map((item) => (
                         <div   key={item.id}  className={styles.menuItem} onMouseEnter={() => setActiveMenuId(item.id)} >
                             <a id={item.id} href="#">{item.nome} </a>
                         </div>
-                    ))} 
+                    ))}
                 </div>
 
-                
+               
                 {activeMenuItem && (
                    <div className={styles.menuFilter} >
   {/* 1. Cria uma cópia do array 'servicos' com [...activeMenuItem.servicos] */}
@@ -306,13 +285,13 @@ export default function Services () {
 
                         {/* ÍCONE MENU SERVIÇOS */}
                         <div className={styles.icon} onClick={handleToggleMobileMenu}><ImMenu3 /></div>
-                        
+                       
                         {/* ÍCONE MENU FILTRO: Usa handleToggleFilterMenu */}
                         <div className={styles.iconT} onClick={handleToggleFilterMenu}><FaFilter /></div>
-                <div className={styles.filterItemMenu}> 
-                        <input 
-                            type="text" 
-                            placeholder="Buscar por serviço..." 
+                <div className={styles.filterItemMenu}>
+                        <input
+                            type="text"
+                            placeholder="Buscar por serviço..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
@@ -324,28 +303,28 @@ export default function Services () {
             <div className={styles.servicesMenuMobile} style={{ display: isMobileMenuOpen ? 'flex' : 'none' }}>
                     {categories.map((item) => (
                         <div   key={item.id}  className={styles.menuItem} onMouseEnter={() => setActiveMenuId(item.id)} >
-                            
-                            <a 
-                                id={item.id} 
+                           
+                            <a
+                                id={item.id}
                                 href="#"
                                 onClick={(e) => {
                                     setActiveMenuId(item.id);
-                                    setIsMobileMenuOpen(false); 
+                                    setIsMobileMenuOpen(false);
                                 }}
                             >{item.nome} </a>
                         </div>
-                    ))} 
+                    ))}
                 </div>
-            
+           
             <div className={styles.servicesBody}>
-                
+               
                 {/* FILTRO DESKTOP (MANTIDO) */}
                 <div className={styles.servicesFilter}>
                     {/* Input presente no desktop */}
                     <div className={styles.filterItem}>
-                        <input 
-                            type="text" 
-                            placeholder="Buscar por serviço..." 
+                        <input
+                            type="text"
+                            placeholder="Buscar por serviço..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
@@ -359,9 +338,9 @@ export default function Services () {
                             <h2>Classificação de Profissionais</h2>
                             <div className={styles.starSponsored}>
                                 {[1, 2, 3, 4, 5].map((star) => (
-                                    <FaStar 
-                                        key={star} 
-                                        color={star <= (selectedRating || 0) ? "#ffcd29" : "#7d7d7e"} 
+                                    <FaStar
+                                        key={star}
+                                        color={star <= (selectedRating || 0) ? "#ffcd29" : "#7d7d7e"}
                                         onClick={() => handleRatingClick(star)}
                                     />
                                 ))}
@@ -371,9 +350,9 @@ export default function Services () {
 
                         {/* Checkbox "Todos" - Desktop */}
                         <div className={styles.serviceItem}>
-                            <input 
-                                onChange={handleChangeTodos} 
-                                type="checkbox" 
+                            <input
+                                onChange={handleChangeTodos}
+                                type="checkbox"
                                 checked={findMat === null && hora === null && fds === null && selectedService === null && selectedRating === null && orderByDistance === null && orderByRating === null}
                             />
                             <span >Todos</span>
@@ -395,10 +374,10 @@ export default function Services () {
                             <input checked={findMat === true} onChange={handleChangeMaterial} type="checkbox" />
                             <span >Possui Material</span>
                         </div>
-                        
+                       
                     </div>
 
-                    
+                   
                     <div className={styles.servicesList}>
                         <h3>Disponibilidade</h3>
                         <div className={styles.serviceItem}>
@@ -412,30 +391,30 @@ export default function Services () {
                         </div>
                     </div>
                 </div>
-              
+             
                 {isFilterMenuOpen && (
-                    <div className={styles.servicesFilter} style={{ 
-                        display: 'flex', 
-                        position: 'absolute', 
-                        top: '155px', 
-                        left: 0, 
-                        width: '100%', 
+                    <div className={styles.servicesFilter} style={{
+                        display: 'flex',
+                        position: 'absolute',
+                        top: '155px',
+                        left: 0,
+                        width: '100%',
                         /* REMOVIDA A ALTURA FIXA DE 500PX para evitar o espaçamento fixo em branco */
-                        zIndex: 100, 
+                        zIndex: 100,
                         backgroundColor: '#fcfcfc', // Para ter um fundo claro
                         overflowY: 'auto'
                     }}>
                         {/* Conteúdo de Filtros Mobile */}
-                        
+                       
                         <div className={styles.serviceClassific}>
                             <h4>Filtrar por:</h4>
                             <div className={styles.serviceClassificBox}>
                                 <h2>Classificação de Profissionais</h2>
                                 <div className={styles.starSponsored}>
                                     {[1, 2, 3, 4, 5].map((star) => (
-                                        <FaStar 
-                                            key={star} 
-                                            color={star <= (selectedRating || 0) ? "#ffcd29" : "#7d7d7e"} 
+                                        <FaStar
+                                            key={star}
+                                            color={star <= (selectedRating || 0) ? "#ffcd29" : "#7d7d7e"}
                                             onClick={() => handleRatingClick(star)}
                                         />
                                     ))}
@@ -444,9 +423,9 @@ export default function Services () {
                         </div>
 
                         <div className={styles.serviceItem}>
-                            <input 
-                                onChange={handleChangeTodos} 
-                                type="checkbox" 
+                            <input
+                                onChange={handleChangeTodos}
+                                type="checkbox"
                                 checked={findMat === null && hora === null && fds === null && selectedService === null && selectedRating === null && orderByDistance === null && orderByRating === null}
                             />
                             <span >Todos</span>
@@ -467,7 +446,7 @@ export default function Services () {
                                 <input checked={findMat === true} onChange={handleChangeMaterial} type="checkbox" />
                                 <span >Possui Material</span>
                             </div>
-                            
+                           
                         </div>
 
                         <div className={styles.servicesList}>
@@ -493,29 +472,29 @@ export default function Services () {
                     <>
                        {displayedProviders.map((provider)=> (
                         <div className={styles.box} onClick={() => {handleProviderSelected(provider)}} key={provider.id}>
-                            <ProviderBox 
-                                name={provider.nome} 
-                                location={`${provider.cidade}, ${provider.bairro}`} 
-                                rating={provider.nota_media} 
-                                resum={provider.biografia || "Sem descrição."} 
+                            <ProviderBox
+                                name={provider.nome}
+                                location={`${provider.cidade}, ${provider.bairro}`}
+                                rating={provider.nota_media}
+                                resum={provider.biografia || "Sem descrição."}
                                 image={getImageUrl(provider.foto || provider.foto_perfil)}
-                                key={provider.id} 
+                                key={provider.id}
                             />
                         </div>
                     ))}
-                    
+
                     {nextPage && (
                         <div className={styles.loadMoreContainer}>
-                            <button 
-                                className={styles.loadMoreButton} 
-                                onClick={loadMoreProviders} 
+                            <button
+                                className={styles.loadMoreButton}
+                                onClick={loadMoreProviders}
                                 disabled={loadingMore}
                             >
                                 {loadingMore ? 'Carregando...' : 'Carregar Mais'}
                             </button>
                         </div>
                     )}
-                    
+                   
                     </>
         }
 

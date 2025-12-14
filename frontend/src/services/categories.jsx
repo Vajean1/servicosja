@@ -1,20 +1,16 @@
 import { useState, useCallback } from "react";
+import { apiRequest } from "./api";
 
 export default function CategoryServices() {
     const [loadingCategories, setLoadingCategories] = useState(false);
     const [categories, setCategories] = useState([]);
-    const url = import.meta.env.VITE_API_URL || '/api';
 
     const getCategories = useCallback(async () => {
         setLoadingCategories(true);
         try {
-            const response = await fetch(`${url}/servicos/categorias/?include_servicos=true`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+            const result = await apiRequest('/servicos/categorias/?include_servicos=true', {
+                method: 'GET'
             });
-            const result = await response.json();
             const categoriesList = result.results || result;
             setCategories(categoriesList);
             return categoriesList;
@@ -23,7 +19,7 @@ export default function CategoryServices() {
         } finally {
             setLoadingCategories(false);
         }
-    }, [url]);
+    }, []);
 
     return {
         loadingCategories,
