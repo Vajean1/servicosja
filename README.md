@@ -1,8 +1,10 @@
-![Logo do Serviços JÁ](/img/logo/logo.png)
+![Logo do Serviços JÁ](./frontend/public/img/logo/logo.png)
 
 # Serviços JÁ - Frontend 🛠️
 
 O **Serviços JÁ** é uma plataforma inovadora projetada para modernizar a contratação de serviços domésticos e especializados. Através de geolocalização de precisão e inteligência artificial, conectamos clientes a prestadores de forma rápida, transparente e eficiente.
+
+![Logo do Serviços JÁ](./frontend/public/img/logo/README.png)
 
 ## 🚀 Tecnologias Utilizadas
 
