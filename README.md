@@ -93,5 +93,3 @@ npm run build
 Este projeto é de uso privado conforme definido no `package.json`.
 
 ---
-
-**Deseja que eu adicione uma seção de "Contribuição" ou que detalhe como configurar as chaves de API do Google Maps no projeto?**
