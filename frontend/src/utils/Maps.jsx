@@ -17,15 +17,12 @@ const RecenterMap = ({ lat, long }) => {
 const Maps = ({ long, lat }) => {
     const position = [lat, long];
 
-    // 2. Cria o ícone customizado usando L.icon
-    // Você precisa definir o caminho da imagem e as dimensões corretas
-    // O 'iconSize' define o tamanho da imagem.
-    // O 'iconAnchor' define o ponto do ícone que deve estar sobre as coordenadas (normalmente o meio-inferior).
+    
     const customIcon = L.icon({
         iconUrl: CustomIconSvg,
-        iconSize: [300, 300], // Exemplo: 38px de largura por 38px de altura. Ajuste conforme sua SVG.
-        iconAnchor: [150, 185], // Exemplo: O centro da base do ícone (metade de iconSize[0], valor total de iconSize[1])
-        popupAnchor: [0, -38] // Define onde o Popup será ancorado em relação ao ícone
+        iconSize: [300, 300],
+        iconAnchor: [150, 185], 
+        popupAnchor: [0, -38]
     });
 
     return (

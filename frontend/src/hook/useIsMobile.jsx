@@ -1,7 +1,7 @@
-// hooks/useIsMobile.js
+
 import { useState, useEffect } from 'react';
 
-// Você pode ajustar este valor para o seu breakpoint CSS
+
 const MOBILE_BREAKPOINT = 768; 
 
 export function useIsMobile() {

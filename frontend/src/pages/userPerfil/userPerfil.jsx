@@ -55,7 +55,7 @@ const ReviewModal = ({ open, close, onSubmit }) => {
 const getImageUrl = (url) => {
     if (!url) return '';
 
-    // Corrigir URLs locais legadas para apontar para produção
+  
     if (url.startsWith('http://127.0.0.1:8000')) {
         return url.replace('http://127.0.0.1:8000', 'https://back-end-servicosja-api.onrender.com');
     }
@@ -267,7 +267,7 @@ export default function UserPerfil({ userData = mockUserData }) {
 
     return (
         <div className={styles.dashboardPage}>
-            {/* --- Cabeçalho (Header) --- */}
+           
             <header className={styles.header}>
                 <div className={styles.perfil}>
 
@@ -294,10 +294,9 @@ export default function UserPerfil({ userData = mockUserData }) {
 
 
 
-            {/* --- Conteúdo Principal (Container) --- */}
             <div className={styles.container}>
 
-                {/* --- Serviços Pendentes de Avaliação --- */}
+               
                 {pendingReviews.length > 0 && (
                     <div className={styles.box} style={{ marginBottom: '20px' }}>
                         <h2>Avaliar Serviços Concluídos</h2>
@@ -329,7 +328,7 @@ export default function UserPerfil({ userData = mockUserData }) {
                     </div>
                 )}
 
-                {/* --- Informações Pessoais --- */}
+               
                 <div className={styles.box}>
                     <h2>Informações Pessoais</h2>
                     <div className={styles.iconEdit} onClick={() => setOpenEditModal(true)}>
@@ -376,10 +375,10 @@ export default function UserPerfil({ userData = mockUserData }) {
                     </div>
                 )}
 
-                {/* --- Avaliações enviadas --- */}
+                
                 <div className={styles.flex}>
 
-                    {/* Minhas Avaliações */}
+                  
                     <div className={`${styles.box} ${styles.mensagens}`}>
                         <h2>Minhas Avaliações Enviadas</h2>
                         {reviews.length === 0 ? (
@@ -418,7 +417,6 @@ export default function UserPerfil({ userData = mockUserData }) {
 
                 </div>
 
-                {/* --- Serviços Em Andamento --- */}
                 {ongoingServices.length > 0 && (
                     <div className={styles.box} style={{ marginBottom: '20px' }}>
                         <h2 className={styles.titlePrimary}>Solicitações em Andamento</h2>
@@ -443,7 +441,7 @@ export default function UserPerfil({ userData = mockUserData }) {
                     </div>
                 )}
 
-                {/* --- Histórico de Serviços Concluídos --- */}
+                
                 {completedServices.length > 0 && (
                     <div className={styles.box} style={{ marginBottom: '20px' }}>
                         <h2 className={styles.titleSuccess}>Histórico de Serviços Concluídos</h2>
@@ -470,7 +468,7 @@ export default function UserPerfil({ userData = mockUserData }) {
                     </div>
                 )}
 
-                {/* --- Serviços Cancelados / Não Realizados --- */}
+                
                 {canceledServices.length > 0 && (
                     <div className={styles.box} style={{ marginBottom: '20px' }}>
                         <h2 className={styles.titleDanger}>Solicitações Não Realizadas</h2>

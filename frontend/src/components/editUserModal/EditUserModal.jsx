@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Dialog } from '@mui/material';
 import styles from './EditUserModal.module.css';
 import UserServices from '../../services/user';
-// Importa o componente do modal de corte (presumindo que está no mesmo diretório ou acessível)
+
 import ImageCropModal from '../../utils/ImageCropModal'; 
 import Loading2 from '../../pages/loading/loading2';
 
@@ -25,14 +25,14 @@ export default function EditUserModal({ open, close, userData, onUpdate }) {
 
     const [formErrors, setFormErrors] = useState({});
 
-    // Estado para a foto de perfil **selecionada e CORTADA** (File/Blob)
+    // Estado para a foto de perfil 
     const [selectedPhoto, setSelectedPhoto] = useState(null);
-    // Estado para a URL de visualização (preview)
+    // Estado para a URL de visualização
     const [previewUrl, setPreviewUrl] = useState(null);
     
-    // Novos estados para o modal de corte
+    // estados para o modal de corte
     const [isCropModalOpen, setIsCropModalOpen] = useState(false);
-    // URL da imagem **original** selecionada antes do corte
+    // URL da imagem selecionada antes do corte
     const [imageToCrop, setImageToCrop] = useState(null); 
     const [loading, setLoading] = useState(false);
 
@@ -134,7 +134,7 @@ export default function EditUserModal({ open, close, userData, onUpdate }) {
         }
         setImageToCrop(null);
         
-        // Opcional: Limpar o input de arquivo para permitir nova seleção do mesmo arquivo
+        
         document.getElementById('profile-photo-input').value = '';
         
     }, [previewUrl, imageToCrop]);
@@ -172,11 +172,11 @@ export default function EditUserModal({ open, close, userData, onUpdate }) {
             profileFormData.append('numero_casa', formData.numero_casa || '');
             profileFormData.append('cep', formData.cep || '');
 
-            // Usa a foto CORTADA (selectedPhoto) se existir
+            // Usa a foto CORTADA 
             if (selectedPhoto) {
                 profileFormData.append('foto_perfil', selectedPhoto);
             }
-            // Se selectedPhoto for null, nenhuma foto nova será enviada, mantendo a foto existente no backend (comportamento desejado)
+            // Se selectedPhoto for null, nenhuma foto nova será enviada, mantendo a foto existente no backend 
 
             await updateClientProfile(profileFormData);
 

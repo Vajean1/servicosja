@@ -11,7 +11,7 @@ import UserServices from '../../services/user';
 import ProviderServices from '../../services/provider';
 import Maps from '../../utils/Maps';
 
-// --- Função Auxiliar de Imagem ---
+
 const getImageUrl = (url) => {
     if (!url) return '';
 
@@ -28,7 +28,7 @@ const getImageUrl = (url) => {
     return `https://back-end-servicosja-api.onrender.com${url}`;
 };
 
-// --- COMPONENTE DE GALERIA (Visualização) ---
+// --- COMPONENTE DE GALERIA---
 const Gallery = ({ images, onImageSelect, selectedImage }) => {
     return (
         <div className={styles.galleryContainer}>
@@ -73,7 +73,7 @@ const Gallery = ({ images, onImageSelect, selectedImage }) => {
 // --- COMPONENTE PRINCIPAL ---
 export default function ProviderDatails () {
     
-    // --- ESTADOS ---
+
     const [userGalleryImages, setUserGalleryImages] = useState([]);
     const [currentMainImage, setCurrentMainImage] = useState(null);
     const [comments, setComments] = useState([]);
@@ -102,7 +102,7 @@ export default function ProviderDatails () {
     // --- EFEITO DE BUSCA DE DADOS ---
     useEffect(() => {
         if (providerSelected?.id) {
-            // Check favorites if client
+            
             if (isAuthenticated && user?.tipo_usuario === 'cliente') {
                 getFavorites().then(favs => {
                     if (Array.isArray(favs)) {
@@ -117,7 +117,7 @@ export default function ProviderDatails () {
                 .then(data => {
                     setFullProviderData(data);
                     
-                    // 1. Setup Portfolio
+              
                     if (data.portfolio && Array.isArray(data.portfolio)) {
                         const formattedImages = data.portfolio.map(item => ({
                             id: item.id,
@@ -129,7 +129,7 @@ export default function ProviderDatails () {
                         }
                     }
 
-                    // 2. Setup Comments
+                  
                     if (data.ultimas_avaliacoes && Array.isArray(data.ultimas_avaliacoes)) {
                         setComments(data.ultimas_avaliacoes);
                     }
@@ -144,26 +144,15 @@ export default function ProviderDatails () {
         setCurrentMainImage(url);
     };
 
-    // --- CORREÇÃO DO CÓDIGO DO MAPA (evitar NaN) ---
-    // Coordenadas padrão para evitar NaN se a API demorar ou retornar null
-    // Use coordenadas que façam sentido para a sua aplicação (Exemplo: Centro do Brasil ou área de serviço)
-    const DEFAULT_LAT = -15.7801; // Exemplo: Brasília, DF
+    
+    const DEFAULT_LAT = -15.7801; 
     const DEFAULT_LONG = -47.9292;
 
-    // Acessa os dados, usa ?? para garantir que é uma string ou 0 se for null/undefined,
-    // e usa o valor padrão se o resultado da conversão para Number for NaN.
-    // **Ajuste o nome das propriedades se houver inversão na sua API (latitude/longitude)**
-    // Mantendo a lógica de uso: latitude da API para lat, longitude da API para long.
+    
     const mapLatitude = Number(fullProviderData?.latitude ?? providerSelected?.latitude ?? 0) || DEFAULT_LAT;
     const mapLongitude = Number(fullProviderData?.longitude ?? providerSelected?.longitude ?? 0) || DEFAULT_LONG;
     
-    // Se a API estiver INVERTENDO OS NOMES (como no seu código original `latitude = longitude`):
-    // const mapLatitude = Number(fullProviderData?.longitude ?? providerSelected?.longitude ?? 0) || DEFAULT_LAT;
-    // const mapLongitude = Number(fullProviderData?.latitude ?? providerSelected?.latitude ?? 0) || DEFAULT_LONG;
-    // Utilizarei a forma padrão (latitude -> lat, longitude -> long) para esta correção,
-    // mas se o problema persistir, use as linhas comentadas acima.
-    
-    // ------------------------------------------------------------------
+   
 
     const handleToggleFavorite = async () => {
         try {
@@ -187,17 +176,16 @@ export default function ProviderDatails () {
         }
 
         try {
-            // Usa o ID do prestador do fullProviderData, pois é o dado mais completo e atualizado
+            
             let providerUserId = fullProviderData?.user_id || providerSelected.user_id || providerSelected.user || providerSelected.userId;
             
             // Tenta obter o ID do serviço
             let serviceId = fullProviderData?.servico?.id || fullProviderData?.servico || providerSelected.servico?.id || providerSelected.servico;
 
             
-            // Fallback se user_id ainda estiver faltando
+            
             if (!providerUserId) {
-                 // Esta lógica de fallback já estava no seu código, mantida por segurança.
-                 // Na maioria dos casos, fullProviderData já terá o ID correto.
+                 
                  const fullProfile = await getProviderPerfil(providerSelected.id);
                  if (fullProfile && fullProfile.user_id) {
                      providerUserId = fullProfile.user_id;
@@ -217,7 +205,7 @@ export default function ProviderDatails () {
                 return;
             }
 
-            // Check for pending evaluations
+            
             const solicitations = await getClientSolicitations();
             // Filtra: mesmo prestador E realizado E não avaliado
             const pending = solicitations.find(s => 
@@ -244,13 +232,13 @@ export default function ProviderDatails () {
         }
     }
     
-    // Safety check if providerSelected is null
+
     if (!providerSelected) {
         return <div style={{paddingTop: '100px', textAlign: 'center'}}>Nenhum prestador selecionado.</div>;
     }
 
     const displayData = fullProviderData || providerSelected;
-    // Garante que notaMedia é um número, com fallback para 0
+   
     const notaMedia = Number(displayData.nota_media) || Number(providerSelected.nota_media) || 0; 
 
     return(
@@ -341,7 +329,7 @@ export default function ProviderDatails () {
                 </div>
             </div>
 
-            {/* Componente Maps corrigido para receber números válidos */}
+            
             <Maps lat={mapLatitude} long={mapLongitude} />
 
         </div>

@@ -14,7 +14,7 @@ import Loading2 from '../loading/loading2';
 const getImageUrl = (url) => {
     if (!url) return '';
 
-    // Corrigir URLs locais legadas para apontar para produção
+    
     if (url.startsWith('http://127.0.0.1:8000')) {
         return url.replace('http://127.0.0.1:8000', 'https://back-end-servicosja-api.onrender.com');
     }
@@ -27,7 +27,7 @@ const getImageUrl = (url) => {
 };
 
 const mockUserData = {
-    // ... (restante do mockUserData)
+    
 };
 
 const TABS = {
@@ -132,7 +132,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
     const profileId = user?.profile_id;
     const navigate = useNavigate()
 
-    // --- Cleanup de URLs temporárias ---
+    
     useEffect(() => {
         return () => {
             userGalleryImages.forEach(item => {
@@ -152,7 +152,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
         } 
     }, [profileId, loading, navigate]); 
 
-    // 2. Função de Recarregar Perfil (Memorizada com useCallback)
+    // 2. Função de Recarregar Perfil 
     const handleUpdateProfile = useCallback(async () => {
         if (profileId) {
             try {
@@ -167,7 +167,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
                 // Remove campos que não queremos sobrescrever (IDs) para manter os objetos completos do providerData
                 const { servico, categoria, ...nestedProfileFiltered } = nestedProfile;
 
-                // Mapeamento de campos do /me para o formato esperado
+               
                 const mappedMeData = {
                     ...meData,
                     ...nestedProfileFiltered, // Achata os dados aninhados, exceto servico/categoria
@@ -189,13 +189,13 @@ export default function ProviderPerfil({ userData = mockUserData }) {
         }
     }, [profileId, getProviderPerfil]);
     
-    // 3. Executa o Carregamento Inicial (Chama APENAS quando profileId muda)
+    // 3. Executa o Carregamento Inicial 
     useEffect(()=>{
-        // Chamar a função memorizada aqui é a maneira correta de iniciar o carregamento.
+       
         if (profileId) {
              handleUpdateProfile(); 
         }
-    },[profileId, handleUpdateProfile]) // A dependência handleUpdateProfile é estável devido ao useCallback
+    },[profileId, handleUpdateProfile]) 
     
     
     useEffect(() => {
@@ -212,7 +212,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
         }
     }, [providerAccount]);
 
-    // --- NOVO: Manipula a seleção de arquivo para o corte de perfil ---
+   
     const handlePhotoEditClick = () => {
         document.getElementById('profile-photo-upload').click();
     };
@@ -262,8 +262,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
         setOpenCropModal(false);
         setImageToCrop(null); 
     }, []);
-    // ---------------------------------------------------
-
+    
     const handleImageUpload = async (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -436,7 +435,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
                 </div>
             )}
 
-            {/* Input de arquivo escondido para a foto de perfil */}
+          
             <input 
                 id="profile-photo-upload"
                 type="file" 
@@ -466,7 +465,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
 
             <div className={styles.container}>
                 
-                {/* 1. Informações Pessoais */}
+                
                 <div className={styles.box}>
                     <h2>Informações Pessoais</h2>
                     <div className={styles.iconEdit} onClick={() => setOpenEditModal(true)}>
@@ -603,7 +602,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
 
             </div>
 
-            {/* Modal de Edição de Dados Textuais (EditProviderModal) */}
+           
             <EditProviderModal 
                 open={openEditModal} 
                 close={() => setOpenEditModal(false)} 

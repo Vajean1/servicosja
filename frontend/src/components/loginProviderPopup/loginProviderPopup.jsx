@@ -38,13 +38,11 @@ export default function LoginProviderPopup({ open, close }) {
 
             close();
             
-            // Redirect based on user type, though this popup implies Provider
-            // Ideally we check result.tipo_usuario
+            
             if (result.tipo_usuario === 'prestador') {
                  navigate('/providerPerfil');
             } else {
-                // If a user logs in via provider popup, we still redirect them correctly or show error?
-                // For now, redirect to their respective dashboard
+                
                  navigate('/userPerfil');
             }
 

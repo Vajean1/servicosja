@@ -27,14 +27,14 @@ const getImageUrl = (url) => {
 export default function Services () {
     const [activeMenuId, setActiveMenuId] = useState(null);
    
-    // ESTADOS ADICIONADOS
+  
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false); // NOVO ESTADO PARA O FILTRO MÓVEL
    
     // REF: Para detectar cliques fora do componente
     const servicesRef = useRef(null);
    
-    // HANDLERS ATUALIZADOS/NOVOS
+    
     const handleToggleMobileMenu = () => {
         setIsMobileMenuOpen(prev => !prev);
         setActiveMenuId(null);
@@ -56,12 +56,11 @@ export default function Services () {
 
     const activeMenuItem = categories.find(item => item.id === activeMenuId);
 
-    // Agora usa getFilteredProviders
+  
     const { getProviders, providers, refetchProviders, loading, setRefetchProviders, getFilteredProviders, loadMoreProviders, nextPage, loadingMore } = ProviderServices()
     const { setProviderSelected } = useProviderContext();
 
 
-    // Inicia com 'null' para indicar que o filtro não está aplicado
     const [findMat , setFindMat] = useState(null)
     const [hora , setHora] = useState(null)
     const [fds,setFds] = useState(null)
@@ -69,7 +68,7 @@ export default function Services () {
     const [selectedRating, setSelectedRating] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
    
-    // Proximity Filter States
+  
     const [orderByDistance, setOrderByDistance] = useState(null);
     const [orderByRating, setOrderByRating] = useState(null);
     const [userLocation, setUserLocation] = useState({ lat: null, lng: null });
@@ -79,11 +78,11 @@ export default function Services () {
         setProviderSelected(provider)
     }, [setProviderSelected])
    
-    // Handlers que mudam o estado para true/false, disparando o useEffect unificado
+
     const handleChangeMaterial = (event) => {
-        // Se marcado, é true. Se desmarcado, é null (filtro removido).
+
         setFindMat(event.target.checked ? true : null);
-        // Fecha o menu de filtro móvel após selecionar (opcional, mas melhora UX)
+       
         if (isFilterMenuOpen) setIsFilterMenuOpen(false);
     };
 
@@ -112,7 +111,7 @@ export default function Services () {
                     (error) => {
                         console.error("Error getting location:", error);
                         alert("Não foi possível obter sua localização. Verifique as permissões do navegador.");
-                        // Uncheck the box visually if possible, or just fail silently regarding state update
+                       
                     }
                 );
             } else {
@@ -125,7 +124,7 @@ export default function Services () {
         }
     };
 
-    // Handler para "Todos" (Resetar filtros)
+ 
     const handleChangeTodos =() => {
         // Zera os filtros
         setFindMat(null);
@@ -155,7 +154,7 @@ export default function Services () {
         if (isFilterMenuOpen) setIsFilterMenuOpen(false);
     };
 
-    // Efeito para Carregamento Inicial (Mantido)
+    // Efeito para Carregamento Inicial
     useEffect (()=>{
         if(refetchProviders){
             getProviders()
@@ -163,7 +162,7 @@ export default function Services () {
     },[refetchProviders, getProviders])
 
 
-    // Efeito UNIFICADO para FILTROS
+
     useEffect(() => {
         if (refetchProviders) return;
 
@@ -192,17 +191,17 @@ export default function Services () {
     // EFEITO: Fecha os menus (mobile e desktop) ao clicar fora
     useEffect(() => {
         const handleClickOutside = (event) => {
-            // Se o clique não foi dentro da div principal .services (que inclui ambos os menus)
+            
             if (servicesRef.current && !servicesRef.current.contains(event.target)) {
-                // Fecha o menu móvel de serviços
+                
                 if (isMobileMenuOpen) {
                     setIsMobileMenuOpen(false);
                 }
-                // Fecha o menu de sub-categorias desktop
+                
                 if (activeMenuId !== null) {
                     setActiveMenuId(null);
                 }
-                // Fecha o menu de filtro móvel
+               
                 if (isFilterMenuOpen) {
                     setIsFilterMenuOpen(false);
                 }
@@ -217,8 +216,7 @@ export default function Services () {
     }, [isMobileMenuOpen, activeMenuId, isFilterMenuOpen]);
 
 
-    // Filtragem local (Nome) e Ordenação por Rating
-    // A filtragem por nome agora é enviada ao backend
+
     const displayedProviders = providers
         .sort((a, b) => {
             if (selectedRating !== null) {
@@ -230,13 +228,13 @@ export default function Services () {
                 if (distA === distB) {
                     return (b.nota_media || 0) - (a.nota_media || 0);
                 }
-                return distA - distB; // Menor distância primeiro
+                return distA - distB; 
             }
-            return 0; // Mantém ordem original se nenhuma estrela selecionada
+            return 0; 
         });
 
     return(
-        // Adicionado o REF na div principal
+        
         <div className={styles.services} ref={servicesRef}>
            
             <div
@@ -255,22 +253,21 @@ export default function Services () {
                
                 {activeMenuItem && (
                    <div className={styles.menuFilter} >
-  {/* 1. Cria uma cópia do array 'servicos' com [...activeMenuItem.servicos] */}
-  {/* 2. Ordena essa cópia usando .sort() com uma função de comparação (a, b) */}
+  
   {activeMenuItem.servicos
-    .slice() // Cria uma cópia superficial para evitar mutação do estado original
+    .slice() 
     .sort((a, b) => {
-      // Compara as strings 'nome' em minúsculo para uma ordenação case-insensitive (ignorando maiúsculas/minúsculas)
+      
       const nomeA = a.nome.toLowerCase();
       const nomeB = b.nome.toLowerCase();
 
       if (nomeA < nomeB) {
-        return -1; // 'a' vem antes de 'b'
+        return -1; 
       }
       if (nomeA > nomeB) {
-        return 1; // 'b' vem antes de 'a'
+        return 1; 
       }
-      return 0; // Se forem iguais
+      return 0; 
     })
     .map((service) => (
       <a key={service.id} href="#" onClick={(e) => handleServiceClick(e, service.id)}>
@@ -283,10 +280,10 @@ export default function Services () {
 
             <div className={styles.menuMobile}>
 
-                        {/* ÍCONE MENU SERVIÇOS */}
+                    
                         <div className={styles.icon} onClick={handleToggleMobileMenu}><ImMenu3 /></div>
                        
-                        {/* ÍCONE MENU FILTRO: Usa handleToggleFilterMenu */}
+                   
                         <div className={styles.iconT} onClick={handleToggleFilterMenu}><FaFilter /></div>
                 <div className={styles.filterItemMenu}>
                         <input
@@ -299,7 +296,7 @@ export default function Services () {
                     </div>
             </div>
 
-            {/* Menu Mobile de Categorias/Serviços */}
+        
             <div className={styles.servicesMenuMobile} style={{ display: isMobileMenuOpen ? 'flex' : 'none' }}>
                     {categories.map((item) => (
                         <div   key={item.id}  className={styles.menuItem} onMouseEnter={() => setActiveMenuId(item.id)} >
@@ -318,9 +315,9 @@ export default function Services () {
            
             <div className={styles.servicesBody}>
                
-                {/* FILTRO DESKTOP (MANTIDO) */}
+             
                 <div className={styles.servicesFilter}>
-                    {/* Input presente no desktop */}
+             
                     <div className={styles.filterItem}>
                         <input
                             type="text"
@@ -331,7 +328,7 @@ export default function Services () {
                         <button><FaSearch /></button>
                     </div>
 
-                        {/* Conteúdo de filtros (repetido abaixo para o móvel) */}
+  
                     <div className={styles.serviceClassific}>
                         <h4>Filtrar por:</h4>
                         <div className={styles.serviceClassificBox}>
@@ -348,7 +345,7 @@ export default function Services () {
                         </div>
                     </div>
 
-                        {/* Checkbox "Todos" - Desktop */}
+                
                         <div className={styles.serviceItem}>
                             <input
                                 onChange={handleChangeTodos}
@@ -381,7 +378,7 @@ export default function Services () {
                     <div className={styles.servicesList}>
                         <h3>Disponibilidade</h3>
                         <div className={styles.serviceItem}>
-                            {/* Correção: Passa o handler diretamente */}
+                           
                             <input  checked={hora === true} onChange={handleChangehora} type="checkbox" />
                             <span>Atende 24h</span>
                         </div>
@@ -399,12 +396,12 @@ export default function Services () {
                         top: '155px',
                         left: 0,
                         width: '100%',
-                        /* REMOVIDA A ALTURA FIXA DE 500PX para evitar o espaçamento fixo em branco */
+                        
                         zIndex: 100,
-                        backgroundColor: '#fcfcfc', // Para ter um fundo claro
+                        backgroundColor: '#fcfcfc', 
                         overflowY: 'auto'
                     }}>
-                        {/* Conteúdo de Filtros Mobile */}
+                      
                        
                         <div className={styles.serviceClassific}>
                             <h4>Filtrar por:</h4>

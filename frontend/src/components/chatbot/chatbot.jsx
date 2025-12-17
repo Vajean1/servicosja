@@ -91,13 +91,13 @@ const Chatbot = () => {
     const [messages, setMessages] = useState([]);
     const [isTyping, setIsTyping] = useState(false);
     
-    // NOVO ESTADO: Controla a animação de saída
+    //Controla a animação de saída
     const [isClosing, setIsClosing] = useState(false);
     
     const messagesEndRef = useRef(null);
     const popupRef = useRef(null);
     
-    // NOVO: Função para iniciar o processo de fechamento animado
+    //Função para iniciar o processo de fechamento animado
     const handleClose = useCallback(() => {
         setIsClosing(true);
         // Espera a duração da animação antes de remover o componente do DOM

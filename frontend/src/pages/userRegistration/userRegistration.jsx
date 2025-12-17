@@ -10,7 +10,7 @@ import Loading2 from '../loading/loading2'; // 👈 NOVO: Componente para Mobile
 import { useAuth } from '../../context/AuthContext';
 import { useIsMobile } from '../../hook/useIsMobile';// 👈 NOVO: Hook para detecção de tela
 
-// --- Funções Auxiliares (Não Mudaram) ---
+
 const cleanNonNumeric = (value) => {
     return value ? value.replace(/[^0-9]/g, '') : '';
 };
@@ -24,11 +24,10 @@ const getErrorMessage = (formErrors, fieldName) => {
 
 const caseSensitiveFields = ['password', 'password2', 'genero' , 'nome_completo']; // MOVIDO PARA FORA
 
-// ----------------------------------------
 
 
 export default function UserRegistration() {
-    // 💡 Hooks e Variáveis
+
     const navigate = useNavigate(); 
     const { setAuthData } = useAuth();
     const isMobile = useIsMobile(); // 👈 Utilizando o hook para detectar se é mobile
@@ -38,9 +37,7 @@ export default function UserRegistration() {
 
     const {register , loading} = UserServices();
     
-    // const caseSensitiveFields = ['password', 'password2', 'genero']; // MOVIDO PARA FORA
 
-    // --- Handlers ---
     const handleChangeSetDataUser = useCallback((e) => {
         const { name, value } = e.target;
         
@@ -85,9 +82,7 @@ export default function UserRegistration() {
     const onDtNascimentoChange = useCallback((value, mask) => handleMaskedInputChange(value, mask, { target: { name: 'dt_nascimento' } }), [handleMaskedInputChange]);
     const onCEPChange = useCallback((value, mask) => handleMaskedInputChange(value, mask, { target: { name: 'cep' } }), [handleMaskedInputChange]);
     const onTelefoneChange = useCallback((value, mask) => handleMaskedInputChange(value, mask, { target: { name: 'telefone_contato' } }), [handleMaskedInputChange]);
-    // ----------------------------------------
-    
-    // FUNÇÃO PRINCIPAL: Trata o envio do formulário e a navegação
+   
     const handleSubmit = (e) => {
         e.preventDefault();
         setFormErrors({}); 
@@ -95,7 +90,7 @@ export default function UserRegistration() {
         register(formDataUser)
             .then((result) => {
                 setAuthData(result);
-                // 🚀 REDIRECIONAMENTO CORRIGIDO: Usa navigate()
+                
                 navigate('/userPerfil'); 
             })
             .catch((errorObject) => {
@@ -109,12 +104,12 @@ export default function UserRegistration() {
     };
     
 
-    // 💡 NOVO: Lógica de Carregamento Condicional
+    
     if(loading){
         if (isMobile) {
             return <div className={styles.load}><Loading2 /></div> // Carregamento para Mobile
         }
-        return <Loading />; // Carregamento para Desktop
+        return <Loading />; 
     }
 
     return (

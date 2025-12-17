@@ -36,7 +36,6 @@ export default function Login() {
 
     const [openProvider, setOpenProvider] = useState(false);
 
-    // Corrigido para fechar o popup corretamente
     const handleCloseProvider = () => {
         setOpenProvider(false);
     }
@@ -45,7 +44,7 @@ export default function Login() {
         setOpenProvider(true);
     }
 
-    // --- Renderização do componente (mantida) ---
+  
 
     return (
         <div className={styles.loginContainer}>

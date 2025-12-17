@@ -41,7 +41,7 @@ export default function LoginUserPopup({ open, close }) {
 
         } catch (err) {
             console.error("Erro no login:", err);
-            // Handle specific API error messages if available
+            
             if (err.detail) {
                  setError(err.detail);
             } else {

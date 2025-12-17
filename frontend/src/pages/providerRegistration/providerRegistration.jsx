@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router';
 import { useAuth } from '../../context/AuthContext';
 import { useIsMobile } from '../../hook/useIsMobile';
 
-// --- ARRAYS E FUNÇÕES AUXILIARES ---
+
 
 const formatCategoryToKey = (name) => {
     return name
@@ -34,16 +34,16 @@ const formatDateToISO = (dateStr) => {
 
 const caseSensitiveFields = ['password', 'password2' ,'genero' ,'nome_completo'];
 
-// --- FIM ARRAYS E FUNÇÕES AUXILIARES ---
+
 
 export default function ProviderRegistration() {
     const [categoria, setCategoria] = useState('');
     const [formDataProvider, setFormDataProvider] = useState({});
 
-    // ESTADO para erros da API
+
     const [formErrors, setFormErrors] = useState({});
 
-    // Hook para detecção de mobile
+
     const isMobile = useIsMobile();
 
     // Services
@@ -97,7 +97,7 @@ export default function ProviderRegistration() {
     const handleChangeSetDataProvider = useCallback((e) => {
         const { name, value } = e.target;
 
-        // Limpa o erro para o campo atual ao iniciar a edição
+      
         setFormErrors(prevErrors => ({
             ...prevErrors,
             [name]: null
@@ -172,7 +172,7 @@ export default function ProviderRegistration() {
     }, [processedServices, categoria]);
 
 
-    // LÓGICA DE CARREGAMENTO CONDICIONAL
+
     if (loading || loadingCategories) {
         if (isMobile) {
             return <div className={styles.load}><Loading2 /></div>
@@ -203,7 +203,7 @@ export default function ProviderRegistration() {
                     {/* CPF e Data de Nascimento */}
                     {getErrorMessage('cpf') && (
                         <p className={styles.errorMessage}>{getErrorMessage('cpf')}</p>
-                    )}  
+                    )} 
                     {getErrorMessage('dt_nascimento') && (
                         <p className={styles.errorMessage}>{getErrorMessage('dt_nascimento')}</p>
                     )}
