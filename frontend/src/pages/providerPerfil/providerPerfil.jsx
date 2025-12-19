@@ -14,7 +14,7 @@ import Loading2 from '../loading/loading2';
 const getImageUrl = (url) => {
     if (!url) return '';
 
-    
+
     if (url.startsWith('http://127.0.0.1:8000')) {
         return url.replace('http://127.0.0.1:8000', 'https://back-end-servicosja-api.onrender.com');
     }
@@ -27,7 +27,7 @@ const getImageUrl = (url) => {
 };
 
 const mockUserData = {
-    
+
 };
 
 const TABS = {
@@ -104,7 +104,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
     const [openEditModal, setOpenEditModal] = useState(false);
     const [solicitations, setSolicitations] = useState([]);
     const [providerAccount, setProviderAccount] = useState({});
-    
+
     const [selectedPhoto, setSelectedPhoto] = useState(null);
     const [previewUrl, setPreviewUrl] = useState(null);
     const [imageToCrop, setImageToCrop] = useState(null);
@@ -132,7 +132,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
     const profileId = user?.profile_id;
     const navigate = useNavigate()
 
-    
+
     useEffect(() => {
         return () => {
             userGalleryImages.forEach(item => {
@@ -149,10 +149,10 @@ export default function ProviderPerfil({ userData = mockUserData }) {
     useEffect(() => {
         if (!loading && !profileId) {
              navigate('/login');
-        } 
-    }, [profileId, loading, navigate]); 
+        }
+    }, [profileId, loading, navigate]);
 
-    // 2. Função de Recarregar Perfil 
+    // 2. Função de Recarregar Perfil
     const handleUpdateProfile = useCallback(async () => {
         if (profileId) {
             try {
@@ -163,11 +163,11 @@ export default function ProviderPerfil({ userData = mockUserData }) {
 
                 // Extrai dados aninhados do perfil (prestador ou cliente)
                 const nestedProfile = meData.perfil_prestador || meData.perfil_cliente || {};
-                
+
                 // Remove campos que não queremos sobrescrever (IDs) para manter os objetos completos do providerData
                 const { servico, categoria, ...nestedProfileFiltered } = nestedProfile;
 
-               
+
                 const mappedMeData = {
                     ...meData,
                     ...nestedProfileFiltered, // Achata os dados aninhados, exceto servico/categoria
@@ -188,16 +188,16 @@ export default function ProviderPerfil({ userData = mockUserData }) {
                 .catch(err => console.error(err));
         }
     }, [profileId, getProviderPerfil]);
-    
-    // 3. Executa o Carregamento Inicial 
+
+    // 3. Executa o Carregamento Inicial (Chama APENAS quando profileId muda)
     useEffect(()=>{
-       
+
         if (profileId) {
-             handleUpdateProfile(); 
+             handleUpdateProfile();
         }
-    },[profileId, handleUpdateProfile]) 
-    
-    
+    },[profileId, handleUpdateProfile]) // A dependência handleUpdateProfile é estável devido ao useCallback
+
+
     useEffect(() => {
         // Popula galeria com dados da API
         if (providerAccount?.portfolio && Array.isArray(providerAccount.portfolio)) {
@@ -212,7 +212,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
         }
     }, [providerAccount]);
 
-   
+
     const handlePhotoEditClick = () => {
         document.getElementById('profile-photo-upload').click();
     };
@@ -226,26 +226,26 @@ export default function ProviderPerfil({ userData = mockUserData }) {
             e.target.value = null;
         }
     };
-    
+
     const onCropComplete = async (croppedImageBlob) => {
         setOpenCropModal(false);
         setImageToCrop(null);
         setActionLoading(true);
-        
+
         if (previewUrl) {
              URL.revokeObjectURL(previewUrl);
         }
-        
+
         const newPreviewUrl = URL.createObjectURL(croppedImageBlob);
         setPreviewUrl(newPreviewUrl);
         setSelectedPhoto(croppedImageBlob);
-        
+
         try {
             const photoFormData = new FormData();
-            photoFormData.append('foto_perfil', croppedImageBlob, 'profile_cropped.jpg'); 
-            
+            photoFormData.append('foto_perfil', croppedImageBlob, 'profile_cropped.jpg');
+
             await updateProviderProfile(photoFormData);
-            handleUpdateProfile(); 
+            handleUpdateProfile();
             setSelectedPhoto(null);
             alert("Foto de perfil atualizada com sucesso!");
         } catch (error) {
@@ -254,15 +254,15 @@ export default function ProviderPerfil({ userData = mockUserData }) {
             setPreviewUrl(null);
             setSelectedPhoto(null);
         } finally {
-            setActionLoading(false); 
+            setActionLoading(false);
         }
     }
-    
+
     const handleCloseCropModal = useCallback(() => {
         setOpenCropModal(false);
-        setImageToCrop(null); 
+        setImageToCrop(null);
     }, []);
-    
+
     const handleImageUpload = async (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -305,11 +305,11 @@ export default function ProviderPerfil({ userData = mockUserData }) {
         }
          event.target.value = null;
     };
-    
+
     const handleImageSelect = (url) => {
         setCurrentMainImage(url);
     };
-    
+
     const handleDeleteImage = async (id) => {
          setActionLoading(true);
          try {
@@ -332,7 +332,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
              setActionLoading(false);
          }
     };
-    
+
     const handleLogout = () => {
         logout();
         navigate('/');
@@ -374,18 +374,18 @@ export default function ProviderPerfil({ userData = mockUserData }) {
             }
         }
     };
-    
+
     const comentarios = providerAccount?.ultimas_avaliacoes
     const estatisticas = providerAccount?.estatisticas
-    
+
     const transformedRatings = useMemo(() => {
          if (!estatisticas || !estatisticas.distribuicao) {
-             return userData.avaliacoes; 
+             return userData.avaliacoes;
          }
 
          const distribuicao = estatisticas.distribuicao;
-         const keys = Object.keys(distribuicao); 
-         
+         const keys = Object.keys(distribuicao);
+
          const newRatings = keys.map(key => {
              const starNumber = parseInt(key.split('_')[1], 10);
              const data = distribuicao[key];
@@ -399,7 +399,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
 
          newRatings.sort((a, b) => b.estrelas - a.estrelas);
          return newRatings;
-    }, [estatisticas, userData.avaliacoes]); 
+    }, [estatisticas, userData.avaliacoes]);
 
     const notaMedia = providerAccount?.nota_media || providerAccount?.estatisticas?.media_geral || 0;
 
@@ -417,7 +417,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
 
     return (
         <div className={styles.dashboardPage}>
-            
+
             {actionLoading && (
                 <div style={{
                     position: 'fixed',
@@ -435,21 +435,21 @@ export default function ProviderPerfil({ userData = mockUserData }) {
                 </div>
             )}
 
-          
-            <input 
+            {/* Input de arquivo escondido para a foto de perfil */}
+            <input
                 id="profile-photo-upload"
-                type="file" 
-                accept="image/*" 
-                onChange={handlePhotoChangeForCrop} 
+                type="file"
+                accept="image/*"
+                onChange={handlePhotoChangeForCrop}
                 style={{ display: 'none' }}
             />
-            
+
             <header className={styles.header}>
                 <div className={styles.perfil}>
-                    <div className={styles.imgEdit} onClick={handlePhotoEditClick}> 
-                        <img 
+                    <div className={styles.imgEdit} onClick={handlePhotoEditClick}>
+                        <img
                             src={getImageUrl(providerAccount?.foto || providerAccount?.foto_perfil) || userData.perfilImg || 'img/exemples/Group 8.png' }
-                            alt="perfil" 
+                            alt="perfil"
                         />
                         <FaEdit />
                     </div>
@@ -464,8 +464,8 @@ export default function ProviderPerfil({ userData = mockUserData }) {
             </header>
 
             <div className={styles.container}>
-                
-                
+
+                {/* 1. Informações Pessoais */}
                 <div className={styles.box}>
                     <h2>Informações Pessoais</h2>
                     <div className={styles.iconEdit} onClick={() => setOpenEditModal(true)}>
@@ -514,7 +514,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
                         solicitations.map((sol) => (
                             <div key={sol.id} className={styles.solicit}>
                                 <h5 className={styles.soli}>{sol.cliente_nome || sol.cliente || "Cliente"}</h5>
-                                <h5 className={styles.soli}>{sol.data_solicitacao ? new Date(sol.data_solicitacao).toLocaleDateString('pt-BR') : new Date().toLocaleDateString('pt-BR')}</h5>
+                                <h5 className={styles.soli}>{sol.data_clique ? new Date(sol.data_clique).toLocaleDateString('pt-BR') : new Date().toLocaleDateString('pt-BR')}</h5>
                                 <div className={styles.soli}>
                                     {/* Lógica de Status:
                                         1. Concluído (Realizado): data_conclusao != null && servico_realizado == true
@@ -529,13 +529,13 @@ export default function ProviderPerfil({ userData = mockUserData }) {
                                         )
                                     ) : (
                                         <div style={{ display: 'flex', gap: '15px' }}>
-                                            <FaCheckDouble 
-                                                style={{color:'gray', fontSize:'22px', cursor:'pointer'}} 
+                                            <FaCheckDouble
+                                                style={{color:'gray', fontSize:'22px', cursor:'pointer'}}
                                                 onClick={() => handleCompleteService(sol.id)}
                                                 title="Marcar como realizado"
                                             />
-                                            <FaX 
-                                                style={{color:'gray', fontSize:'20px', cursor:'pointer'}} 
+                                            <FaX
+                                                style={{color:'gray', fontSize:'20px', cursor:'pointer'}}
                                                 onClick={() => handleMarkNotRealized(sol.id)}
                                                 title="Não realizou o serviço"
                                             />
@@ -548,7 +548,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
                 </div>
 
                 <div className={`${styles.flex} ${styles.colum}`}>
-                    <div className={`${styles.box} ${styles.mensagens}`}> 
+                    <div className={`${styles.box} ${styles.mensagens}`}>
                         <h2>Últimas Avaliações</h2>
                         <div className={`${styles.flex} ${styles.flexBox}`}>
                             <h5>Nome</h5>
@@ -564,7 +564,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
                                </div>
                             ))}
                     </div>
-                
+
                     <div className={styles.w_50}>
                        <Gallery
                             images={userGalleryImages }
@@ -572,7 +572,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
                             onImageUpload={handleImageUpload}
                             onImageDelete={handleDeleteImage}
                             selectedImage={currentMainImage}
-                        /> 
+                        />
                     </div>
                 </div>
 
@@ -593,7 +593,7 @@ export default function ProviderPerfil({ userData = mockUserData }) {
                     </div>
 
                     <h2>Distribuição de Avaliações</h2>
-                    
+
                     {estatisticas?.distribuicao && (
                         <RatingChart distribuicao={estatisticas.distribuicao} />
                     )}
@@ -602,17 +602,17 @@ export default function ProviderPerfil({ userData = mockUserData }) {
 
             </div>
 
-           
-            <EditProviderModal 
-                open={openEditModal} 
-                close={() => setOpenEditModal(false)} 
-                providerData={providerAccount} 
-                onUpdate={handleUpdateProfile} 
+            {/* Modal de Edição de Dados Textuais (EditProviderModal) */}
+            <EditProviderModal
+                open={openEditModal}
+                close={() => setOpenEditModal(false)}
+                providerData={providerAccount}
+                onUpdate={handleUpdateProfile}
             />
-            
+
             {/* Modal de Corte de Imagem (ImageCropModal) */}
             {openCropModal && imageToCrop && (
-                <ImageCropModal 
+                <ImageCropModal
                     image={imageToCrop}
                     onCropComplete={onCropComplete}
                     onClose={handleCloseCropModal}
