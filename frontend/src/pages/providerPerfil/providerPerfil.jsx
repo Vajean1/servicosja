@@ -132,6 +132,9 @@ export default function ProviderPerfil({ userData = mockUserData }) {
     const profileId = user?.profile_id;
     const navigate = useNavigate()
 
+    useEffect(() => {
+        console.log("DEBUG: Solicitations State", solicitations);
+    }, [solicitations]);
 
     useEffect(() => {
         return () => {
