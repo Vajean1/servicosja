@@ -19,7 +19,7 @@ import { useProviderContext } from '../../context/providerSelected';
 
 const getImageUrl = (url) => {
     if (!url) return '';
-    
+
     if (url.startsWith('http://127.0.0.1:8000')) {
         return url.replace('http://127.0.0.1:8000', 'https://back-end-servicosja-api.onrender.com');
     }
@@ -67,8 +67,8 @@ export default function Home () {
                 <button onClick={() => navigate('/about')}> Saiba Mais</button>
            </div>
 
-        
-           
+
+
             <h4 className={styles.SponsoredTitle}>Melhores avaliados</h4>
            <section className={styles.Sponsored}>
             <img className={styles.SponsoredBg} src="img/banner/bannerSponsored.png" alt='banner'/>
@@ -79,45 +79,45 @@ export default function Home () {
                     modules={[Navigation, A11y]}
                     slidesPerView={1}
                     breakpoints={{
-                        
+
                         640: {
-                            slidesPerView: 2, 
+                            slidesPerView: 2,
                             spaceBetween: 20,
                         },
-                        
+
                         1024: {
-                            slidesPerView: 3, 
+                            slidesPerView: 3,
                             spaceBetween: 60,
                         },
-                        
+
                         1440: {
-                            slidesPerView: 4, 
+                            slidesPerView: 4,
                             spaceBetween: 120,
                         }}
                     }
-                    
+
                     >
                     {bestProviders.map((provider) => (
                         <SwiperSlide key={provider.id}>
-                            <div 
-                                className={styles.sponsoredBox} 
+                            <div
+                                className={styles.sponsoredBox}
                                 onClick={() => {
                                     setProviderSelected(provider);
                                     navigate('/providerDatails');
                                 }}
                                 style={{ cursor: 'pointer' }}
                             >
-                                <img 
-                                    src={getImageUrl(provider.foto) || "img/exemples/Group 8.png"} 
-                                    alt={provider.nome} 
-                                    style={{ objectFit: 'cover' }} 
+                                <img
+                                    src={getImageUrl(provider.foto) || "img/exemples/Group 8.png"}
+                                    alt={provider.nome}
+                                    style={{ objectFit: 'cover' }}
                                 />
                                 <h3>{provider.nome}</h3>
                                 <p>{provider.biografia ? (provider.biografia.length > 50 ? provider.biografia.substring(0, 50) + "..." : provider.biografia) : (provider.servico?.nome || provider.categoria)}</p>
                                 <div className={styles.infosSponsored}>
                                     <div className={styles.txtSponsored}>
-                                        <b>{provider.localizacao || "Localização"}</b>
-                                        <p>Prestador</p>
+                                        <b>{provider.cidade || "Localização"}</b>
+                                        <p>{provider.servico.nome || "Prestador"}</p>
                                     </div>
                                     <div className={styles.starSponsored}>
                                         {[...Array(5)].map((_, i) => (
@@ -128,7 +128,7 @@ export default function Home () {
                             </div>
                         </SwiperSlide>
                     ))}
-                    
+
                     {/* Fallback if no providers are loaded yet or error */}
                     {bestProviders.length === 0 && (
                          <SwiperSlide>
@@ -151,24 +151,24 @@ export default function Home () {
                     modules={[Navigation, A11y]}
                     slidesPerView={1}
                     breakpoints={{
-                        
-                        
+
+
                         640: {
-                            slidesPerView: 1, 
+                            slidesPerView: 1,
                             spaceBetween: 20,
                         },
-                        
+
                         1024: {
-                            slidesPerView: 2, 
+                            slidesPerView: 2,
                             spaceBetween: 40,
                         },
-                        
+
                         1640: {
-                            slidesPerView: 3, 
+                            slidesPerView: 3,
                             spaceBetween: 100,
                         }}
                     }
-                    
+
                     >
                     {topReviews.map((review) => (
                         <SwiperSlide key={review.id}>
@@ -237,12 +237,12 @@ export default function Home () {
                             <h4>Acompanhe nossas redes sociais</h4>
                             <div className={styles.SocialBoxIcons}> <a href='https://www.linkedin.com/' target='_blank'  className={styles.iconbg}><FaLinkedin/></a> <a  href='https://www.instagram.com/' target='_blank'  className={styles.iconbg}><FaInstagram /></a > <a  href='https://www.instagram.com/' target='_blank'  className={styles.iconbg}><FaFacebook /></a > <a  href='https://www.instagram.com/' target='_blank'  className={styles.iconbg}><FaTwitter /></a ></div>
                                 </div>
-                                
+
                             </div>
                         </div>
 
-            
-            
+
+
         </main>
     )
 }
